@@ -1,7 +1,7 @@
 import './App.css';
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
 import Login from './pages/login';
-
+import Headbar from './components/login/headbar';
 function App() {
   return (
     // <div className="bg-blue-100 p-4">
