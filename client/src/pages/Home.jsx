@@ -1,12 +1,12 @@
 import React from 'react'
-import Tabs from '../components/Tabs'
 import TopBar from '../components/TopBar'
+import Sidebar from '../components/Sidebar'
 
 function Home() {
   return (
     <div>
         <TopBar />
-      <Tabs />
+      <Sidebar />
     </div>
   )
 }
