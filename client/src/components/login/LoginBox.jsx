@@ -8,39 +8,39 @@ const LoginBox = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-//     const login = () => {
-//         const data = { username: username, password: password };
-//         axios.post("http://localhost:3000/?", data)
-//             .then((response) => {
-//                 console.log(response.data);
-//                 if (response.data.usertype === 'admin') {
-//                     // Navigate to admin page if usertype is admin
-//                     navigate('/home');
-//                 } else if (response.data.usertype === 'office') {
-//                     // Navigate to user page if usertype is user
-//                     navigate('/bill');
-//                 } else {
-//                     // Handle other user types or cases where usertype is not defined
-//                     console.log('Invalid user type');
-//                 }
-//             })
-//             .catch((error) => {
-//                 console.error('Error logging in:', error);
-//                 // Handle error response
-//             });
-//     };
+    const login = () => {
+        const data = { username: username, password: password };
+        axios.post("http://localhost:3001/login", data)
+            .then((response) => {
+                console.log(response.data);
+                if (response.data.role === 'admin') {
+                    // Navigate to admin page if usertype is admin
+                    navigate('/home');
+                } else if (response.data.role === 'office') {
+                    // Navigate to user page if usertype is user
+                    navigate('/bill');
+                } else {
+                    // Handle other user types or cases where usertype is not defined
+                    console.log('Invalid user type');
+                }
+            })
+            .catch((error) => {
+                console.error('Error logging in:', error);
+                // Handle error response
+            });
+    };
 
- const login = () => {
+//  const login = () => {
         
-         const data = {username: username, password: password};
-         //console.log(data);
-         axios.post("http://localhost:3001/login", data).then((response) => {
-            console.log(response.data);
-        }).catch((error) => {
-            console.error('Error logging in:', error);
-        });
+//          const data = {username: username, password: password};
+//          //console.log(data);
+//          axios.post("http://localhost:3001/login", data).then((response) => {
+//             console.log(response.data);
+//         }).catch((error) => {
+//             console.error('Error logging in:', error);
+//         });
         
-         };
+//          };
     
 
     return (
