@@ -44,8 +44,8 @@ const Sidebar = () => {
   return (
     <div>
       {/* Ellipse indicator */}
-      <div
-        className="fixed bg-gray-800 rounded-full w-12 h-32 flex flex-col items-center justify-around text-white text-lg shadow-md z-40"
+      {/* <div
+        className="fixed bg-gray-800 rounded-full w-12 h-32 flex flex-col items-center justify-around text-white text-lg shadow-md"
         style={{
           top: '50%',
           left: sidebarOpen ? '235px' : '10px',
@@ -58,13 +58,21 @@ const Sidebar = () => {
         <FaClipboardList onClick={() => setSidebarOpen(!sidebarOpen)}  />
         <FaUserCog onClick={() => setSidebarOpen(!sidebarOpen)}  />
         {/* Add more icons as needed */}
-      </div>
+      {/* </div> */} 
+
+      <button
+        className="fixed z-10 bg-gray-800 rounded-full w-12 h-12 flex items-center justify-center text-white text-lg shadow-md"
+        style={{ left: sidebarOpen ? '235px' : '-10px', top: '50%', transition: 'left 0.3s ease-in-out' }}
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? '<' : '>'}
+      </button>
       <div
         className={`fixed z-10 bg-gray-800 h-screen w-64 transform transition-transform ease-in-out duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        
+        <div className="p-4 text-white">Sections</div>
         <ul>
           {sections.map((section, index) => (
             <li key={index}>
