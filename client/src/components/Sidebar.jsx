@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { FaBars, FaShoppingCart, FaUser, FaClipboardList, FaUserCog, FaBox } from 'react-icons/fa'; // Import necessary icons
+import { FaBars, FaCubes, FaDollyFlatbed, FaClipboardList, FaUserCog, FaBox, FaAddressCard } from 'react-icons/fa'; // Import necessary icons
 
 const sections = [
   {
     title: 'Raw',
-    icon: <FaShoppingCart />,
+    icon: <FaCubes />,
     subSections: ['Buy', 'Use']
   },
   {
     title: 'Jobs',
-    icon: <FaUser />,
+    icon: <FaDollyFlatbed />,
     subSections: ['View', 'Add']
   },
   {
@@ -24,7 +24,7 @@ const sections = [
   },
   {
     title: 'Employee',
-    icon: <FaUserCog />,
+    icon: <FaAddressCard />,
     subSections: ['Add', 'Update']
   },
   {
@@ -35,38 +35,37 @@ const sections = [
 ];
 
 const Sidebar = () => {
-  const [expandedSections, setExpandedSections] = useState({});
   const [isHovered, setIsHovered] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
 
   const handleSectionClick = (index) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
+    setActiveSection(activeSection === index ? null : index);
   };
 
   return (
     <div
-      className="fixed z-10 bg-gray-800 h-screen flex flex-col items-center justify-center text-white"
+      className="fixed z-10 bg-gray-800 h-screen flex items-center justify-start text-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <FaBars className="mb-4 cursor-pointer" />
-      <div className={`overflow-hidden transition-all duration-300 ${isHovered ? 'w-64' : 'w-16'}`}>
+    
+      <div className={`overflow-hidden transition-all duration-300 ${isHovered ? 'w-64' : 'w-12'}`}>
         {sections.map((section, index) => (
           <div key={index}>
             <button
-              className="w-full p-2 flex items-center justify-center"
+              className="w-full p-2 flex items-center justify-start"
               onClick={() => handleSectionClick(index)}
             >
-              {section.icon}
-              <span className="ml-2">{section.title}</span>
+              <div className="flex items-center"> {/* Added a container div for each icon */}
+                {section.icon}
+                {isHovered && <span className="ml-2">{section.title}</span>}
+              </div>
             </button>
-            {expandedSections[index] && section.subSections.length > 0 && (
+            {activeSection === index && section.subSections.length > 0 && (
               <ul>
                 {section.subSections.map((subSection, subIndex) => (
                   <li key={subIndex}>
-                    <button className="w-full p-2 flex items-center justify-center">{subSection}</button>
+                    <button className="w-full p-2 flex items-center justify-start">{subSection}</button>
                   </li>
                 ))}
               </ul>
