@@ -45,7 +45,7 @@ const LoginBox = () => {
 
     return (
         <div className="mx-auto absolute inset-0 flex justify-center items-center">
-            <div className="max-w-md mx-auto p-6 rounded-lg shadow-md" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}>
+            <div className="max-w-md mx-auto p-6 rounded-lg shadow-md" style={{ backgroundColor: 'rgba(0, 0, 0, 0.67)' }}>
                 <h2 className="text-4xl font-semibold text-white text-center mb-4">L O G I N</h2>
                 <form >
                     <div className="mb-4">

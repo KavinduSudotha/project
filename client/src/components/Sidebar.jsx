@@ -1,104 +1,78 @@
 import React, { useState } from 'react';
-import { FaBars, FaShoppingCart, FaUser, FaClipboardList, FaUserCog } from 'react-icons/fa'; // Import necessary icons
+import { FaBars, FaShoppingCart, FaUser, FaClipboardList, FaUserCog, FaBox } from 'react-icons/fa'; // Import necessary icons
 
 const sections = [
   {
     title: 'Raw',
+    icon: <FaShoppingCart />,
     subSections: ['Buy', 'Use']
   },
   {
     title: 'Jobs',
+    icon: <FaUser />,
     subSections: ['View', 'Add']
   },
   {
     title: 'Price List',
+    icon: <FaClipboardList />,
     subSections: []
   },
   {
     title: 'Inventory',
+    icon: <FaBox />,
     subSections: []
   },
   {
     title: 'Employee',
+    icon: <FaUserCog />,
     subSections: ['Add', 'Update']
   },
   {
     title: 'Admins',
+    icon: <FaUserCog />,
     subSections: []
   }
 ];
 
 const Sidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({});
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleSectionClick = (sectionIndex) => {
-    setActiveSection(activeSection === sectionIndex ? null : sectionIndex);
-  };
-
-  const handleSubSectionClick = (subSection) => {
-    // navigate ('/subSection')
-    console.log('Navigating to:', subSection);
+  const handleSectionClick = (index) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
   };
 
   return (
-    <div>
-      {/* Ellipse indicator */}
-      {/* <div
-        className="fixed bg-gray-800 rounded-full w-12 h-32 flex flex-col items-center justify-around text-white text-lg shadow-md"
-        style={{
-          top: '50%',
-          left: sidebarOpen ? '235px' : '10px',
-          transform: 'translateY(-50%)',
-          transition: 'left 0.3s ease-in-out'
-        }}
-      >
-        <FaShoppingCart onClick={() => setSidebarOpen(!sidebarOpen)} />
-        <FaUser onClick={() => setSidebarOpen(!sidebarOpen)} />
-        <FaClipboardList onClick={() => setSidebarOpen(!sidebarOpen)}  />
-        <FaUserCog onClick={() => setSidebarOpen(!sidebarOpen)}  />
-        {/* Add more icons as needed */}
-      {/* </div> */} 
-
-      <button
-        className="fixed z-10 bg-gray-800 rounded-full w-12 h-12 flex items-center justify-center text-white text-lg shadow-md"
-        style={{ left: sidebarOpen ? '235px' : '-10px', top: '50%', transition: 'left 0.3s ease-in-out' }}
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        {sidebarOpen ? '<' : '>'}
-      </button>
-      <div
-        className={`fixed z-10 bg-gray-800 h-screen w-64 transform transition-transform ease-in-out duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="p-4 text-white">Sections</div>
-        <ul>
-          {sections.map((section, index) => (
-            <li key={index}>
-              <button
-                className="w-full text-left px-4 py-2 text-white"
-                onClick={() => handleSectionClick(index)}
-              >
-                {section.title}
-              </button>
-              {activeSection === index && (
-                <ul>
-                  {section.subSections.map((subSection, subIndex) => (
-                    <li key={subIndex}>
-                      <button
-                        className="w-full text-left px-8 py-2 text-gray-300 hover:bg-gray-700"
-                        onClick={() => handleSubSectionClick(subSection)}
-                      >
-                        {subSection}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
+    <div
+      className="fixed z-10 bg-gray-800 h-screen flex flex-col items-center justify-center text-white"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <FaBars className="mb-4 cursor-pointer" />
+      <div className={`overflow-hidden transition-all duration-300 ${isHovered ? 'w-64' : 'w-16'}`}>
+        {sections.map((section, index) => (
+          <div key={index}>
+            <button
+              className="w-full p-2 flex items-center justify-center"
+              onClick={() => handleSectionClick(index)}
+            >
+              {section.icon}
+              <span className="ml-2">{section.title}</span>
+            </button>
+            {expandedSections[index] && section.subSections.length > 0 && (
+              <ul>
+                {section.subSections.map((subSection, subIndex) => (
+                  <li key={subIndex}>
+                    <button className="w-full p-2 flex items-center justify-center">{subSection}</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
