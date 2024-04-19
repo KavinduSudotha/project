@@ -44,6 +44,7 @@ const Sidebar = () => {
 
   return (
     <div
+    
       className="fixed z-10 bg-gray-800 h-screen flex items-center justify-start text-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
