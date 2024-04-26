@@ -8,14 +8,13 @@ const TopHeadBar = () => {
         {/* Logo */}
         <div className="flex items-center">
           <div className="bg-white rounded-full p-2 mr-2">
-            <img src={Logo} alt="Logo" className="h-10" />
+            <img src={Logo} alt="COCOSYS Logo" className="h-10" />
           </div>
-          {/* COCOSYS Name */}
-          <h1 className="text-white text-4xl font-bold" > C O C O S Y S</h1>
-
-        </div>       
+          {/* Application Name */}
+          <h1 className="text-white text-xl font-semibold">COCOSYS</h1>
+        </div>
       </div>
-      {/* White line */}
+      {/* Separator Line */}
       <div className="bg-white h-1"></div>
     </div>
   );

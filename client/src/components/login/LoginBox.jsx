@@ -80,12 +80,13 @@ const LoginBox = () => {
                     </div>
                     <div className="flex items-center justify-center">
                     <button
-                        type="button" // Add this line to specify the button type
-                        className="bg-blue-500 hover:bg-blue-700 text-white w-full font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline"
-                         onClick={login}
-                                        >
-                             Login
-                                </button>
+    type="submit" // Specify the button type as submit
+    className="bg-blue-500 hover:bg-blue-700 text-white w-full font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline"
+    onClick={login}
+>
+    Login
+</button>
+
 
                     </div>
                 </form>

@@ -1,12 +1,11 @@
-const express = require('express');
+
 const bodyParser = require('body-parser');
 const connection = require('../config/DBconnect');
 
-const router = express.Router();
 
-router.use(bodyParser.json());
-
-router.post('/', (req, res) => {
+//router.use(bodyParser.json());
+ 
+const login = (req, res) => {
     const { username, password } = req.body;
 
     connection.query('SELECT role FROM User WHERE username = ? AND password = ?', [username, password], (err, rows) => {
@@ -23,7 +22,7 @@ router.post('/', (req, res) => {
             res.status(401).json({ error: 'Invalid username or password' });
         }
     });
-});
+}
 
-module.exports = router;
+module.exports = login
 

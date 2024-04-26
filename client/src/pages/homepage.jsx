@@ -1,15 +1,14 @@
 import React from 'react'
-import TopBar from '../components/TopBar'
 import Sidebar from '../components/Sidebar'
 
-function Home() {
+function homepage() {
   return (
-    <div>
-        <TopBar />
+    <div> 
       <Sidebar />
-     
+      <h1>Homepage</h1>
     </div>
   )
 }
 
-export default Home
+export default homepage
+
