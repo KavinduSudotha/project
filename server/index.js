@@ -1,7 +1,8 @@
 const express = require('express');
 const login = require('./control/Login');
 const cors = require('cors');
-const authrout = require('./route/authloginrout');
+const authroutlogin = require('./route/authloginrout');
+const pricelistrout = require('./route/pricelistrout');
 
 const app = express();
 const PORT = 3001;
@@ -12,7 +13,11 @@ app.use(cors({
     credentials: true,
 }));
 
-app.use('/', login); // Mount the authentication routes
+app.use('/auth', authroutlogin); 
+app.use('/pricelistrout', pricelistrout); // Mount the authentication routes
+// app.use("/", require("./route/authloginrout"));
+
+// app.use('/', login);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

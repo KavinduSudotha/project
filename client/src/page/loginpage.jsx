@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import LoginImg from '../asset/loginbga.jpg';
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -11,7 +11,7 @@ const LoginPage = () => {
 
     const login = () => {
         const data = { username: username, password: password };
-        axios.post("http://localhost:3001/login", data)
+        axios.post("http://localhost:3001/auth/login", data)
             .then((response) => {
                 console.log(response.data);
                 if (response.data.role === 'admin') {
@@ -34,8 +34,8 @@ const LoginPage = () => {
   return (
     <div className="flex  h-screen bg-indigo-200 ">
       {/* Left half with image */}
-      <div className="w-1/2 bg-neutral-700 flex items-center justify-center">
-        <img src="your-image-url.jpg" alt="Login" className="max-h-full max-w-full" />
+      <div className="w-1/2 bg-neutral-700 flex  justify-center">
+        <img src={LoginImg} alt="Login" className="max-h-full max-w-full" />
       </div>
 
       {/* Right half with login form */}
