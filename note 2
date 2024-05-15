@@ -1,0 +1,41 @@
+ok now i need addjob page,  using react and taiwinf css and Mui
+
+there must be tab view 
+
+first tab
+title : Job details
+ Feilds 
+    Job created date(this automatically get from pc date and time)
+    Job due date
+    coustomer name(optional)
+    Destination Country/state
+    Employee Id
+
+
+second tab
+title : sheet details
+    feilds
+        Height
+        Length
+        Width
+        Ratio (cocopeat,Cocochip)-in retion feild there are 2 box 
+
+3rd tab 
+title : Driver details
+    feilds
+        Deiver name
+        Vehicle number 
+        Mobile number
+        transport Company 
+
+
+
+fist and second tab there must be a botton out side of tab and bottom right "next"
+At Last Tab it must change to fish button submit all data to backend
+
+
+
+
+
+
+

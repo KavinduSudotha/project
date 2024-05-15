@@ -30,8 +30,8 @@ const Sidebar = () => {
 
   const sections = [
     { name: 'Home', icon: FiHome, link: '/homepage' },
-    { name: 'Price List', icon: FiShoppingCart, subSections: [{ name: 'Add', link: '/AddPriceList' }, 'View', 'Records'] },
-    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuy' }, { name: 'Use', link: '/rawuse'}, { name: 'Sell', link: '/sell'}] },
+    { name: 'Price List', icon: FiShoppingCart, subSections: [{ name: 'Add', link: '/AddPriceList' },{ name: 'View', link: '/viewpricelist' }, { name: 'Records', link: '/RecordsPricelist' }] },
+    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuypage' }, { name: 'Use', link: '/rawuse'}, { name: 'Sell', link: '/sell'}] },
     { name: 'Inventory', icon: FiPackage, subSections: ['Live', 'Records'] },
     { name: 'Jobs', icon: FiBarChart2, subSections: [{ name: 'Add', link: '/AddJobPage' }, 'Update'] },
     { name: 'Reports', icon: FiBarChart2 },

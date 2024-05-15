@@ -14,7 +14,7 @@ app.use(cors({
 }));
 
 app.use('/auth', authroutlogin); 
-// app.use('/pricelist', pricelistrout); // Mount the authentication routes
+app.use('/pricelist', pricelistrout); // Mount the authentication routes
 // app.use("/", require("./route/authloginrout"));
 
 // app.use('/', login);

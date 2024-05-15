@@ -1,344 +1,135 @@
-import React, { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import axios from 'axios';
+ok,fiest i need frount end like this export is ad rawbuy
 
-const AddPriceList = () => {
-  const [date, setDate] = useState('');
-  const [tabValue, setTabValue] = useState('one');
-  // State to manage inputs
-  const [inputs, setInputs] = useState({
-    // Tab 1 - Standard Price
-    chips_11mm_unwashed: '',
-    chips_11mm_washed: '',
-    chips_9mm_unwashed: '',
-    chips_9mm_washed: '',
-    chips_7mm_unwashed: '',
-    chips_7mm_washed: '',
-    cocopeat_hi_ec: '',
-    cocopeat_low_ec: '',
-    // Tab 2 - Wastage deduction for chip
-    wastage_deduction_chips: Array(13).fill(''),
-    // Tab 3 - Density and Sand
-    density: Array(12).fill(''),
-    sand: Array(7).fill(''),
-    // Tab 4 - Wastage Price
-    wastage_price: [
-      { label: 'Cocopeat Fiber', value: '' },
-      { label: 'Cocopeat Fine Dust', value: '' },
-      { label: '10C Sieved', value: '' },
-      { label: '10C not Sieved', value: '' },
-      { label: '10C upper part', value: '' }
-    ]
-  });
+fist there must me feilds to enter data like this
+1 date(this is auto select from computer time and date)
+2 Raw Type (this is selction box with 2 options) they are Coco Chips, Cocopeat
+if Coco Chips is selected then this|
+               select Type (this is drop down box with 6 options) they are 11 mm unwashed, 11 mm washed, 9 mm unwashed, 9 mm washed, 7 mm unwashed, 7 mm washed
+               next feid is Wastage Diduction (this is text box and conner ther must be a % mark )this must validate  input 0-20 only.if any input unter 8 get is as 8 and if it is over 20 get it as 20
+               if above 2 feilds are filled then there must be unlock buying selction,before that all data autonoticly send to back end calculation done by back end to get price.i will give you the calculation formula later
+                          next is suggest price, show the price calculated by back end
+                          next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
+                          next feild is Quantity (this is text box and conner there must be a kg mark) this must validate input only intigers
+                          next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
+                          next show the total price( this is calculated by multiply buying price and quantity)
 
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
-  };
-
-  const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
-  const handleInputChange = (key, value) => {
-    setInputs({ ...inputs, [key]: value });
-  };
-
-  const handleArrayInputChange = (key, index, value) => {
-    const newArray = [...inputs[key]];
-    newArray[index] = value;
-    setInputs({ ...inputs, [key]: newArray });
-  };
-
-  const handleObjectInputChange = (key, index, value) => {
-    const newArray = [...inputs[key]];
-    newArray[index] = { ...newArray[index], value: value };
-    setInputs({ ...inputs, [key]: newArray });
-  };
-
-  const handleNextTab = () => {
-    if (tabValue !== 'four') {
-      const tabs = ['one', 'two', 'three', 'four'];
-      const currentIndex = tabs.indexOf(tabValue);
-      setTabValue(tabs[currentIndex + 1]);
-    }
-  };
-
-  const handleFinish = async () => {
-    try {
-      // Send data to backend
-      const response = await axios.post("http://localhost:3001/auth/test", { date, ...inputs, employee_id: '0000' });
-      console.log(response.data); // Log response from backend
-      // Reset inputs and date after successful submission
-      setInputs({
-        chips_11mm_unwashed: '',
-        chips_11mm_washed: '',
-        chips_9mm_unwashed: '',
-        chips_9mm_washed: '',
-        chips_7mm_unwashed: '',
-        chips_7mm_washed: '',
-        cocopeat_hi_ec: '',
-        cocopeat_low_ec: '',
-        wastage_deduction_chips: Array(13).fill(''),
-        density: Array(12).fill(''),
-        sand: Array(7).fill(''),
-        wastage_price: [
-          { label: 'Cocopeat Fiber', value: '' },
-          { label: 'Cocopeat Fine Dust', value: '' },
-          { label: '10C Sieved', value: '' },
-          { label: '10C not Sieved', value: '' },
-          { label: '10C upper part', value: '' }
-        ]
-      });
-      setDate('');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return (
-    <div className='bg-white h-full'>
-      <div className="container mx-auto py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">Weekly Price List</h1>
-          <div className="flex items-center">
-            <label htmlFor="date" className="mr-2">Date:</label>
-            <input
-              type="date"
-              id="date"
-              value={date}
-              onChange={handleDateChange}
-              className="border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-        </div>
-        <Box sx={{ width: '100%' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleChangeTab}
-            aria-label="wrapped label tabs example"
-          >
-            <Tab value="one" label="Standard Price" />
-            <Tab value="two" label="Deduction of Chips" />
-            <Tab value="three" label="Deduction of Cocopeat" />
-            <Tab value="four" label="Wastage Price" />
-          </Tabs>
-        </Box>
-
-        {/* Tab 1 - Standard Price */}
-        <div value="one" hidden={tabValue !== 'one'}>
-          <div className="mb-8">
-            {/* Chips Subsection */}
-            <h2 className="text-xl font-semibold mb-4">Chips</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Each TextField is connected to the respective property in the inputs object */}
-              <TextField
-                label="11mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_11mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_11mm_unwashed', e.target.value)} // Handle input change
-              />
-                  <TextField
-                label="11mm washed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_11mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_11mm_washed', e.target.value)} // Handle input change
-              />
-             <TextField
-                label="9mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_9mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_9mm_unwashed', e.target.value)} // Handle input change
-              />
-              <TextField
-                label="9mm washed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_9mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_9mm_washed', e.target.value)} // Handle input change
-              />
-                <TextField
-                label="7mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_7mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_7mm_unwashed', e.target.value)} // Handle input change
-              />
-              <TextField
-                label="7mm washed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_7mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_7mm_washed', e.target.value)} // Handle input change
-              />
-              {/* Add other input fields similarly */}
-            </div>
-          </div>
-          {/* Add Cocopeat Subsection similarly */}
-                    <div className="mb-8">
-              {/* Cocopeat Subsection */}
-              <h2 className="text-xl font-semibold mb-4">Cocopeat</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {/* Each TextField is connected to the respective property in the inputs object */}
-                <TextField
-                  label="HI EC"
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={inputs.cocopeat_hi_ec} // Use value from inputs object
-                  onChange={(e) => handleInputChange('cocopeat_hi_ec', e.target.value)} // Handle input change
-                />
-                  <TextField
-                  label="Low EC"
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={inputs.cocopeat_low_ec} // Use value from inputs object
-                  onChange={(e) => handleInputChange('cocopeat_low_ec', e.target.value)} // Handle input change
-                />
-                {/* Add other input fields similarly */}
-              </div>
-            </div>
-        </div>
-
-        {/* Tab 2 - Wastage deduction for chip */}
-        {/* Add Tab 2 content similarly */}               
-          <div value="two" hidden={tabValue !== 'two'}>
-            <div className="mb-8">
-              {/* Wastage deduction for chip */}
-              <h2 className="text-xl font-semibold mb-4">Wastage deduction for chip</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {/* Iterate over inputs array to generate input fields */}
-                {inputs.wastage_deduction_chips.map((percentage, index) => (
-                  <TextField
-                    key={index}
-                    label={`${percentage}%`}
-                    variant="outlined"
-                    fullWidth
-                    sx={{ maxWidth: '500px' }}
-                    InputProps={{ endAdornment: <span>LKR</span> }}
-                    value={percentage} // Use value from inputs array
-                    onChange={(e) => handleArrayInputChange('wastage_deduction_chips', index, e.target.value)} // Handle input change for array
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+if Cocopeat is selected then this|
+               select Type (this is drop down box with 2 options) THEY are HIGH EC, LOW EC
+               next feild is Density (this is validate as intigers only)
+               next feidis Sand % (this is validate as intigers only and validate input 0-100 only)
+               if above 2 feilds are filled then there must be unlock buying selction,before that all data autonoticly send to back end calculation done by back end to get price.i will give you the calculation formula later
+                              next is suggest price, show the price calculated by back end
+                              next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
+                              next feild is Quantity (this is text box and conner there must be a kg mark) this must validate input only intigers
+                              next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
+                              next show the total price( this is calculated by multiply buying price and quantity)
 
 
-        {/* Tab 3 - Density and Sand */}
-        {/* Add Tab 3 content similarly */}
 
-        {/* Tab 4 - Wastage Price */}
-        {/* Add Tab 4 content similarly */}
+3.Next To Buy botton and Clear  botton (this must be in the bottom of the page)
+        if clikced on clear botton all the data must be cleared
+        if clicked on next to buy botton all the data must be sent to back end and save in database and show a console log  message "Data Saved Successfully" and all the data must be cleared on page
 
-        <div className="fixed right-20 bottom-20">
-          {tabValue !== 'four' ? (
-            <Button
-              variant="contained"
-              onClick={handleNextTab}
-              color="primary"
-              size="large" /* Add size="large" to scale up the button */
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="success"
-              size="large" /* Add size="large" to scale up the button */
-              onClick={handleFinish} /* Handle a different function when it changes to "Finish" */
-            >
-              Finish
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-export default AddPriceList;
+next we cat calculation parts in back end 
+      for Coco Chips
+          frist get type of Chips and get price of that correponding chip.
+          match the type and get the price from database(on cocosys datbase weeklypricelist table
+          11 mm unwash =chips_11mm_unwashed
+          11 mm wash  = chips_11mm_washed
+          9 mm unwash = chips_9mm_unwashed
+          9 mm wash   = chips_9mm_washed
+          7 mm unwash= chips_7mm_unwashed
+          7 mm wash = chips_7mm_washed)
+
+          lets get price a
+
+
+          lets assume the wastage dedution  price is b.
+        
+           match the type and get the price from database(on cocosys datbase weeklypricelist table
+           wastage_deduction_chips_8=8
+           wastage_deduction_chips_9=9
+           wastage_deduction_chips_10=10
+           wastage_deduction_chips_11=11
+           wastage_deduction_chips_12=12
+           wastage_deduction_chips_13=13
+           wastage_deduction_chips_14=14
+           wastage_deduction_chips_15=15
+           wastage_deduction_chips_16=16
+           wastage_deduction_chips_17=17
+           wastage_deduction_chips_18=18
+           wastage_deduction_chips_19=19
+           wastage_deduction_chips_20=20) 
+
+               suggest price = a-b
+
+          now sent the suggest price to front end and show it in suggest price feild
+
+      for Cocopeat
+          frist get type of Cocopeat and get price of that correponding Cocopeat.
+          match the type and get the price from database(on cocosys datbase weeklypricelist table
+          high ec = cocopeat_hi_ec
+          low ec  = cocopeat_low_ec)
+          lets get price c
+
+          lets assume the density price is d.
+        
+           match the type and get the price from database(on cocosys datbase weeklypricelist table
+          
+          if value is lower than 69 or qual to 69 then density_60_69
+          if value is grater 69 and lower than 79 or qual to 79 then density_70_79
+          if value is grater 79 and lower than 89 or qual to 89 then density_80_89
+          if value is grater 89 and lower than 99 or qual to 99 then density_90_99
+          if value is grater 99  then density_100_109 )
+
+           lets assume the sand price is e.
+        
+           match the type and get the price from database(on cocosys datbase weeklypricelist tabl
+
+          if value is lower than 24 or qual to 24 then sand_20_24
+          if value is grater 24 and lower than 29 or qual to 29 then sand_25_29
+          if value is grater 29 and lower than 34 or qual to 34 then sand_30_34
+          if value is grater 34 and lower than 39 or qual to 39 then sand_35_39
+          if value is grater 39 and lower than 44 or qual to 44 then sand_40_44
+          if value is grater 44 and lower than 49 or qual to 49 then sand_45_49
+          if value is grater 49  then sand_50_54)
+
+               suggest price = c-d-e
+
+          now sent the suggest price to front end and show it in suggest price feild
 
 
 
 
+ok this is calculation part,
+
+so next move on finsh botton iff you click finsh botton then all the data must be sent to back end and save in database and show a console log  message "Data Saved Successfully" .
+
+this is table structer to save data in database
+
+===Database cocosys
+
+== Table structure for table buyraw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**buyid**//|int(10)|No|
+|date|date|No|
+|type|varchar(22)|No|
+|employeeid|varchar(8)|No|
+|wastagechip|int(3)|Yes|NULL
+|densitypeat|int(3)|Yes|NULL
+|sandpeat|int(3)|Yes|NULL
+|suggestprice|int(11)|No|
+|buyprice|int(11)|No|
+|quantity|int(11)|No|
+== Dumping data for table buyraw
 
 
 
+use my privous backend code to connect to database route back end.
 
-
-
-
-
-
-
-
-
-
-
-
-(?, 
-    ?,
-     ?,
-      ?,
-       ?,
-        ?,
-         ?,
-          ?,
-           ?,
-            ?,
-             ?,
-              ?,
-               ?,
-                ?,
-                 ?,
-                  ?,
-                   ?
-                   , ?
-                   , ?
-                   , ?,
-                    ?,
-                     ?,
-                      ?,
-                       ?,
-                        ?,
-                         ?,
-                          ?,
-                           ?,
-                            ?,
-                             ?,
-                              ?,
-                               ?,
-                                ?,
-                                 ?,
-                                  ?,
-                                   ?,
-                                    ?,
-                                     ?,
-                                      ?,
-                                       ?,
-                                        ?,
-                                         ?
-                                         , ?
-                                         , ?)`;
+give me react page (taiwind css and MUI) and backend code in nodejs
+give it 100%  accuracy and 100% working code

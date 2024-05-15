@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+
 
 const AddPriceList = () => {
   const [date, setDate] = useState('');
@@ -87,8 +89,19 @@ const AddPriceList = () => {
       };
 
       console.log(formattedData);
-      const response = await axios.post("http://localhost:3001/auth/pricelist", formattedData);
+      const response = await axios.post("http://localhost:3001/pricelist/pricelist", formattedData);
       console.log(response.data);
+
+      // If response is "OK", show success alert
+  if (response.data === "OK") {
+    // Show success alert using Swal
+    Swal.fire({
+      title: "Success!",
+      text: "Your data has been submitted successfully.",
+      icon: "success"
+    });
+  }
+
       // Reset inputs and date after successful submission
       setInputs({
         chips_11mm_unwashed: '',
@@ -113,6 +126,21 @@ const AddPriceList = () => {
       setDate('');
     } catch (error) {
       console.error("ADD FAILED", error);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+      Toast.fire({
+        icon: "error",
+        title: "Data not submitted"
+      });
     }
   };
   

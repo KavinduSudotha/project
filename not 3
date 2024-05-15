@@ -1,0 +1,131 @@
+i need addjob page front end using React,taiwlind css and MUI.for back end node.js
+
+fist there are title shoe "Add a job"
+
+next thay have 4 tabs with following fields
+
+GET THIS CORDE TO IMPLEMENT TAB FUNCTIONALITY
+
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
+import { useTheme } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
+
+export default function FullWidthTabs() {
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleChangeIndex = (index) => {
+    setValue(index);
+  };
+
+  return (
+    <Box sx={{ bgcolor: 'background.paper', width: 500 }}>
+      <AppBar position="static">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="secondary"
+          textColor="inherit"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Item One" {...a11yProps(0)} />
+          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Item Three" {...a11yProps(2)} />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction}>
+          Item One
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction}>
+          Item Two
+        </TabPanel>
+        <TabPanel value={value} index={2} dir={theme.direction}>
+          Item Three
+        </TabPanel>
+      </SwipeableViews>
+    </Box>
+  );
+}
+
+
+FOR 1ST TAB
+tab title = Basic Job Details
+    then there are form with following fields
+    1.Created Date(this is automaticaly get bu computer date)
+    2.Due Date (this is date picker)|
+    3.Customer Name (this is text field)
+    4.Destination Address
+
+there are line under this field and under that line 
+    5 special Note (this is text field litile bigger than other text fields)
+
+
+
+FOR 2ND TAB    
+ tab title = Sheet Details
+    then there are form with following fields
+    1Sheet Height (this is text field)
+    2.Sheet Width (this is text field)
+    3.Sheet Length (this is text field)
+    4.Sheet Ratio (this is 2 text fields labels as Chips and Peat)
+
+FOR 3RD TAB
+tab title = Transport Details
+    then there are form with following fields
+    1.Driver name (this is text field)
+    2.Vehicle type (this is text field)
+    3.Vehicle number (this is text field)
+    4.Transport Company (this is text field)
+there are line under this field and under that line 
+    5 special Note (this is text field litile bigger than other text fields)
+
+next i will provide backend
