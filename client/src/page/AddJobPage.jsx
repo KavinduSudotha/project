@@ -1,101 +1,295 @@
+// src/pages/AddJob.js
 import React, { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { AppBar, Tabs, Tab, TextField, Box, Button } from '@mui/material';
+import SwipeableViews from 'react-swipeable-views';
+import { useTheme } from '@mui/material/styles';
+import axios from 'axios';
 
-const AddJobPage = () => {
-  const [tabValue, setTabValue] = useState(0);
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-  const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+export default function AddJob() {
+  const theme = useTheme();
+  const [value, setValue] = useState(0);
+  const [formData, setFormData] = useState({
+    createdDate: new Date().toISOString().split('T')[0],
+    dueDate: '',
+    customerName: '',
+    address: '',
+    note: '',
+    height: '',
+    width: '',
+    length: '',
+    ratioChips: '',
+    ratioPeat: '',
+    weight: '',
+    quantity: '',
+    driverName: '',
+    vehicleType: '',
+    vehicleNumber: '',
+    transportCompany: '',
+  });
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
-  const handleNextTab = () => {
-    setTabValue((prevValue) => prevValue + 1);
+  const handleChangeIndex = (index) => {
+    setValue(index);
   };
 
-  const handleFinish = () => {
-    // Handle finish button click event
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleNext = () => {
+    setValue((prevValue) => prevValue + 1);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ...formData,
+      dueDate: '',
+      customerName: '',
+      address: '',
+      note: '',
+      height: '',
+      width: '',
+      length: '',
+      ratioChips: '',
+      ratioPeat: '',
+      weight: '',
+      quantity: '',
+      driverName: '',
+      vehicleType: '',
+      vehicleNumber: '',
+      transportCompany: '',
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/jobrout/addjob', {
+        ...formData,
+        employeeId: '0000',
+        status:'Unstarted'// hardcoded employee ID
+      });
+      console.log('Response:', response.data);
+      handleClear(); // Clear form data after submission
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-4 bg-white p-4 rounded">
-        <h1 className="text-3xl font-bold">Add Job</h1>
-      </div>
-      <Box sx={{ width: '100%' }}>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Add a Job</h1>
+      <AppBar position="static" color="default">
         <Tabs
-          value={tabValue}
-          onChange={handleChangeTab}
-          aria-label="add-job-tabs"
-          centered
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
           variant="fullWidth"
+          aria-label="full width tabs example"
         >
-          <Tab label="Job Details" />
+          <Tab label="Basic Job Details" />
           <Tab label="Sheet Details" />
-          <Tab label="Driver Details" />
+          <Tab label="Transport Details" />
         </Tabs>
-      </Box>
-
-      {/* Job Details Tab */}
-      <div role="tabpanel" hidden={tabValue !== 0}>
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Job Details</h2>
-          <TextField label="Job Due Date" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Job Created Date" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Customer Name" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Destination Country/State" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Employee ID" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Job ID" variant="outlined" fullWidth className="mb-4" />
-        </div>
-      </div>
-
-      {/* Sheet Details Tab */}
-      <div role="tabpanel" hidden={tabValue !== 1}>
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Sheet Details</h2>
-          <TextField label="Height (cm)" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Length (cm)" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Width (cm)" variant="outlined" fullWidth className="mb-4" />
-        </div>
-      </div>
-
-      {/* Driver Details Tab */}
-      <div role="tabpanel" hidden={tabValue !== 2}>
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Driver Details</h2>
-          <TextField label="Driver Name" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Vehicle Number" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Mobile Number" variant="outlined" fullWidth className="mb-4" />
-          <TextField label="Transport Company" variant="outlined" fullWidth className="mb-4" />
-        </div>
-      </div>
-
-      <div className="fixed right-20 bottom-20">
-        {tabValue !== 2 ? (
-          <Button 
-            variant="contained" 
-            onClick={handleNextTab} 
-            color="primary" 
-            size="large" 
-          >
-            Next
-          </Button>
-        ) : (
-          <Button 
-            variant="contained" 
-            color="success" 
-            size="large" 
-            onClick={handleFinish} 
-          >
-            Finish
-          </Button>
-        )}
-      </div>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction}>
+          <TextField
+            name="createdDate"
+            label="Created Date"
+            type="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+            value={formData.createdDate}
+            disabled
+          />
+          <TextField
+            name="dueDate"
+            label="Due Date"
+            type="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+            value={formData.dueDate}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="customerName"
+            label="Customer Name"
+            fullWidth
+            margin="normal"
+            value={formData.customerName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="address"
+            label="Destination Address"
+            fullWidth
+            margin="normal"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="note"
+            label="Special Note"
+            fullWidth
+            margin="normal"
+            multiline
+            rows={4}
+            value={formData.note}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction}>
+          <TextField
+            name="height"
+            label="Sheet Height"
+            fullWidth
+            margin="normal"
+            value={formData.height}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="width"
+            label="Sheet Width"
+            fullWidth
+            margin="normal"
+            value={formData.width}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="length"
+            label="Sheet Length"
+            fullWidth
+            margin="normal"
+            value={formData.length}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="ratioChips"
+            label="Sheet Ratio (Chips)"
+            fullWidth
+            margin="normal"
+            value={formData.ratioChips}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="ratioPeat"
+            label="Sheet Ratio (Peat)"
+            fullWidth
+            margin="normal"
+            value={formData.ratioPeat}
+            onChange={handleInputChange}
+          />
+           <TextField
+            name="weight"
+            label="weight of sheet"
+            fullWidth
+            margin="normal"
+            value={formData.weight}
+            onChange={handleInputChange}
+          />
+        
+           <TextField
+            name="quantity"
+            label="Quantity"
+            fullWidth
+            margin="normal"
+            value={formData.quantity}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+        <TabPanel value={value} index={2} dir={theme.direction}>
+          <TextField
+            name="driverName"
+            label="Driver Name"
+            fullWidth
+            margin="normal"
+            value={formData.driverName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="vehicleType"
+            label="Vehicle Type"
+            fullWidth
+            margin="normal"
+            value={formData.vehicleType}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="vehicleNumber"
+            label="Vehicle Number"
+            fullWidth
+            margin="normal"
+            value={formData.vehicleNumber}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="transportCompany"
+            label="Transport Company"
+            fullWidth
+            margin="normal"
+            value={formData.transportCompany}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+      </SwipeableViews>
     </div>
   );
-};
-
-export default AddJobPage;
+}

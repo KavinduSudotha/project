@@ -16,85 +16,37 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+import * as React from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
-  };
-}
-
-export default function FullWidthTabs() {
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+export default function TabsWrappedLabel() {
+  const [value, setValue] = React.useState('one');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleChangeIndex = (index) => {
-    setValue(index);
-  };
-
   return (
-    <Box sx={{ bgcolor: 'background.paper', width: 500 }}>
-      <AppBar position="static">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
+    <Box sx={{ width: '100%' }}>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="wrapped label tabs example"
       >
-        <TabPanel value={value} index={0} dir={theme.direction}>
-          Item One
-        </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
-          Item Three
-        </TabPanel>
-      </SwipeableViews>
+        <Tab
+          value="one"
+          label="New Arrivals in the Longest Text of Nonfiction that should appear in the next line"
+          wrapped
+        />
+        <Tab value="two" label="Item Two" />
+        <Tab value="three" label="Item Three" />
+      </Tabs>
     </Box>
   );
 }
+
 
 
 FOR 1ST TAB
@@ -128,4 +80,36 @@ tab title = Transport Details
 there are line under this field and under that line 
     5 special Note (this is text field litile bigger than other text fields)
 
-next i will provide backend
+next i will provide backend part 
+
+all data must be sent to the dattabase i will provide dattabase
+i paln ti handlesession awt, so there are token and it iclude employee id .and it pass to databse for this time hard cord employee id 0000 and pass it to database
+
+===Database cocosys
+
+== Table structure for table job
+
+|------
+|Column|Type|Null|Default
+|------
+|//**job_id**//|int(8)|No|
+|created_date|date|No|
+|due_date|date|No|
+|customer_name|int(30)|Yes|NULL
+|address|int(40)|Yes|NULL
+|employee_id|int(8)|No|
+|height|int(6)|No|
+|width|int(6)|No|
+|length|int(6)|No|
+|ratio_chips|int(4)|No|
+|ratio_peat|int(4)|No|
+|driver_name|int(40)|Yes|NULL
+|vehicle_type|varchar(8)|Yes|NULL
+|vehicle_number|int(8)|Yes|NULL
+|transport_company|varchar(40)|Yes|NULL
+|production_logistics_manager_id|varchar(8)|Yes|NULL
+|note|text|Yes|NULL
+== Dumping data for table job
+
+
+

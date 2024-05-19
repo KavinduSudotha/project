@@ -1,155 +1,186 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TablePagination from '@mui/material/TablePagination';
+import Box from '@mui/material/Box';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import Button from '@mui/material/Button';
+import Swal from 'sweetalert2';
 import Typography from '@mui/material/Typography';
 
+const deleteRow = (inventoryID) => {
+  axios
+    .delete(`http://localhost:3001/deletestock/${inventoryID}`)
+    .then((response) => {
+      console.log(inventoryID, "Row deleted successfully");
+    })
+    .catch((error) => {
+      console.error("Error deleting row:", error);
+    });
+};
+
+const styles = `
+  .MuiDataGrid-cell:focus-within {
+    outline: none !important;
+    border: none !important;
+  }
+`;
+
+const deletePopup = (inventoryID) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteRow(inventoryID);
+      Swal.fire({
+        title: "Deleted!",
+        text: "Row has been deleted.",
+        icon: "success",
+      }).then(() => {
+        window.location.reload();
+      });
+    }
+  });
+};
+
 const RecordsPricelist = () => {
-  const [records, setRecords] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/pricelist/viewrecordpricelist");
-        setRecords(response.data);
-      } catch (error) {
-        console.error("Failed to fetch price list records", error);
-      }
-    };
-
-    fetchRecords();
+    axios
+      .get("http://localhost:3001/pricelist/viewrecordpricelist")
+      .then((response) => {
+        const mappedRows = response.data.map((record) => ({
+          id: record.id,
+          Date: record.date,
+          '11mm Unwashed Chips': record.chips_11mm_unwashed,
+          '11mm Washed Chips': record.chips_11mm_washed,
+          '9mm Unwashed Chips': record.chips_9mm_unwashed,
+          '9mm Washed Chips': record.chips_9mm_washed,
+          '7mm Unwashed Chips': record.chips_7mm_unwashed,
+          '7mm Washed Chips': record.chips_7mm_washed,
+          'Cocopeat High EC': record.cocopeat_hi_ec,
+          'Cocopeat Low EC': record.cocopeat_low_ec,
+          'Density 60-69': record.density_60_69,
+          'Density 70-79': record.density_70_79,
+          'Density 80-89': record.density_80_89,
+          'Density 90-99': record.density_90_99,
+          'Density 100-109': record.density_100_109,
+          'Sand 20-24': record.sand_20_24,
+          'Sand 25-29': record.sand_25_29,
+          'Sand 30-34': record.sand_30_34,
+          'Sand 35-39': record.sand_35_39,
+          'Sand 40-44': record.sand_40_44,
+          'Sand 45-49': record.sand_45_49,
+          'Sand 50-54': record.sand_50_54,
+          'Wastage Deduction Chips 8%': record.wastage_deduction_chips_8,
+          'Wastage Deduction Chips 9%': record.wastage_deduction_chips_9,
+          'Wastage Deduction Chips 10%': record.wastage_deduction_chips_10,
+          'Wastage Deduction Chips 11%': record.wastage_deduction_chips_11,
+          'Wastage Deduction Chips 12%': record.wastage_deduction_chips_12,
+          'Wastage Deduction Chips 13%': record.wastage_deduction_chips_13,
+          'Wastage Deduction Chips 14%': record.wastage_deduction_chips_14,
+          'Wastage Deduction Chips 15%': record.wastage_deduction_chips_15,
+          'Wastage Deduction Chips 16%': record.wastage_deduction_chips_16,
+          'Wastage Deduction Chips 17%': record.wastage_deduction_chips_17,
+          'Wastage Deduction Chips 18%': record.wastage_deduction_chips_18,
+          'Wastage Deduction Chips 19%': record.wastage_deduction_chips_19,
+          'Wastage Deduction Chips 20%': record.wastage_deduction_chips_20,
+          'Wastage Price Cocopeat Fiber': record.wastage_price_cocopeat_fiber,
+          'Wastage Price Cocopeat Fine Dust': record.wastage_price_cocopeat_fine_dust,
+          'Wastage Price 10C Sieved': record.wastage_price_10c_sieved,
+          'Wastage Price 10C Not Sieved': record.wastage_price_10c_not_sieved,
+          'Wastage Price 10C Upper Part': record.wastage_price_10c_upper_part,
+          'Employee ID': record.employee_id,
+        }));
+        setRows(mappedRows);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleEditClick = (rowId) => {
+    console.log("Edit clicked for row ID:", rowId);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'Date', headerName: 'Date', width: 150 },
+    { field: '11mm Unwashed Chips', headerName: '11mm Unwashed Chips', width: 150 },
+    { field: '11mm Washed Chips', headerName: '11mm Washed Chips', width: 150 },
+    { field: '9mm Unwashed Chips', headerName: '9mm Unwashed Chips', width: 150 },
+    { field: '9mm Washed Chips', headerName: '9mm Washed Chips', width: 150 },
+    { field: '7mm Unwashed Chips', headerName: '7mm Unwashed Chips', width: 150 },
+    { field: '7mm Washed Chips', headerName: '7mm Washed Chips', width: 150 },
+    { field: 'Cocopeat High EC', headerName: 'Cocopeat High EC', width: 150 },
+    { field: 'Cocopeat Low EC', headerName: 'Cocopeat Low EC', width: 150 },
+    { field: 'Density 60-69', headerName: 'Density 60-69', width: 150 },
+    { field: 'Density 70-79', headerName: 'Density 70-79', width: 150 },
+    { field: 'Density 80-89', headerName: 'Density 80-89', width: 150 },
+    { field: 'Density 90-99', headerName: 'Density 90-99', width: 150 },
+    { field: 'Density 100-109', headerName: 'Density 100-109', width: 150 },
+    { field: 'Sand 20-24', headerName: 'Sand 20-24', width: 150 },
+    { field: 'Sand 25-29', headerName: 'Sand 25-29', width: 150 },
+    { field: 'Sand 30-34', headerName: 'Sand 30-34', width: 150 },
+    { field: 'Sand 35-39', headerName: 'Sand 35-39', width: 150 },
+    { field: 'Sand 40-44', headerName: 'Sand 40-44', width: 150 },
+    { field: 'Sand 45-49', headerName: 'Sand 45-49', width: 150 },
+    { field: 'Sand 50-54', headerName: 'Sand 50-54', width: 150 },
+    { field: 'Wastage Deduction Chips 8%', headerName: 'Wastage Deduction Chips 8%', width: 150 },
+    { field: 'Wastage Deduction Chips 9%', headerName: 'Wastage Deduction Chips 9%', width: 150 },
+    { field: 'Wastage Deduction Chips 10%', headerName: 'Wastage Deduction Chips 10%', width: 150 },
+    { field: 'Wastage Deduction Chips 11%', headerName: 'Wastage Deduction Chips 11%', width: 150 },
+    { field: 'Wastage Deduction Chips 12%', headerName: 'Wastage Deduction Chips 12%', width: 150 },
+    { field: 'Wastage Deduction Chips 13%', headerName: 'Wastage Deduction Chips 13%', width: 150 },
+    { field: 'Wastage Deduction Chips 14%', headerName: 'Wastage Deduction Chips 14%', width: 150 },
+    { field: 'Wastage Deduction Chips 15%', headerName: 'Wastage Deduction Chips 15%', width: 150 },
+    { field: 'Wastage Deduction Chips 16%', headerName: 'Wastage Deduction Chips 16%', width: 150 },
+    { field: 'Wastage Deduction Chips 17%', headerName: 'Wastage Deduction Chips 17%', width: 150 },
+    { field: 'Wastage Deduction Chips 18%', headerName: 'Wastage Deduction Chips 18%', width: 150 },
+    { field: 'Wastage Deduction Chips 19%', headerName: 'Wastage Deduction Chips 19%', width: 150 },
+    { field: 'Wastage Deduction Chips 20%', headerName: 'Wastage Deduction Chips 20%', width: 150 },
+    { field: 'Wastage Price Cocopeat Fiber', headerName: 'Wastage Price Cocopeat Fiber', width: 150 },
+    { field: 'Wastage Price Cocopeat Fine Dust', headerName: 'Wastage Price Cocopeat Fine Dust', width: 150 },
+    { field: 'Wastage Price 10C Sieved', headerName: 'Wastage Price 10C Sieved', width: 150 },
+    { field: 'Wastage Price 10C Not Sieved', headerName: 'Wastage Price 10C Not Sieved', width: 150 },
+    { field: 'Wastage Price 10C Upper Part', headerName: 'Wastage Price 10C Upper Part', width: 150 },
+    { field: 'Employee ID', headerName: 'Employee ID', width: 150 },
+    {
+      field: 'actions', headerName: '', width: 300, disableColumnMenu: true, renderCell: (params) => (
+        <div className='flex gap-3 items-center h-full'>
+          <Button variant="outlined" onClick={() => handleEditClick(params.row.id)}>Edit</Button>
+          <Button variant="outlined" onClick={() => deletePopup(params.row.id)}>Delete</Button>
+        </div>
+      )
+    }
+  ];
 
   return (
-    <div className="container mx-auto py-8">
+    <Box sx={{ height: 600, width: '100%' }}>
+      <style>{styles}</style>
       <Typography variant="h5" gutterBottom>
         Price List Records
       </Typography>
-      <Paper>
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>11mm Unwashed Chips</TableCell>
-                <TableCell>11mm Washed Chips</TableCell>
-                <TableCell>9mm Unwashed Chips</TableCell>
-                <TableCell>9mm Washed Chips</TableCell>
-                <TableCell>7mm Unwashed Chips</TableCell>
-                <TableCell>7mm Washed Chips</TableCell>
-                <TableCell>Cocopeat High EC</TableCell>
-                <TableCell>Cocopeat Low EC</TableCell>
-                <TableCell>Density 60-69</TableCell>
-                <TableCell>Density 70-79</TableCell>
-                <TableCell>Density 80-89</TableCell>
-                <TableCell>Density 90-99</TableCell>
-                <TableCell>Density 100-109</TableCell>
-                <TableCell>Sand 20-24</TableCell>
-                <TableCell>Sand 25-29</TableCell>
-                <TableCell>Sand 30-34</TableCell>
-                <TableCell>Sand 35-39</TableCell>
-                <TableCell>Sand 40-44</TableCell>
-                <TableCell>Sand 45-49</TableCell>
-                <TableCell>Sand 50-54</TableCell>
-                <TableCell>Wastage Deduction Chips 8%</TableCell>
-                <TableCell>Wastage Deduction Chips 9%</TableCell>
-                <TableCell>Wastage Deduction Chips 10%</TableCell>
-                <TableCell>Wastage Deduction Chips 11%</TableCell>
-                <TableCell>Wastage Deduction Chips 12%</TableCell>
-                <TableCell>Wastage Deduction Chips 13%</TableCell>
-                <TableCell>Wastage Deduction Chips 14%</TableCell>
-                <TableCell>Wastage Deduction Chips 15%</TableCell>
-                <TableCell>Wastage Deduction Chips 16%</TableCell>
-                <TableCell>Wastage Deduction Chips 17%</TableCell>
-                <TableCell>Wastage Deduction Chips 18%</TableCell>
-                <TableCell>Wastage Deduction Chips 19%</TableCell>
-                <TableCell>Wastage Deduction Chips 20%</TableCell>
-                <TableCell>Wastage Price Cocopeat Fiber</TableCell>
-                <TableCell>Wastage Price Cocopeat Fine Dust</TableCell>
-                <TableCell>Wastage Price 10C Sieved</TableCell>
-                <TableCell>Wastage Price 10C Not Sieved</TableCell>
-                <TableCell>Wastage Price 10C Upper Part</TableCell>
-                <TableCell>Employee ID</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {records
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{record.date}</TableCell>
-                    <TableCell>{record.chips_11mm_unwashed}</TableCell>
-                    <TableCell>{record.chips_11mm_washed}</TableCell>
-                    <TableCell>{record.chips_9mm_unwashed}</TableCell>
-                    <TableCell>{record.chips_9mm_washed}</TableCell>
-                    <TableCell>{record.chips_7mm_unwashed}</TableCell>
-                    <TableCell>{record.chips_7mm_washed}</TableCell>
-                    <TableCell>{record.cocopeat_hi_ec}</TableCell>
-                    <TableCell>{record.cocopeat_low_ec}</TableCell>
-                    <TableCell>{record.density_60_69}</TableCell>
-                    <TableCell>{record.density_70_79}</TableCell>
-                    <TableCell>{record.density_80_89}</TableCell>
-                    <TableCell>{record.density_90_99}</TableCell>
-                    <TableCell>{record.density_100_109}</TableCell>
-                    <TableCell>{record.sand_20_24}</TableCell>
-                    <TableCell>{record.sand_25_29}</TableCell>
-                    <TableCell>{record.sand_30_34}</TableCell>
-                    <TableCell>{record.sand_35_39}</TableCell>
-                    <TableCell>{record.sand_40_44}</TableCell>
-                    <TableCell>{record.sand_45_49}</TableCell>
-                    <TableCell>{record.sand_50_54}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_8}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_9}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_10}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_11}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_12}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_13}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_14}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_15}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_16}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_17}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_18}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_19}</TableCell>
-                    <TableCell>{record.wastage_deduction_chips_20}</TableCell>
-                    <TableCell>{record.wastage_price_cocopeat_fiber}</TableCell>
-                    <TableCell>{record.wastage_price_cocopeat_fine_dust}</TableCell>
-                    <TableCell>{record.wastage_price_10c_sieved}</TableCell>
-                    <TableCell>{record.wastage_price_10c_not_sieved}</TableCell>
-                    <TableCell>{record.wastage_price_10c_upper_part}</TableCell>
-                    <TableCell>{record.employee_id}</TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={records.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={10}
+        rowsPerPageOptions={[10, 25, 50]}
+        disableSelectionOnClick
+        components={{ Toolbar: GridToolbar }}
+        componentsProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+      />
+    </Box>
   );
 };
 

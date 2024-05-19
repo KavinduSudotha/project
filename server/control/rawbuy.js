@@ -93,13 +93,28 @@ const priceCal = (req, res) => {
   const buyRecord = (req, res) => {
     const { date, rawType, type, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity } = req.body;
     const employeeid = 1111; // Assuming you have an employee ID
-    const insertQuery = `INSERT INTO buyraw (date, type, employeeid, wastagechip, densitypeat, sandpeat, suggestprice, buyprice, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    connection.query(insertQuery, [date, type, employeeid, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity], (err, results) => {
-      if (err) throw err;
-      console.log('Data Saved Successfully');
-      res.sendStatus(200);
+    
+    // First query to insert data into buyraw table
+    const insertBuyQuery = `INSERT INTO buyraw (date, type, employeeid, wastagechip, densitypeat, sandpeat, suggestprice, buyprice, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    connection.query(insertBuyQuery, [date, type, employeeid, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity], (err, results) => {
+        if (err) throw err;
+
+        console.log('Data Saved Successfully');
+        
+        // Get the ID of the last inserted row in the buyraw table
+        const buyId = results.insertId;
+
+        // Second query to insert data into summarytable
+        const insertSummaryQuery = `INSERT INTO cocosys.summarytable (date, type, availablequantity, buy_id) VALUES (?, ?, ?, ?)`;
+        connection.query(insertSummaryQuery, [date, type, quantity, buyId], (err, results) => {
+            if (err) throw err;
+
+            console.log('Data Saved to Summary Table Successfully');
+            res.sendStatus(200);
+        });
     });
-  };
+};
+
   
 //   app.listen(port, () => {
 //     console.log(`Server is running on port ${port}`);

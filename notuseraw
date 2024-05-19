@@ -1,0 +1,30 @@
+i need use raw page 
+
+front end
+
+1 feild date picker its automaticallay select current date from computer
+2. 2nd field input Use raw ID
+3. 3rd field input type[this is drop down menu (
+    |chips_11mm_unwashed
+    |chips_11mm_washed
+    |chips_9mm_unwashed
+    |chips_9mm_washed
+    |chips_7mm_unwashed
+    |chips_7mm_washed
+    |cocopeat_hi_ec
+    |cocopeat_low_ec)]
+
+4. available batch ( this is also drop down menu this dropdown manu show batch id , available quantity )- [this is get from backend. get previous page data
+  input and filter data and show only  corresponding type data from table summarytable]
+5. field input job id (this is user input )-also this show suggestion from backend i will give funtions of that .suggestion in table job also show customer name width job id
+
+6.this fieldnamr is Predicted quantity (this is get from back end){in back end fist go table buyraw.batch id =buy id, then look corresponding record
+     if it (chips_11mm_unwashed,chips_11mm_washed,chips_9mm_unwashed,chips_9mm_washed,chips_7mm_unwashed,chips_7mm_washed) one of this  
+         get wastage as "w" [it get from table buyraw.wastage]
+         get needed quantity as "n"[it get from table job by multyply job.quantity with job.weight]
+            to calculate predicted quantity = n*(100/(100-w))
+            and show predicted quantity in this field
+
+     if it (cocopeat_hi_ec,cocopeat_low_ec) one of this
+            
+         }

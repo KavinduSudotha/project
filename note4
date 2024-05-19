@@ -1,0 +1,254 @@
+
+
+  I need a page where I can see all the records of the job table
+  and I can update and delete the record
+ there should be a search box where the
+  record can be search by job_id,status,fist select search by job_id,status
+  if job_id is given then it will show only that record
+  if status is given then it will show all record with that status
+
+next data must be in table
+    this is table code table code
+
+An example of a table with expandable rows, revealing more information. It utilizes the Collapse component.
+
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { search } from './server/route/authloginrout'
+import { table } from 'console'
+
+function createData(name, calories, fat, carbs, protein, price) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+    price,
+    history: [
+      {
+        date: '2020-01-05',
+        customerId: '11091700',
+        amount: 3,
+      },
+      {
+        date: '2020-01-02',
+        customerId: 'Anonymous',
+        amount: 1,
+      },
+    ],
+  };
+}
+
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.calories}</TableCell>
+        <TableCell align="right">{row.fat}</TableCell>
+        <TableCell align="right">{row.carbs}</TableCell>
+        <TableCell align="right">{row.protein}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                History
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Customer</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Total price ($)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.date}>
+                      <TableCell component="th" scope="row">
+                        {historyRow.date}
+                      </TableCell>
+                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell align="right">
+                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    calories: PropTypes.number.isRequired,
+    carbs: PropTypes.number.isRequired,
+    fat: PropTypes.number.isRequired,
+    history: PropTypes.arrayOf(
+      PropTypes.shape({
+        amount: PropTypes.number.isRequired,
+        customerId: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    protein: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+];
+
+export default function CollapsibleTable() {
+  return (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <Row key={row.name} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+i need table like above code 
+and data should be from database
+
+this exmple table have w expandable rows, revealing more information. It utilizes the Collapse component.
+
+so basic viwe i need this columns in order that I am giving 
+
+    job_id,created_date,due_date,height,width,length,ratio_chips,ratio_peat,note
+
+in expandable rows must show this atribute for coresponding recode.
+      customer, address,employee_id,production_logistics_manager_id,driver_name,vehicle_type,vehicle_number,transport_company
+
+
+
+so there are to busttons need delete and update
+when click on delete button it should delete the record
+when click on update button it should update the record
+when click on update button it should show a form with all the fields(without job_id, created_date) of the record and when click on submit it should update the record
+
+i will give u example popup form code 
+
+const { value: formValues } = await Swal.fire({
+  title: "Multiple inputs",
+  html: `
+    <input id="swal-input1" class="swal2-input">
+    <input id="swal-input2" class="swal2-input">
+  `,
+  focusConfirm: false,
+  preConfirm: () => {
+    return [
+      document.getElementById("swal-input1").value,
+      document.getElementById("swal-input2").value
+    ];
+  }
+});
+if (formValues) {
+  Swal.fire(JSON.stringify(formValues));
+}
+
+
+for text field use this code
+<TextField id="filled-basic" label="Filled" variant="filled" />
+
+
+
+
+
+GIVE ME FROUNTEND  AND BACKEND CODE FOR THIS(React,Nodejs,AXIOS,MYSQL,EXPRESS,TAIWINDCSS,mui)
+
+
+this is  database structure 
+
+
+Database cocosys
+
+== Table structure for table job
+
+|------
+|Column|Type|Null|Default
+|------
+|//**job_id**//|int(8)|No|
+|created_date|date|Yes|NULL
+|due_date|date|Yes|NULL
+|customer_name|varchar(30)|Yes|NULL
+|address|varchar(40)|Yes|NULL
+|employee_id|varchar(8)|No|
+|height|int(6)|No|
+|width|int(6)|No|
+|length|int(6)|No|
+|ratio_chips|int(4)|No|
+|ratio_peat|int(4)|No|
+|driver_name|varchar(40)|Yes|NULL
+|vehicle_type|varchar(8)|Yes|NULL
+|vehicle_number|int(8)|Yes|NULL
+|transport_company|varchar(40)|Yes|NULL
+|production_logistics_manager_id|varchar(8)|Yes|NULL
+|note|text|Yes|NULL
+|status|varchar(10)|No|
+== Dumping data for table job
+
+
+in code
+const connection = require('../config/DBconnect');
+
+
+i contril routes seperatle so make back end as funtions and call them in routes
