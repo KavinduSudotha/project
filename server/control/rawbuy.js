@@ -17,7 +17,7 @@ const priceCal = (req, res) => {
     if (rawType === 'Coco Chips') {
       // Calculate suggest price for Coco Chips
       // Get price a
-      const getPriceQuery = `SELECT chips_${type.replace(/\s+/g, '_').toLowerCase()} AS price FROM weeklypricelist ORDER BY id DESC LIMIT 1`;
+      const getPriceQuery = `SELECT ${type} AS price FROM weeklypricelist ORDER BY id DESC LIMIT 1`;
       connection.query(getPriceQuery, (err, results) => {
         if (err) throw err;
         const price = results[0].price;
@@ -36,7 +36,7 @@ const priceCal = (req, res) => {
     } else if (rawType === 'Cocopeat') {
       // Calculate suggest price for Cocopeat
       // Get price c
-      const getPriceQuery = `SELECT cocopeat_${type} AS price FROM weeklypricelist ORDER BY id DESC LIMIT 1`;
+      const getPriceQuery = `SELECT ${type} AS price FROM weeklypricelist ORDER BY id DESC LIMIT 1`;
       connection.query(getPriceQuery, (err, results) => {
         if (err) throw err;
         const price = results[0].price;

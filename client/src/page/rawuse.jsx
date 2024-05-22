@@ -1,129 +1,178 @@
 import React, { useState, useEffect } from 'react';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import axios from 'axios';
+import { format } from 'date-fns';
 
-const UseRaw = () => {
-  // State variables for form fields
-  const [selectedLog, setSelectedLog] = useState('');
-  const [searchRawId, setSearchRawId] = useState('');
-  const [useRawId, setUseRawId] = useState('');
-  const [weight, setWeight] = useState('');
-  const [fineDust, setFineDust] = useState('');
-  const [fiber, setFiber] = useState('');
-  const [jobId, setJobId] = useState('');
-  const [employeeId, setEmployeeId] = useState('');
-  const [dateTime, setDateTime] = useState('');
+const types = [
+    'chips_11mm_unwashed', 'chips_11mm_washed', 'chips_9mm_unwashed',
+    'chips_9mm_washed', 'chips_7mm_unwashed', 'chips_7mm_washed',
+    'cocopeat_hi_ec', 'cocopeat_low_ec'
+];
 
-  // Sample recent use logs data (replace with actual data fetched from the backend)
-  const recentUseLogs = [
-    { id: '1', employeeName: 'John Doe', type: 'Type A' },
-    { id: '2', employeeName: 'Jane Smith', type: 'Type B' },
-    // Add more logs as needed
-  ];
+const UserRawForm = () => {
+    const [useId, setUseId] = useState(0);
+    const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+    const [jobOptions, setJobOptions] = useState([]);
+    const [batchOptions, setBatchOptions] = useState([]);
+    const [type, setType] = useState('');
+    const [jobId, setJobId] = useState('');
+    const [batchId, setBatchId] = useState('');
+    const [predictedQuantity, setPredictedQuantity] = useState('');
+    const [releasableWeight, setReleasableWeight] = useState('');
+    const [releasedWeight, setReleasedWeight] = useState('');
+    const [predictedWastage, setPredictedWastage] = useState('');
+    const [predictedSand, setPredictedSand] = useState('');
+    const [chipType, setChipType] = useState('');
+    const [peatType, setPeatType] = useState('');
 
-  // Function to get current date and time
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
-    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-    return `${date} ${time}`;
-  };
+    useEffect(() => {
+        axios.get('http://localhost:3001/userawrout/getUseId')
+            .then(res => setUseId(res.data.useId))
+            .catch(err => console.error(err));
 
-  useEffect(() => {
-    // Set initial values for Employee ID and Date & Time when the component mounts
-    setEmployeeId('12345'); // Replace '12345' with the actual employee ID fetched from the backend
-    setDateTime(getCurrentDateTime());
-  }, []);
+        axios.get('http://localhost:3001/userawrout/getJobOptions')
+            .then(res => setJobOptions(res.data))
+            .catch(err => console.error(err));
+    }, []);
 
-  // Function to handle log selection
-  const handleLogSelect = (logId) => {
-    setSelectedLog(logId);
-    // Fetch log details from the backend based on logId and set the form fields
-    // This is just a placeholder, actual implementation will depend on your backend setup
-  };
+    useEffect(() => {
+        if (type) {
+            axios.post('http://localhost:3001/userawrout/getBatchOptions', { type })
+                .then(res => setBatchOptions(res.data))
+                .catch(err => console.error(err));
+        }
+    }, [type]);
 
-  // Function to handle search button click
-  const handleSearch = () => {
-    // Fetch use raw details based on searchRawId and set the form fields
-    // This is just a placeholder, actual implementation will depend on your backend setup
-  };
+    const handlePredictedQuantity = () => {
+        axios.post('http://localhost:3001/userawrout/getPredictedQuantity', { type, jobId })
+            .then(res => setPredictedQuantity(res.data.predictedQuantity))
+            .catch(err => console.error(err));
+    };
 
-  // Function to handle update button click
-  const handleUpdate = () => {
-    // Fetch use raw details based on useRawId and set the form fields for editing
-    // This is just a placeholder, actual implementation will depend on your backend setup
-  };
+    const handleReleasableWeight = () => {
+        axios.post('http://localhost:3001/userawrout/getReleasableWeight', { batchId })
+            .then(res => setReleasableWeight(res.data.releasableWeight))
+            .catch(err => console.error(err));
+    };
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Submit the form data to the backend
-    // This is just a placeholder, actual implementation will depend on your backend setup
-  };
+    const handlePredictedWastage = () => {
+        axios.post('http://localhost:3001/userawrout/getPredictedWastage', { q: releasedWeight, type })
+            .then(res => setPredictedWastage(res.data.predictedWastage))
+            .catch(err => console.error(err));
+    };
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">To Use Raw Materials</h1>
+    const handlePredictedSand = () => {
+        axios.post('http://localhost:3001/userawrout/getPredictedSand', { q: releasedWeight, type })
+            .then(res => setPredictedSand(res.data.predictedSand))
+            .catch(err => console.error(err));
+    };
 
-      {/* Update Use Raw Section */}
-      <div className="bg-blue-100 p-6 rounded-md mb-8">
-        <h2 className="text-lg font-semibold mb-4">Update Use Raw</h2>
-        <div className="mb-4">
-          <label className="block text-sm font-semibold mb-1">Recent Use Logs</label>
-          <select value={selectedLog} onChange={(e) => handleLogSelect(e.target.value)} className="border p-2 rounded w-full">
-            <option value="">Select Log</option>
-            {recentUseLogs.map((log) => (
-              <option key={log.id} value={log.id}>{`${log.id} - ${log.employeeName} (${log.type})`}</option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-semibold mb-1">Search Use Raw ID</label>
-          <div className="flex">
-            <input type="text" value={searchRawId} onChange={(e) => setSearchRawId(e.target.value)} className="border p-2 rounded mr-2" />
-            <button onClick={handleSearch} className="bg-blue-500 text-white font-semibold py-2 px-4 rounded">Search</button>
-          </div>
-        </div>
-        <button onClick={handleUpdate} disabled={!useRawId} className={`bg-green-500 text-white font-semibold py-2 px-4 rounded ${!useRawId && 'opacity-50 cursor-not-allowed'}`}>Update</button>
-     </div>
+    const handleSubmit = () => {
+        const data = {
+            date,
+            jobId,
+            type,
+            releasedWeight,
+            batchId
+        };
+        axios.post('http://localhost:3001/userawrout/submit', data)
+            .then(res => alert(res.data.message))
+            .catch(err => console.error(err));
+    };
 
-      {/* Add Use Raw Section */}
-      <div className="bg-green-100 p-6 rounded-md">
-        <h2 className="text-lg font-semibold mb-4">Add Use Raw</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold mb-1">Use Raw ID</label>
-            <input type="text" value={useRawId} onChange={(e) => setUseRawId(e.target.value)} className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Weight</label>
-            <input type="text" value={weight} onChange={(e) => setWeight(e.target.value)} className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Fine Dust</label>
-            <input type="text" value={fineDust} onChange={(e) => setFineDust(e.target.value)} className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Fiber</label>
-            <input type="text" value={fiber} onChange={(e) => setFiber(e.target.value)} className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Job ID</label>
-            <input type="text" value={jobId} onChange={(e) => setJobId(e.target.value)} className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Employee ID</label>
-            <input type="text" value={employeeId} disabled className="border p-2 rounded w-full" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold mb-1">Date & Time</label>
-            <input type="text" value={dateTime} disabled className="border p-2 rounded w-full" />
-          </div>
-          <div className="col-span-2">
-            <button type="submit" className="bg-blue-500 text-white font-semibold py-2 px-4 rounded">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+    return (
+        <Stack spacing={2} sx={{ width: 400 }} className=' mt-20 ml-20'>
+            <TextField
+                label="Date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                type="date"
+            />
+            <Autocomplete
+                options={jobOptions}
+                getOptionLabel={(option) => `${option.job_id} - ${option.customer_name}`}
+                renderInput={(params) => <TextField {...params} label="Job ID" />}
+                onChange={(event, newValue) => {
+                    if (newValue) {
+                        setJobId(newValue.job_id);
+                        axios.post('http://localhost:3001/userawrout/getJobDetails', { jobId: newValue.job_id })
+                            .then(res => {
+                                setChipType(res.data.chip_type);
+                                setPeatType(res.data.peat_type);
+                            })
+                            .catch(err => console.error(err));
+                    } else {
+                        setJobId('');
+                        setChipType('');
+                        setPeatType('');
+                    }
+                }}
+            />
+            <TextField
+                label="Chip Type"
+                value={chipType}
+                InputProps={{ readOnly: true }}
+            />
+            <TextField
+                label="Peat Type"
+                value={peatType}
+                InputProps={{ readOnly: true }}
+            />
+            <TextField
+                label="Type"
+                select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+            >
+                {types.map((option) => (
+                    <MenuItem key={option} value={option}>
+                        {option}
+                    </MenuItem>
+                ))}
+            </TextField>
+            <Autocomplete
+                options={batchOptions}
+                getOptionLabel={(option) => `${option.buy_id} - Available: ${option.availablequantity}`}
+                renderInput={(params) => <TextField {...params} label="Batch ID" />}
+                onChange={(event, newValue) => setBatchId(newValue ? newValue.buy_id : '')}
+            />
+            <TextField
+                label="Predicted Quantity"
+                value={predictedQuantity}
+                InputProps={{ readOnly: true }}
+            />
+            <Button variant="contained" onClick={handlePredictedQuantity}>Get Predicted Quantity</Button>
+            {/* <TextField
+                label="Releasable Weight"
+                value={releasableWeight}
+                InputProps={{ readOnly: true }}
+            />
+            <Button variant="contained" onClick={handleReleasableWeight}>Get Releasable Weight</Button> */}
+            <TextField
+                label="Released Weight"
+                value={releasedWeight}
+                onChange={(e) => setReleasedWeight(e.target.value)}
+            />
+            <TextField
+                label="Predicted Wastage"
+                value={predictedWastage}
+                InputProps={{ readOnly: true }}
+            />
+            <Button variant="contained" onClick={handlePredictedWastage}>Get Predicted Wastage</Button>
+            <TextField
+                label="Predicted Sand"
+                value={predictedSand}
+                InputProps={{ readOnly: true }}
+            />
+            <Button variant="contained" onClick={handlePredictedSand}>Get Predicted Sand</Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
+        </Stack>
+    );
 };
 
-export default UseRaw;
+export default UserRawForm;

@@ -31,8 +31,9 @@ const Sidebar = () => {
   const sections = [
     { name: 'Home', icon: FiHome, link: '/homepage' },
     { name: 'Price List', icon: FiShoppingCart, subSections: [{ name: 'Add', link: '/AddPriceList' },{ name: 'View', link: '/viewpricelist' }, { name: 'Records', link: '/RecordsPricelist' }] },
-    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuypage' }, { name: 'Use', link: '/rawuse'}, { name: 'Sell', link: '/sell'}] },
-    { name: 'Inventory', icon: FiPackage, subSections: ['Live', 'Records'] },
+    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuypage' }, { name: 'Use', link: '/rawuse'}] },
+    { name: 'Wastage', icon: FiPackage, subSections: [{ name: 'Add', link: '/addwastagepage' }, { name: 'Sell', link: '/sell'}] },
+    { name: 'Inventory', icon: FiPackage, subSections: [{ name: 'Live', link: '/inventory' }, { name: 'Record', link: '/InventoryTable'}] },
     { name: 'Jobs', icon: FiBarChart2, subSections: [{ name: 'Add', link: '/AddJobPage' }, { name: 'Records and Update', link: '/updatejob' }] },
     { name: 'Reports', icon: FiBarChart2 },
     { name: 'Admins', icon: FiSettings },

@@ -16,6 +16,8 @@ import Test from './page/test';
 import AddPriceList from './page/AddPriceList';
 import RecordsPricelist from './page/Recordspricelist';
 import Updatejob from './page/updatejob';
+import Inventory from './page/inventory';
+import Inventoryrecord from './page/InventoryTable';
 
 function ConditionalSideBar() {
   const location = useLocation();
@@ -47,6 +49,8 @@ function App() {
               <Route path='/test' element={<Test/>}/>
               <Route path='/RecordsPricelist' element={<RecordsPricelist/>}/>
               <Route path='/updatejob' element={<Updatejob/>}/>
+              <Route path='/inventory' element={<Inventory/>}/>
+              <Route path='/InventoryTable' element={<Inventoryrecord/>}/>
           </Routes>
         </div>
       </div>

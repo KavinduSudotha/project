@@ -1,6 +1,6 @@
 // src/pages/AddJob.js
 import React, { useState } from 'react';
-import { AppBar, Tabs, Tab, TextField, Box, Button } from '@mui/material';
+import { AppBar, Tabs, Tab, TextField, Box, Button,  Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
@@ -34,6 +34,8 @@ export default function AddJob() {
     customerName: '',
     address: '',
     note: '',
+    chip_type: '',
+    peat_type: '',
     height: '',
     width: '',
     length: '',
@@ -74,6 +76,8 @@ export default function AddJob() {
       customerName: '',
       address: '',
       note: '',
+      chip_type: '',
+      peat_type: '',
       height: '',
       width: '',
       length: '',
@@ -181,6 +185,41 @@ export default function AddJob() {
           </div>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
+            <div>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="chip-type-label">Chip Type</InputLabel>
+                <Select
+                  labelId="chip-type-label"
+                  id="chip-type"
+                  name="chip_type"
+                  value={formData.chip_type}
+                  onChange={handleInputChange}
+                  label="Chip Type"
+                >
+                  <MenuItem value="chips_11mm_unwashed">chips_11mm_unwashed</MenuItem>
+                  <MenuItem value="chips_11mm_washed">chips_11mm_washed</MenuItem>
+                  <MenuItem value="chips_9mm_unwashed">chips_9mm_unwashed</MenuItem>
+                  <MenuItem value="chips_9mm_washed">chips_9mm_washed</MenuItem>
+                  <MenuItem value="chips_7mm_unwashed">chips_7mm_unwashed</MenuItem>
+                  <MenuItem value="chips_7mm_washed">chips_7mm_washed</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="peat-type-label">Peat Type</InputLabel>
+                <Select
+                  labelId="peat-type-label"
+                  id="peat-type"
+                  name="peat_type"
+                  value={formData.peat_type}
+                  onChange={handleInputChange}
+                  label="Peat Type"
+                >
+                  <MenuItem value="cocopeat_hi_ec">cocopeat_hi_ec</MenuItem>
+                  <MenuItem value="cocopeat_low_ec">cocopeat_low_ec</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           <TextField
             name="height"
             label="Sheet Height"

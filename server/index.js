@@ -1,12 +1,11 @@
 const express = require('express');
-const login = require('./control/Login');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const authroutlogin = require('./route/authloginrout');
 const pricelistrout = require('./route/pricelistrout');
 const jobrout = require('./route/jobrout');
-
-const bodyParser = require('body-parser');
-
+const userawRoutes = require('./route/userawrout');
+const inventory = require('./route/inventoryrout');
 
 
 const app = express();
@@ -17,10 +16,13 @@ app.use(cors({
     methods: ['GET', 'POST' , 'PUT', 'DELETE'],
     credentials: true,
 }));
+app.use(bodyParser.json());
 
 app.use('/auth', authroutlogin); 
 app.use('/pricelist', pricelistrout);
 app.use('/jobrout', jobrout);
+app.use('/userawrout', userawRoutes);
+app.use('/Inventory',inventory)
  // Mount the authentication routes
 // app.use("/", require("./route/authloginrout"));
 

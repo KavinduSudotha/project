@@ -3,7 +3,7 @@ i need use raw page
 front end
 
 1 feild date picker its automaticallay select current date from computer
-2. 2nd field input Use raw ID
+2. 2nd field input Use raw ID(this is get from back and last rawid+1)
 3. 3rd field input type[this is drop down menu (
     |chips_11mm_unwashed
     |chips_11mm_washed
@@ -15,16 +15,309 @@ front end
     |cocopeat_low_ec)]
 
 4. available batch ( this is also drop down menu this dropdown manu show batch id , available quantity )- [this is get from backend. get previous page data
-  input and filter data and show only  corresponding type data from table summarytable]
+  input and filter data and show only  corresponding type data from table summarytable]{use Like this
+   import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+
+export default function FreeSolo() {
+  return (
+    <Stack spacing={2} sx={{ width: 300 }}>
+      <Autocomplete
+        id="free-solo-demo"
+        freeSolo
+        options={top100Films.map((option) => option.title)}
+        renderInput={(params) => <TextField {...params} label="freeSolo" />}
+      />
+      <Autocomplete
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        options={top100Films.map((option) => option.title)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search input"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+          />
+        )}
+      />
+    </Stack>
+  );
+}
+
+// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
+const top100Films = [
+  { title: 'The Shawshank Redemption', year: 1994 },
+  { title: 'The Godfather', year: 1972 },
+  { title: 'The Godfather: Part II', year: 1974 },
+  { title: 'The Dark Knight', year: 2008 },
+  { title: '12 Angry Men', year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: 'Pulp Fiction', year: 1994 },
+  {
+    title: 'The Lord of the Rings: The Return of the King',
+    year: 2003,
+  },
+  { title: 'The Good, the Bad and the Ugly', year: 1966 },
+  { title: 'Fight Club', year: 1999 },
+  {
+    title: 'The Lord of the Rings: The Fellowship of the Ring',
+    year: 2001,
+  },
+  {
+    title: 'Star Wars: Episode V - The Empire Strikes Back',
+    year: 1980,
+  },
+  { title: 'Forrest Gump', year: 1994 },
+  { title: 'Inception', year: 2010 },
+  {
+    title: 'The Lord of the Rings: The Two Towers',
+    year: 2002,
+  },
+  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
+  { title: 'Goodfellas', year: 1990 },
+  { title: 'The Matrix', year: 1999 },
+  { title: 'Seven Samurai', year: 1954 },
+  {
+    title: 'Star Wars: Episode IV - A New Hope',
+    year: 1977,
+  },
+  { title: 'City of God', year: 2002 },
+  { title: 'Se7en', year: 1995 },
+  { title: 'The Silence of the Lambs', year: 1991 },
+  { title: "It's a Wonderful Life", year: 1946 },
+  { title: 'Life Is Beautiful', year: 1997 },
+  { title: 'The Usual Suspects', year: 1995 },
+  { title: 'Léon: The Professional', year: 1994 },
+  { title: 'Spirited Away', year: 2001 },
+  { title: 'Saving Private Ryan', year: 1998 },
+  { title: 'Once Upon a Time in the West', year: 1968 },
+  { title: 'American History X', year: 1998 },
+  { title: 'Interstellar', year: 2014 },
+  { title: 'Casablanca', year: 1942 },
+  { title: 'City Lights', year: 1931 },
+  { title: 'Psycho', year: 1960 },
+  { title: 'The Green Mile', year: 1999 },
+  { title: 'The Intouchables', year: 2011 },
+  { title: 'Modern Times', year: 1936 },
+  { title: 'Raiders of the Lost Ark', year: 1981 },
+  { title: 'Rear Window', year: 1954 },
+  { title: 'The Pianist', year: 2002 },
+  { title: 'The Departed', year: 2006 },
+  { title: 'Terminator 2: Judgment Day', year: 1991 },
+  { title: 'Back to the Future', year: 1985 },
+  { title: 'Whiplash', year: 2014 },
+  { title: 'Gladiator', year: 2000 },
+  { title: 'Memento', year: 2000 },
+  { title: 'The Prestige', year: 2006 },
+  { title: 'The Lion King', year: 1994 },
+  { title: 'Apocalypse Now', year: 1979 },
+  { title: 'Alien', year: 1979 },
+  { title: 'Sunset Boulevard', year: 1950 },
+  {
+    title: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
+    year: 1964,
+  },
+  { title: 'The Great Dictator', year: 1940 },
+  { title: 'Cinema Paradiso', year: 1988 },
+  { title: 'The Lives of Others', year: 2006 },
+  { title: 'Grave of the Fireflies', year: 1988 },
+  { title: 'Paths of Glory', year: 1957 },
+  { title: 'Django Unchained', year: 2012 },
+  { title: 'The Shining', year: 1980 },
+  { title: 'WALL·E', year: 2008 },
+  { title: 'American Beauty', year: 1999 },
+  { title: 'The Dark Knight Rises', year: 2012 },
+  { title: 'Princess Mononoke', year: 1997 },
+  { title: 'Aliens', year: 1986 },
+  { title: 'Oldboy', year: 2003 },
+  { title: 'Once Upon a Time in America', year: 1984 },
+  { title: 'Witness for the Prosecution', year: 1957 },
+  { title: 'Das Boot', year: 1981 },
+  { title: 'Citizen Kane', year: 1941 },
+  { title: 'North by Northwest', year: 1959 },
+  { title: 'Vertigo', year: 1958 },
+  {
+    title: 'Star Wars: Episode VI - Return of the Jedi',
+    year: 1983,
+  },
+  { title: 'Reservoir Dogs', year: 1992 },
+  { title: 'Braveheart', year: 1995 },
+  { title: 'M', year: 1931 },
+  { title: 'Requiem for a Dream', year: 2000 },
+  { title: 'Amélie', year: 2001 },
+  { title: 'A Clockwork Orange', year: 1971 },
+  { title: 'Like Stars on Earth', year: 2007 },
+  { title: 'Taxi Driver', year: 1976 },
+  { title: 'Lawrence of Arabia', year: 1962 },
+  { title: 'Double Indemnity', year: 1944 },
+  {
+    title: 'Eternal Sunshine of the Spotless Mind',
+    year: 2004,
+  },
+  { title: 'Amadeus', year: 1984 },
+  { title: 'To Kill a Mockingbird', year: 1962 },
+  { title: 'Toy Story 3', year: 2010 },
+  { title: 'Logan', year: 2017 },
+  { title: 'Full Metal Jacket', year: 1987 },
+  { title: 'Dangal', year: 2016 },
+  { title: 'The Sting', year: 1973 },
+  { title: '2001: A Space Odyssey', year: 1968 },
+  { title: "Singin' in the Rain", year: 1952 },
+  { title: 'Toy Story', year: 1995 },
+  { title: 'Bicycle Thieves', year: 1948 },
+  { title: 'The Kid', year: 1921 },
+  { title: 'Inglourious Basterds', year: 2009 },
+  { title: 'Snatch', year: 2000 },
+  { title: '3 Idiots', year: 2009 },
+  { title: 'Monty Python and the Holy Grail', year: 1975 },
+];
+}
 5. field input job id (this is user input )-also this show suggestion from backend i will give funtions of that .suggestion in table job also show customer name width job id
 
 6.this fieldnamr is Predicted quantity (this is get from back end){in back end fist go table buyraw.batch id =buy id, then look corresponding record
      if it (chips_11mm_unwashed,chips_11mm_washed,chips_9mm_unwashed,chips_9mm_washed,chips_7mm_unwashed,chips_7mm_washed) one of this  
-         get wastage as "w" [it get from table buyraw.wastage]
+         get wastage as "w" [it get from table buyraw.wastagechip]
+         get ratio of chips as "c" [it get from table buyraw.ratio_chip]
+         grt ratio of cocopeat as "p" [it get from table buyraw.ratio_peat]
          get needed quantity as "n"[it get from table job by multyply job.quantity with job.weight]
-            to calculate predicted quantity = n*(100/(100-w))
+            to calculate predicted quantity = n*(100/(100-w))*(c/(c+p))
             and show predicted quantity in this field
 
      if it (cocopeat_hi_ec,cocopeat_low_ec) one of this
-            
+            get sand as "s" [it get from table buyraw.sandpeat]
+             get ratio of chips as "c" [it get from table buyraw.ratio_chip]
+         grt ratio of cocopeat as "p" [it get from table buyraw.ratio_peat]
+            get needed quantity as "n"[it get from table job by multyply job.quantity with job.weight]
+                to calculate predicted quantity = n * (100/(100-s)) * (p/(c+p))
+                and show predicted quantity in this field
          }
+
+7. field releasable weight (this is get from back end.in summarytable.releasable weight for corresponding batch id)
+8. field input release weight (this is user input, this is ger as "q" )
+9. feild
+    if it (chips_11mm_unwashed,chips_11mm_washed,chips_9mm_unwashed,chips_9mm_washed,chips_7mm_unwashed,chips_7mm_washed) one of this
+        then show field  predicted wastage [ predicted wastage = q*(w/100)] 
+    if it (cocopeat_hi_ec,cocopeat_low_ec) one of this
+        then show field predicted sand [ predicted sand = q*(s/100)] 
+
+next  submit button (this is post data  to backend. data is date,job_id,type,released_weight sent to useraw table )
+
+
+i will give you table structure
+===Database cocosys
+
+== Table structure for table job
+
+|------
+|Column|Type|Null|Default
+|------
+|//**job_id**//|int(8)|No|
+|created_date|date|Yes|NULL
+|due_date|date|Yes|NULL
+|customer_name|varchar(30)|Yes|NULL
+|address|varchar(40)|Yes|NULL
+|employee_id|varchar(8)|No|
+|height|int(6)|No|
+|width|int(6)|No|
+|length|int(6)|No|
+|ratio_chips|int(4)|No|
+|ratio_peat|int(4)|No|
+|weight|int(11)|No|
+|quantity|int(10)|No|
+|driver_name|varchar(40)|Yes|NULL
+|vehicle_type|varchar(8)|Yes|NULL
+|vehicle_number|int(8)|Yes|NULL
+|transport_company|varchar(40)|Yes|NULL
+|production_logistics_manager_id|varchar(8)|Yes|NULL
+|note|text|Yes|NULL
+|status|varchar(10)|No|
+== Dumping data for table job
+
+|1|2024-05-17|2024-05-09|MUTHUMALA PATABANDIGE KAVINDU |&quot;MUTHUMALA&quot;, SITINAMALUWA-WEST, TANGALLE|0000|5|5|5|5|5|0|0|kkk|ljkl|5|kjk|NULL|iyiu|Finished
+|4|2024-05-17|2024-05-15|charuni|Sri Lanka|0000|2|2|2|2|2|0|0|samn|van|126|gg|NULL|no|Unstarted
+|5|2024-05-17|2024-05-23|Wimukthi Dayan|j|0000|6|6|66|66|6|0|0|o|o|5|o|NULL|j|Unstarted
+|7|2024-05-17|2024-05-31|customer 1|UK|0000|1|30|100|5|3|0|0| | |0| |NULL|use good raw|Unstarted
+|8|2024-05-17|2024-05-24|customer 2|US|0000|1|30|100|5|3|0|500| | |0| |NULL|none|Unstarted
+|9|2024-05-19|2024-05-07|a|a|0000|1|1|1|1|1|1|1| | |0| |NULL|aa|Unstarted
+
+
+
+===Database cocosys
+
+== Table structure for table use_raw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**use_id**//|int(11)|No|
+|date|int(11)|No|
+|type|int(11)|No|
+|released_weight|int(11)|No|
+|job_id|int(11)|No|
+|batch_id|int(11)|No|
+|summery_id|int(11)|No|
+|employee_id|int(11)|No|
+== Dumping data for table use_raw
+
+
+===Database cocosys
+
+== Table structure for table buyraw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**buyid**//|int(10)|No|
+|date|date|No|
+|type|varchar(22)|No|
+|employeeid|varchar(8)|No|
+|wastagechip|int(3)|Yes|NULL
+|densitypeat|int(3)|Yes|NULL
+|sandpeat|int(3)|Yes|NULL
+|suggestprice|int(11)|No|
+|buyprice|int(11)|No|
+|quantity|int(11)|No|
+== Dumping data for table buyraw
+
+|1|2024-05-13|7mm unwashed| |11|0|0|34|35|60
+|2|2024-05-14|11mm unwashed|1111|15|0|0|35|34|50
+|3|2024-05-13|11mm unwashed|1111|16|0|0|35|35|100
+|4|2024-05-15|11mm unwashed|1111|12|0|0|36|40|50
+|5|2024-05-17|HI_EC|1111|0|12|8|66|55|100
+|6|0000-00-00|11mm unwashed|1111|20|0|0|33|33|55
+|7|0000-00-00|HI_EC|1111|0|5|6|66|66|10
+
+
+
+use React,taiwind css,axios,MUI  for front end
+use nodejs,express,mysql for backend
+
+
+give back end as functions because i handle routr enother page
+it mean i handele route in another page  userawrout.js
+        i implement funtions in useraw.js
+        i implement database connection in DBconnect.js
+        
+const express = require('express');
+const router = express.Router();
+
+
+module.exports = router;
+
+route 
+http://localhost:3001/userawrout/
+
+
+const connection = require('../config/DBconnect');
+
+make sure all fictionality and calculations are i your code>
+100%coplete and accurate code need.
+if you have any question about this please ask
+
+

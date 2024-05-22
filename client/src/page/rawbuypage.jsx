@@ -103,12 +103,12 @@ const RawBuyForm = () => {
           <FormControl fullWidth margin="normal">
             <InputLabel>Select Type</InputLabel>
             <Select value={type} onChange={(e) => setType(e.target.value)}>
-              <MenuItem value="11mm unwashed">11 mm unwashed</MenuItem>
-              <MenuItem value="11mm washed">11 mm washed</MenuItem>
-              <MenuItem value="9mm unwashed">9 mm unwashed</MenuItem>
-              <MenuItem value="9mm washed">9 mm washed</MenuItem>
-              <MenuItem value="7mm unwashed">7 mm unwashed</MenuItem>
-              <MenuItem value="7mm washed">7 mm washed</MenuItem>
+              <MenuItem value="chips_11mm_unwashed">11 mm unwashed</MenuItem>
+              <MenuItem value="chips_11mm_washed">11 mm washed</MenuItem>
+              <MenuItem value="chips_9mm_unwashed">9 mm unwashed</MenuItem>
+              <MenuItem value="chips_9mm_washed">9 mm washed</MenuItem>
+              <MenuItem value="chips_7mm_unwashed">7 mm unwashed</MenuItem>
+              <MenuItem value="chips_7mm_washed">7 mm washed</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -126,8 +126,8 @@ const RawBuyForm = () => {
           <FormControl fullWidth margin="normal">
             <InputLabel>Select Type</InputLabel>
             <Select value={type} onChange={(e) => setType(e.target.value)}>
-              <MenuItem value="HI_EC">HIGH EC</MenuItem>
-              <MenuItem value="LOW EC">LOW EC</MenuItem>
+              <MenuItem value="cocopeat_hi_ec">HIGH EC</MenuItem>
+              <MenuItem value="cocopeat_low_ec">LOW EC</MenuItem>
             </Select>
           </FormControl>
           <TextField
