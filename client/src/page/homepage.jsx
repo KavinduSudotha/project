@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import { LineGraph } from "../components/home/LineGraph";
 import DoughnutGraph from "../components/home/DoughnutGraph";
+import { usePageName } from '../context/PageNameContext';
+
 
 export const Homepage = () => {
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Home');
+  }, []);
+
   return (
    <div>
     <h1 className="text-4xl font-semibold text-center mt-5">Dashboard</h1>

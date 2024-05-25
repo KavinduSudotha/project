@@ -6,7 +6,8 @@ const pricelistrout = require('./route/pricelistrout');
 const jobrout = require('./route/jobrout');
 const userawRoutes = require('./route/userawrout');
 const inventory = require('./route/inventoryrout');
-
+const wastage = require('./route/wastagerout');
+const buyraw = require('./route/buyrawrout');
 
 const app = express();
 const PORT = 3001;
@@ -23,6 +24,8 @@ app.use('/pricelist', pricelistrout);
 app.use('/jobrout', jobrout);
 app.use('/userawrout', userawRoutes);
 app.use('/Inventory',inventory)
+app.use('/wastage',wastage)
+app.use('/buyraw',buyraw)
  // Mount the authentication routes
 // app.use("/", require("./route/authloginrout"));
 

@@ -1,135 +1,241 @@
-ok,fiest i need frount end like this export is ad rawbuy
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 
-fist there must me feilds to enter data like this
-1 date(this is auto select from computer time and date)
-2 Raw Type (this is selction box with 2 options) they are Coco Chips, Cocopeat
-if Coco Chips is selected then this|
-               select Type (this is drop down box with 6 options) they are 11 mm unwashed, 11 mm washed, 9 mm unwashed, 9 mm washed, 7 mm unwashed, 7 mm washed
-               next feid is Wastage Diduction (this is text box and conner ther must be a % mark )this must validate  input 0-20 only.if any input unter 8 get is as 8 and if it is over 20 get it as 20
-               if above 2 feilds are filled then there must be unlock buying selction,before that all data autonoticly send to back end calculation done by back end to get price.i will give you the calculation formula later
-                          next is suggest price, show the price calculated by back end
-                          next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
-                          next feild is Quantity (this is text box and conner there must be a kg mark) this must validate input only intigers
-                          next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
-                          next show the total price( this is calculated by multiply buying price and quantity)
+const ViewPriceList = () => {
+  const [priceList, setPriceList] = useState(null);
 
-if Cocopeat is selected then this|
-               select Type (this is drop down box with 2 options) THEY are HIGH EC, LOW EC
-               next feild is Density (this is validate as intigers only)
-               next feidis Sand % (this is validate as intigers only and validate input 0-100 only)
-               if above 2 feilds are filled then there must be unlock buying selction,before that all data autonoticly send to back end calculation done by back end to get price.i will give you the calculation formula later
-                              next is suggest price, show the price calculated by back end
-                              next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
-                              next feild is Quantity (this is text box and conner there must be a kg mark) this must validate input only intigers
-                              next is buying price, this is text box and conner there must be a kg mark(this must validate input only intigers)
-                              next show the total price( this is calculated by multiply buying price and quantity)
+  useEffect(() => {
+    const fetchLatestPrice = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/pricelist/latestpricelist");
+        setPriceList(response.data);
+      } catch (error) {
+        console.error("Failed to fetch latest price list", error);
+      }
+    };
 
+    fetchLatestPrice();
+  }, []);
 
+  return (
+   <div className='mt-20' >
+    <Box sx={{ maxWidth: '1200px', margin: 'auto', padding: '16px' }} >
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <Button variant="contained" component={Link} to="/AddPriceList">
+          ADD
+        </Button>
+        <Button variant="contained" component={Link} to="/RecordsPricelist">
+          Records
+        </Button>
+      </Box>
 
-3.Next To Buy botton and Clear  botton (this must be in the bottom of the page)
-        if clikced on clear botton all the data must be cleared
-        if clicked on next to buy botton all the data must be sent to back end and save in database and show a console log  message "Data Saved Successfully" and all the data must be cleared on page
+      {priceList ? (
+        <>
+          <Typography variant="h6" align="right" gutterBottom>
+            Updated date: {new Date(priceList.date).toLocaleDateString()}
+          </Typography>
 
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                <Typography variant="h4" align="center" gutterBottom>
+                  <b>Standard Price List</b>
+                </Typography>
+                <Divider sx={{ marginBottom: '16px' }} />
+                <Grid container spacing={3}>
+                  <Grid item xs={6}>
+                    <TableContainer component={Paper} sx={{ marginBottom: '16px' }}>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell><b>Chips</b></TableCell>
+                            <TableCell><b>Price</b></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell>11mm unwashed</TableCell>
+                            <TableCell>{priceList["chips_11mm_unwashed"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>11mm washed</TableCell>
+                            <TableCell>{priceList["chips_11mm_washed"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>9mm unwashed</TableCell>
+                            <TableCell>{priceList["chips_9mm_unwashed"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>9mm washed</TableCell>
+                            <TableCell>{priceList["chips_9mm_washed"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>7mm unwashed</TableCell>
+                            <TableCell>{priceList["chips_7mm_unwashed"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>7mm washed</TableCell>
+                            <TableCell>{priceList["chips_7mm_washed"]}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TableContainer component={Paper} sx={{ marginBottom: '16px' }}>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell><b>Cocopeat</b></TableCell>
+                            <TableCell><b>Price</b></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell>High EC</TableCell>
+                            <TableCell>{priceList["cocopeat_hi_ec"]}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>Low EC</TableCell>
+                            <TableCell>{priceList["cocopeat_low_ec"]}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                </Grid>
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell><b>Wastage Type</b></TableCell>
+                        <TableCell><b>Price</b></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Cocopeat Fiber</TableCell>
+                        <TableCell>{priceList["wastage_price_cocopeat_fiber"]}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Cocopeat Fine Dust</TableCell>
+                        <TableCell>{priceList["wastage_price_cocopeat_fine_dust"]}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>10C Sieved</TableCell>
+                        <TableCell>{priceList["wastage_price_10c_sieved"]}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>10C not Sieved</TableCell>
+                        <TableCell>{priceList["wastage_price_10c_not_sieved"]}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>10C upper part</TableCell>
+                        <TableCell>{priceList["wastage_price_10c_upper_part"]}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
 
-next we cat calculation parts in back end 
-      for Coco Chips
-          frist get type of Chips and get price of that correponding chip.
-          match the type and get the price from database(on cocosys datbase weeklypricelist table
-          11 mm unwash =chips_11mm_unwashed
-          11 mm wash  = chips_11mm_washed
-          9 mm unwash = chips_9mm_unwashed
-          9 mm wash   = chips_9mm_washed
-          7 mm unwash= chips_7mm_unwashed
-          7 mm wash = chips_7mm_washed)
+            <Grid item xs={6}>
+              <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                <Typography variant="h5" align="center" gutterBottom>
+                  <b>Deduction of Chips</b>
+                </Typography>
+                <Divider sx={{ marginBottom: '16px' }} />
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell><b>Wastage %</b></TableCell>
+                        <TableCell><b>Deduction</b></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {[...Array(13).keys()].map((percentage) => (
+                        <TableRow key={percentage}>
+                          <TableCell>{`${percentage + 8}%`}</TableCell>
+                          <TableCell>{priceList[`wastage_deduction_chips_${percentage + 8}`]}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
 
-          lets get price a
+            <Grid item xs={6}>
+              <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                <Typography variant="h5" align="center" gutterBottom>
+                  <b>Deduction of Cocopeat</b>
+                </Typography>
+                <Divider sx={{ marginBottom: '16px' }} />
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell><b>Density Range</b></TableCell>
+                        <TableCell><b>Deduction</b></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {[...Array(6).keys()].map((index) => (
+                        <TableRow key={index}>
+                          <TableCell>{`${60 + index * 10} - ${69 + index * 10}`}</TableCell>
+                          <TableCell>{priceList[`density_${60 + index * 10}_${69 + index * 10}`]}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Divider sx={{ margin: '16px 0' }} />
+                <TableContainer component={Paper}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell><b>Sand Range</b></TableCell>
+                        <TableCell><b>Deduction</b></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {[...Array(7).keys()].map((index) => (
+                        <TableRow key={index}>
+                          <TableCell>{`${20 + index * 5} - ${24 + index * 5}`}</TableCell>
+                          <TableCell>{priceList[`sand_${20 + index * 5}_${24 + index * 5}`]}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+          </Grid>
+        </>
+      ) : (
+        <Typography variant="h6" align="center" color="error">
+          Loading latest price list...
+        </Typography>
+      )}
+    </Box>
+   </div> 
+  );
+};
 
+export default ViewPriceList;
 
-          lets assume the wastage dedution  price is b.
-        
-           match the type and get the price from database(on cocosys datbase weeklypricelist table
-           wastage_deduction_chips_8=8
-           wastage_deduction_chips_9=9
-           wastage_deduction_chips_10=10
-           wastage_deduction_chips_11=11
-           wastage_deduction_chips_12=12
-           wastage_deduction_chips_13=13
-           wastage_deduction_chips_14=14
-           wastage_deduction_chips_15=15
-           wastage_deduction_chips_16=16
-           wastage_deduction_chips_17=17
-           wastage_deduction_chips_18=18
-           wastage_deduction_chips_19=19
-           wastage_deduction_chips_20=20) 
-
-               suggest price = a-b
-
-          now sent the suggest price to front end and show it in suggest price feild
-
-      for Cocopeat
-          frist get type of Cocopeat and get price of that correponding Cocopeat.
-          match the type and get the price from database(on cocosys datbase weeklypricelist table
-          high ec = cocopeat_hi_ec
-          low ec  = cocopeat_low_ec)
-          lets get price c
-
-          lets assume the density price is d.
-        
-           match the type and get the price from database(on cocosys datbase weeklypricelist table
-          
-          if value is lower than 69 or qual to 69 then density_60_69
-          if value is grater 69 and lower than 79 or qual to 79 then density_70_79
-          if value is grater 79 and lower than 89 or qual to 89 then density_80_89
-          if value is grater 89 and lower than 99 or qual to 99 then density_90_99
-          if value is grater 99  then density_100_109 )
-
-           lets assume the sand price is e.
-        
-           match the type and get the price from database(on cocosys datbase weeklypricelist tabl
-
-          if value is lower than 24 or qual to 24 then sand_20_24
-          if value is grater 24 and lower than 29 or qual to 29 then sand_25_29
-          if value is grater 29 and lower than 34 or qual to 34 then sand_30_34
-          if value is grater 34 and lower than 39 or qual to 39 then sand_35_39
-          if value is grater 39 and lower than 44 or qual to 44 then sand_40_44
-          if value is grater 44 and lower than 49 or qual to 49 then sand_45_49
-          if value is grater 49  then sand_50_54)
-
-               suggest price = c-d-e
-
-          now sent the suggest price to front end and show it in suggest price feild
-
-
-
-
-ok this is calculation part,
-
-so next move on finsh botton iff you click finsh botton then all the data must be sent to back end and save in database and show a console log  message "Data Saved Successfully" .
-
-this is table structer to save data in database
-
-===Database cocosys
-
-== Table structure for table buyraw
-
-|------
-|Column|Type|Null|Default
-|------
-|//**buyid**//|int(10)|No|
-|date|date|No|
-|type|varchar(22)|No|
-|employeeid|varchar(8)|No|
-|wastagechip|int(3)|Yes|NULL
-|densitypeat|int(3)|Yes|NULL
-|sandpeat|int(3)|Yes|NULL
-|suggestprice|int(11)|No|
-|buyprice|int(11)|No|
-|quantity|int(11)|No|
-== Dumping data for table buyraw
-
-
-
-use my privous backend code to connect to database route back end.
-
-give me react page (taiwind css and MUI) and backend code in nodejs
-give it 100%  accuracy and 100% working code
+ i need re arrange this page like more uset frindly and beutifull ,mt-20 raming on top other thing you can change but all content must be there 

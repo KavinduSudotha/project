@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import Container from '@mui/material/Container';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import { usePageName } from '../context/PageNameContext';
 
 const ViewPriceList = () => {
   const [priceList, setPriceList] = useState(null);
@@ -22,136 +33,209 @@ const ViewPriceList = () => {
     fetchLatestPrice();
   }, []);
 
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Standard Price List');
+  }, []);
+
   return (
-    <div className="container mx-auto py-8">
-      {priceList ? (
-        <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
-          <Typography variant="h6" align="right" gutterBottom>
-            Updated date: {new Date(priceList.date).toLocaleDateString()}
+    <div className='mt-20'>
+      <Container maxWidth="auto">
+        {priceList ? (
+          <>
+            <div style={{ display: 'flex', marginBottom: '16px', justifyContent: 'flex-start', gap: '10px' }}>
+              <Button 
+                variant="contained" 
+                component={Link} 
+                to="/AddPriceList"
+                sx={{ '&:hover': { backgroundColor: 'green' } }}
+              >
+                <PostAddIcon />
+                ADD
+              </Button>
+              <Button 
+                variant="contained" 
+                component={Link} 
+                to="/RecordsPricelist"
+                sx={{ '&:hover': { backgroundColor: 'secondary.dark' } }}
+              >
+                <PlaylistAddCheckIcon />
+                Records
+              </Button>
+            </div>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                  <Typography variant="h5" align="center" gutterBottom>
+                    <b>Standard Price List</b>
+                  </Typography>
+                  <Typography variant="h6" align="right" gutterBottom>
+                    Updated date: {new Date(priceList.date).toLocaleDateString()}
+                  </Typography>
+                  <Divider sx={{ marginBottom: '16px' }} />
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <TableContainer component={Paper} sx={{ marginBottom: '16px' }}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><b>Chips</b></TableCell>
+                              <TableCell><b>Price</b></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {[
+                              { label: '11mm unwashed', value: priceList["chips_11mm_unwashed"] },
+                              { label: '11mm washed', value: priceList["chips_11mm_washed"] },
+                              { label: '9mm unwashed', value: priceList["chips_9mm_unwashed"] },
+                              { label: '9mm washed', value: priceList["chips_9mm_washed"] },
+                              { label: '7mm unwashed', value: priceList["chips_7mm_unwashed"] },
+                              { label: '7mm washed', value: priceList["chips_7mm_washed"] },
+                            ].map((item, index) => (
+                              <TableRow key={index}>
+                                <TableCell>{item.label}</TableCell>
+                                <TableCell>{item.value}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TableContainer component={Paper} sx={{ marginBottom: '16px' }}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><b>Cocopeat</b></TableCell>
+                              <TableCell><b>Price</b></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {[
+                              { label: 'High EC', value: priceList["cocopeat_hi_ec"] },
+                              { label: 'Low EC', value: priceList["cocopeat_low_ec"] },
+                            ].map((item, index) => (
+                              <TableRow key={index}>
+                                <TableCell>{item.label}</TableCell>
+                                <TableCell>{item.value}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TableContainer component={Paper} sx={{ marginBottom: '16px' }}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><b>Wastage Type</b></TableCell>
+                              <TableCell><b>Price</b></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {[
+                              { label: 'Cocopeat Fiber', value: priceList["wastage_price_cocopeat_fiber"] },
+                              { label: 'Cocopeat Fine Dust', value: priceList["wastage_price_cocopeat_fine_dust"] },
+                              { label: '10C Sieved', value: priceList["wastage_price_10c_sieved"] },
+                              { label: '10C not Sieved', value: priceList["wastage_price_10c_not_sieved"] },
+                              { label: '10C upper part', value: priceList["wastage_price_10c_upper_part"] },
+                            ].map((item, index) => (
+                              <TableRow key={index}>
+                                <TableCell>{item.label}</TableCell>
+                                <TableCell>{item.value}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                  <Typography variant="h5" align="center" gutterBottom>
+                    <b>Deduction of Chips</b>
+                  </Typography>
+                  <Divider sx={{ marginBottom: '16px' }} />
+                  <TableContainer component={Paper}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell><b>Wastage %</b></TableCell>
+                          <TableCell><b>Deduction</b></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {[...Array(13).keys()].map((percentage) => (
+                          <TableRow key={percentage}>
+                            <TableCell>{`${percentage + 8}%`}</TableCell>
+                            <TableCell>{priceList[`wastage_deduction_chips_${percentage + 8}`]}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Paper elevation={3} sx={{ padding: '16px', borderRadius: '8px' }}>
+                  <Typography variant="h5" align="center" gutterBottom>
+                    <b>Deduction of Cocopeat</b>
+                  </Typography>
+                  <Divider sx={{ marginBottom: '16px' }} />
+                  <TableContainer component={Paper}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell><b>Density Range</b></TableCell>
+                          <TableCell><b>Deduction</b></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {[...Array(6).keys()].map((index) => (
+                          <TableRow key={index}>
+                            <TableCell>{`${60 + index * 10} - ${69 + index * 10}`}</TableCell>
+                            <TableCell>{priceList[`density_${60 + index * 10}_${69 + index * 10}`]}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <Divider sx={{ margin: '16px 0' }} />
+                  <TableContainer component={Paper}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell><b>Sand Range</b></TableCell>
+                          <TableCell><b>Deduction</b></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {[...Array(7).keys()].map((index) => (
+                          <TableRow key={index}>
+                            <TableCell>{`${20 + index * 5} - ${24 + index * 5}`}</TableCell>
+                            <TableCell>{priceList[`sand_${20 + index * 5}_${24 + index * 5}`]}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            </Grid>
+          </>
+        ) : (
+          <Typography variant="h6" align="center" color="error">
+            Loading latest price list...
           </Typography>
-
-          <div className="my-8">
-            <Typography variant="h5" gutterBottom>
-              <b>Standard Price List</b>
-            </Typography>
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                <b>Chips</b>
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemText primary="11mm unwashed" secondary={priceList["chips_11mm_unwashed"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="11mm washed" secondary={priceList["chips_11mm_washed"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="9mm unwashed" secondary={priceList["chips_9mm_unwashed"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="9mm washed" secondary={priceList["chips_9mm_washed"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="7mm unwashed" secondary={priceList["chips_7mm_unwashed"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="7mm washed" secondary={priceList["chips_7mm_washed"]} />
-                </ListItem>
-              </List>
-              <Typography variant="subtitle1" gutterBottom>
-                <b>Cocopeat</b>
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemText primary="High EC" secondary={priceList["cocopeat_hi_ec"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Low EC" secondary={priceList["cocopeat_low_ec"]} />
-                </ListItem>
-              </List>
-            </Box>
-          </div>
-
-          <hr className="my-8" />
-
-          <div className="my-8">
-            <Typography variant="h5" gutterBottom>
-              <b>Deduction of Chips</b>
-            </Typography>
-            <Box>
-              <List>
-                {[...Array(13).keys()].map((percentage) => (
-                  <ListItem key={percentage}>
-                    <ListItemText primary={`${percentage + 8}%`} secondary={priceList[`wastage_deduction_chips_${percentage + 8}`]} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </div>
-
-          <hr className="my-8" />
-
-          <div className="my-8">
-            <Typography variant="h5" gutterBottom>
-              <b>Deduction of Cocopeat</b>
-            </Typography>
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                <b>Density</b>
-              </Typography>
-              <List>
-                {[...Array(6).keys()].map((index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={`${60 + index * 10} - ${69 + index * 10}`} secondary={priceList[`density_${60 + index * 10}_${69 + index * 10}`]} />
-                  </ListItem>
-                ))}
-              </List>
-              <Typography variant="subtitle1" gutterBottom>
-                <b>Sand</b>
-              </Typography>
-              <List>
-                {[...Array(7).keys()].map((index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={`${20 + index * 5} - ${24 + index * 5}`} secondary={priceList[`sand_${20 + index * 5}_${24 + index * 5}`]} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </div>
-
-          <hr className="my-8" />
-
-          <div className="my-8">
-            <Typography variant="h5" gutterBottom>
-              <b>Wastage Price</b>
-            </Typography>
-            <Box>
-              <List>
-                <ListItem>
-                  <ListItemText primary="Cocopeat Fiber" secondary={priceList["wastage_price_cocopeat_fiber"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Cocopeat Fine Dust" secondary={priceList["wastage_price_cocopeat_fine_dust"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="10C Sieved" secondary={priceList["wastage_price_10c_sieved"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="10C not Sieved" secondary={priceList["wastage_price_10c_not_sieved"]} />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="10C upper part" secondary={priceList["wastage_price_10c_upper_part"]} />
-                </ListItem>
-              </List>
-            </Box>
-          </div>
-
-        </Box>
-      ) : (
-        <Typography variant="h6" align="center">
-          Loading...
-        </Typography>
-      )}
+        )}
+      </Container>
     </div>
   );
 };

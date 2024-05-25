@@ -6,50 +6,26 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import Swal from 'sweetalert2';
 import Typography from '@mui/material/Typography';
+import { usePageName } from '../context/PageNameContext'; 
 
-const deleteRow = (inventoryID) => {
-  axios
-    .delete(`http://localhost:3001/deletestock/${inventoryID}`)
-    .then((response) => {
-      console.log(inventoryID, "Row deleted successfully");
-    })
-    .catch((error) => {
-      console.error("Error deleting row:", error);
-    });
-};
 
 const styles = `
   .MuiDataGrid-cell:focus-within {
     outline: none !important;
     border: none !important;
-  }
-`;
+  }`;
 
-const deletePopup = (inventoryID) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      deleteRow(inventoryID);
-      Swal.fire({
-        title: "Deleted!",
-        text: "Row has been deleted.",
-        icon: "success",
-      }).then(() => {
-        window.location.reload();
-      });
-    }
-  });
-};
 
 const RecordsPricelist = () => {
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Pricelist Records');
+  }, []);
+
+
   const [rows, setRows] = useState([]);
+
 
   useEffect(() => {
     axios
@@ -151,36 +127,24 @@ const RecordsPricelist = () => {
     { field: 'Wastage Price 10C Not Sieved', headerName: 'Wastage Price 10C Not Sieved', width: 150 },
     { field: 'Wastage Price 10C Upper Part', headerName: 'Wastage Price 10C Upper Part', width: 150 },
     { field: 'Employee ID', headerName: 'Employee ID', width: 150 },
-    {
-      field: 'actions', headerName: '', width: 300, disableColumnMenu: true, renderCell: (params) => (
-        <div className='flex gap-3 items-center h-full'>
-          <Button variant="outlined" onClick={() => handleEditClick(params.row.id)}>Edit</Button>
-          <Button variant="outlined" onClick={() => deletePopup(params.row.id)}>Delete</Button>
-        </div>
-      )
-    }
   ];
 
   return (
-    <Box sx={{ height: 600, width: '100%' }}>
-      <style>{styles}</style>
-      <Typography variant="h5" gutterBottom>
-        Price List Records
-      </Typography>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10, 25, 50]}
-        disableSelectionOnClick
-        components={{ Toolbar: GridToolbar }}
-        componentsProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
-    </Box>
+    <div style={{ height: 400, width: '100%' }} className='mt-16'>
+      <Box sx={{ width: '100%', typography: 'body1', '& .MuiDataGrid-root': { border: 'none' } }}>
+        <style>{styles}</style>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5, 10, 20]}
+
+          components={{
+            Toolbar: GridToolbar,
+          }}
+        />
+      </Box>
+    </div>
   );
 };
 

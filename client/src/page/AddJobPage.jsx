@@ -97,7 +97,7 @@ export default function AddJob() {
       const response = await axios.post('http://localhost:3001/jobrout/addjob', {
         ...formData,
         employeeId: '0000',
-        status:'Unstarted'// hardcoded employee ID
+        status:'unstarted'// hardcoded employee ID
       });
       console.log('Response:', response.data);
       handleClear(); // Clear form data after submission

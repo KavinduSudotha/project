@@ -6,9 +6,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useEffect } from 'react';
+import { usePageName } from '../context/PageNameContext';
 
 
 const AddPriceList = () => {
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Add Standard Price List');
+  }, []);
   const [date, setDate] = useState('');
   const [tabValue, setTabValue] = useState('one');
   const [inputs, setInputs] = useState({
@@ -147,21 +154,9 @@ const AddPriceList = () => {
   
 
   return (
-    <div className='bg-white h-full'>
+    <div className='bg-white h-full mt-12'>
       <div className="container mx-auto py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">Weekly Price List</h1>
-          <div className="flex items-center">
-            <label htmlFor="date" className="mr-2">Date:</label>
-            <input
-              type="date"
-              id="date"
-              value={date}
-              onChange={handleDateChange}
-              className="border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-        </div>
+        
         <Box sx={{ width: '100%' }}>
           <Tabs
             value={tabValue}
@@ -173,6 +168,19 @@ const AddPriceList = () => {
             <Tab value="three" label="Deduction of Cocopeat" />
             <Tab value="four" label="Wastage Price" />
           </Tabs>
+          <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold"> </h1>
+          <div className="flex items-center">
+            <label htmlFor="date" className="mr-2">Date:</label>
+            <input
+              type="date"
+              id="date"
+              value={date}
+              onChange={handleDateChange}
+              className="border border-gray-300 rounded px-3 py-2"
+            />
+          </div>
+        </div>
         </Box>
 
         {/* Tab 1 - Standard Price */}

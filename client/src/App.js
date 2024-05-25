@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route,useLocation} from 'react-router-dom';
 import "tw-elements-react/dist/css/tw-elements-react.min.css";
+import { PageNameProvider } from './context/PageNameContext';
 import LoginPage from './page/loginpage';
 import HomePage from './page/homepage';
 import AdminPage from './page/adminpage';
@@ -18,6 +19,8 @@ import RecordsPricelist from './page/Recordspricelist';
 import Updatejob from './page/updatejob';
 import Inventory from './page/inventory';
 import Inventoryrecord from './page/InventoryTable';
+import AddWastageForm from './page/AddWastageForm';
+import SellWastageForm from './page/SellWastageForm';
 
 function ConditionalSideBar() {
   const location = useLocation();
@@ -31,6 +34,7 @@ function ConditionalSideBar() {
 function App() {
   return (
     <Router>
+       <PageNameProvider>
       <div className='flex h-screen'>
           <ConditionalSideBar /> 
           
@@ -51,9 +55,12 @@ function App() {
               <Route path='/updatejob' element={<Updatejob/>}/>
               <Route path='/inventory' element={<Inventory/>}/>
               <Route path='/InventoryTable' element={<Inventoryrecord/>}/>
+              <Route path='/addwastagepage' element={<AddWastageForm/>}/>
+              <Route path='/sellwastagepage' element={<SellWastageForm/>}/>
           </Routes>
         </div>
       </div>
+      </PageNameProvider>
     </Router>
   );
 }

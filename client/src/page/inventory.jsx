@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const UserRawForm = () => {
     const [summary, setSummary] = useState([]);
@@ -29,7 +29,19 @@ const UserRawForm = () => {
     }, []);
 
     return (
-        <Paper className="p-4  ml-20 " >
+        <div className=' mt-20'>
+               <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                to="/InventoryTable"
+                className="mt-4"
+                sx={{ '&:hover': { backgroundColor: 'secondary.dark' } }}
+            >
+                Record
+            </Button>
+        <Paper className="p-4 ml-20" >
+            
             <Typography variant="h4" className="mb-4">Live Inventory</Typography>
             <Table>
                 <TableHead>
@@ -55,7 +67,9 @@ const UserRawForm = () => {
                     </TableRow>
                 </TableBody>
             </Table>
+         
         </Paper>
+      </div>  
     );
 };
 

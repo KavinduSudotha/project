@@ -1,110 +1,215 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FiHome, FiMenu, FiPackage, FiShoppingCart, FiBarChart2, FiSettings, FiUsers } from 'react-icons/fi'; // Import icons from react-icons library
+import * as React from 'react';
+import { usePageName } from '../context/PageNameContext'; // Importing the custom hook
+import { styled, useTheme } from '@mui/material/styles'; // Importing MUI styling and theme hook
+import Box from '@mui/material/Box';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import HomeIcon from '@mui/icons-material/Home';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import AddchartIcon from '@mui/icons-material/Addchart';
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import { FiHome, FiShoppingCart, FiPackage, FiBarChart2, FiSettings, FiUsers } from 'react-icons/fi'; // Importing icons from react-icons
 
-const Sidebar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(null);
-  const [activeSubSection, setActiveSubSection] = useState(null);
+const drawerWidth = 240; // Setting the drawer width
 
-  const handleMouseEnter = () => {
-    setIsSidebarOpen(true);
+// Mixin for opened drawer
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+// Mixin for closed drawer
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
+
+// Drawer header styling
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
+
+// AppBar styling
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+// Drawer styling
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    ...(open && {
+      ...openedMixin(theme),
+      '& .MuiDrawer-paper': openedMixin(theme),
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      '& .MuiDrawer-paper': closedMixin(theme),
+    }),
+  }),
+);
+
+// Main component function
+export default function MiniDrawer() {
+  const theme = useTheme(); // Hook to use the theme
+  const [open, setOpen] = React.useState(false); // State to manage drawer open/close
+  const { pageName } = usePageName(); // Accessing pageName from context
+
+  const handleDrawerOpen = () => {
+    setOpen(true); // Function to open the drawer
   };
 
-  const handleMouseLeave = () => {
-    setIsSidebarOpen(false);
+  const handleDrawerClose = () => {
+    setOpen(false); // Function to close the drawer
   };
 
-  const handleSectionClick = (index) => {
-    if (activeSection === index) {
-      setActiveSection(null);
-    } else {
-      setActiveSection(index);
-      setActiveSubSection(null);
-    }
-  };
-
-  const handleSubSectionClick = (index) => {
-    setActiveSubSection(index);
-  };
-
-  const sections = [
-    { name: 'Home', icon: FiHome, link: '/homepage' },
-    { name: 'Price List', icon: FiShoppingCart, subSections: [{ name: 'Add', link: '/AddPriceList' },{ name: 'View', link: '/viewpricelist' }, { name: 'Records', link: '/RecordsPricelist' }] },
-    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuypage' }, { name: 'Use', link: '/rawuse'}] },
-    { name: 'Wastage', icon: FiPackage, subSections: [{ name: 'Add', link: '/addwastagepage' }, { name: 'Sell', link: '/sell'}] },
-    { name: 'Inventory', icon: FiPackage, subSections: [{ name: 'Live', link: '/inventory' }, { name: 'Record', link: '/InventoryTable'}] },
-    { name: 'Jobs', icon: FiBarChart2, subSections: [{ name: 'Add', link: '/AddJobPage' }, { name: 'Records and Update', link: '/updatejob' }] },
+  // Menu items data
+  const menuItems = [
+    { name: 'Home', icon: HomeIcon, link: '/homepage' },
+    { name: 'Price List', icon: ContentPasteIcon , link: '/viewpricelist'},
+    { name: 'Buy RAW', icon: FileDownloadIcon, link: '/rawbuypage'} ,
+    { name: 'Use RAW', icon: FileUploadIcon, link: '/rawuse'} ,
+    { name: 'Add wastage', icon: DeleteIcon, link: '/addwastagepage'} ,
+    { name: 'Use RAW', icon: DeleteSweepIcon, link: '/sellwastagepage'} ,
+    { name: 'Inventory', icon: AddchartIcon, link: '/inventory'},
+    { name: 'Jobs', icon: WorkHistoryIcon, link: '/updatejob'},
+    { name: 'Sheets', icon: FiHome, link: '/sheetpage' },
     { name: 'Reports', icon: FiBarChart2 },
     { name: 'Admins', icon: FiSettings },
     { name: 'Employee', icon: FiUsers , link: '/employeepage'}
   ];
 
+
+
   return (
-    <div
-      className="fixed left-0 top-0 h-screen bg-gray-800 text-white transition-all duration-300 z-10"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-   
-      {/* Company Details */}
-      <div className={`p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="text-2xl font-bold mb-2">Thuselco Pvt Ltd</div>
-        <div className="text-sm mb-4 text-left">Coco Sheet Manufacturing <br></br> Management System</div>
-        <div className="flex items-center mb-4">
-          <div className="w-10 h-10 bg-gray-500 rounded-full mr-2"></div> {/* Placeholder for user avatar */}
-          <div>
-            <div className="text-sm font-medium">John Doe</div>
-            <div className="text-xs text-gray-400">User ID: 12345</div>
-            <div className="text-xs text-gray-400">Job Role: Admin</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sidebar content */}
-      <div
-        className={`flex flex-col items-center bg-gray-800 text-white overflow-hidden `}
-        style={{ width: isSidebarOpen ? '240px' : '60px' }} >
-
-        {/* Sidebar sections */}
-        <div className={`flex flex-col items-start space-y-2 w-full`}>
-          {sections.map((section, index) => (
-            <div key={index} className="group">
-              <Link
-                to={section.link}
-                className={`p-2 flex items-center w-full ${activeSection === index ? 'bg-gray-700' : ''}`}
-                onClick={() => handleSectionClick(index)}
-              >
-                <div className="flex items-center">
-                  <section.icon size={20} />
-                  {isSidebarOpen && <span className="ml-2">{section.name}</span>}
-                </div>
-              </Link>
-              {activeSection === index && section.subSections && (
-                <div className={`overflow-hidden ${isSidebarOpen ? 'block' : 'hidden'}`}>
-                  {section.subSections.map((subSection, subIndex) => (
-                    <Link
-                      key={subIndex}
-                      to={typeof subSection === 'object' ? subSection.link : `/${section.name}/${subSection}`}
-                      className={`ml-4 text-base ${activeSubSection === subIndex ? 'text-white' : 'text-gray-300'} ${isSidebarOpen ? 'block' : 'hidden'}`}
-                      onClick={() => handleSubSectionClick(subIndex)}
-                      style={{ transition: 'opacity 0.5s ease', opacity: isSidebarOpen ? 1 : 0 }}
-                    >
-                      <div
-                        className={`hover:text-white hover:bg-gray-700 px-2 py-1 rounded transition-colors duration-300 ${activeSubSection === subIndex ? 'bg-gray-700' : ''}`}
-                      >
-                        {typeof subSection === 'object' ? subSection.name : subSection}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+              ...(open && { display: 'none' }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+          {pageName}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List>
+          {menuItems.map((item, index) => (
+            <React.Fragment key={item.name}>
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  component="a"
+                  href={item.link ? item.link : '#'}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {React.createElement(item.icon)}
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+              {item.subSections && item.subSections.map((subItem) => (
+                <ListItem key={subItem.name} disablePadding sx={{ display: 'block', pl: 4 }}>
+                  <ListItemButton
+                    sx={{
+                      minHeight: 36,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
+                    }}
+                    component="a"
+                    href={subItem.link}
+                  >
+                    <ListItemText primary={subItem.name} sx={{ opacity: open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </React.Fragment>
           ))}
-        </div>
-      </div>
-    </div>
+        </List>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        {/* Content can be added here */}
+      </Box>
+    </Box>
   );
-};
-
-export default Sidebar;
+}
