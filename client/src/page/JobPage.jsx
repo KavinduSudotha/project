@@ -4,6 +4,9 @@ import { AppBar, Tabs, Tab, TextField, Box, Button,  Select, MenuItem, FormContr
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
+import { useEffect } from 'react';
+import { usePageName } from '../context/PageNameContext';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -26,6 +29,13 @@ function TabPanel(props) {
 }
 
 export default function AddJob() {
+
+  const { setPage } = usePageName();
+
+    useEffect(() => {
+      setPage('Add Job');
+    }, []);
+  
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const [formData, setFormData] = useState({
@@ -43,6 +53,9 @@ export default function AddJob() {
     ratioPeat: '',
     weight: '',
     quantity: '',
+    sheet_per_pallet: '',
+    container_size : '',
+    pallets_per_container : '',
     driverName: '',
     vehicleType: '',
     vehicleNumber: '',
@@ -85,6 +98,9 @@ export default function AddJob() {
       ratioPeat: '',
       weight: '',
       quantity: '',
+      sheet_per_pallet: '',
+      container_size : '',
+      pallets_per_container : '', 
       driverName: '',
       vehicleType: '',
       vehicleNumber: '',
@@ -287,28 +303,38 @@ export default function AddJob() {
           </div>
         </TabPanel>
         <TabPanel value={value} index={2} dir={theme.direction}>
+        <FormControl fullWidth margin="normal">
+                <InputLabel id="peat-type-label">Container Size</InputLabel>
+                <Select
+                  labelId="container_size"
+                  id="container_size"
+                  name="container_size"
+                  value={formData.container_size}
+                  onChange={handleInputChange}
+                  label="container_size"
+                >
+                  <MenuItem value="20FT Flat Rack with sides">20FT Flat Rack with sides</MenuItem>
+                  <MenuItem value="20FT Flat Rack without sides">20FT Flat Rack without sides</MenuItem>
+                  <MenuItem value="40FT Flat Rack with Sides">40FT Flat Rack with Sides</MenuItem>
+                  <MenuItem value="40FT Flat Rack without sides">40FT Flat Rack without sides</MenuItem>
+                </Select>
+              </FormControl>
+          
+        
           <TextField
-            name="driverName"
-            label="Driver Name"
+            name="sheet_per_pallet"
+            label="Sheet Per Pallet"
             fullWidth
             margin="normal"
-            value={formData.driverName}
+            value={formData.sheet_per_pallet}
             onChange={handleInputChange}
           />
-          <TextField
-            name="vehicleType"
-            label="Vehicle Type"
+           <TextField
+            name="pallets_per_container"
+            label="Pallets_Per_Container"
             fullWidth
             margin="normal"
-            value={formData.vehicleType}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="vehicleNumber"
-            label="Vehicle Number"
-            fullWidth
-            margin="normal"
-            value={formData.vehicleNumber}
+            value={formData.pallets_per_container}
             onChange={handleInputChange}
           />
           <TextField
@@ -319,6 +345,23 @@ export default function AddJob() {
             value={formData.transportCompany}
             onChange={handleInputChange}
           />
+          <TextField
+            name="driverName"
+            label="Driver Name"
+            fullWidth
+            margin="normal"
+            value={formData.driverName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="vehicleNumber"
+            label="Vehicle Number"
+            fullWidth
+            margin="normal"
+            value={formData.vehicleNumber}
+            onChange={handleInputChange}
+          />
+          
           <div className="flex justify-end space-x-2 mt-4">
             <Button variant="contained" color="primary" onClick={handleSubmit}>
               Submit
@@ -332,3 +375,25 @@ export default function AddJob() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <div className="flex justify-end space-x-2 mt-4">
+<Button variant="contained" color="primary" onClick={handleSubmit}>
+  Submit
+</Button>
+<Button variant="outlined" color="secondary" onClick={handleClear}>
+  Clear
+</Button>
+</div> */}

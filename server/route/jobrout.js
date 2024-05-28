@@ -60,8 +60,6 @@ router.delete('/:id', async (req, res) => {
 
 
 
-
-
 // Backend route for adding a job
 router.post('/addjob', addjob);
 

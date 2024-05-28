@@ -1,6 +1,9 @@
+// AddWastageForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Autocomplete, Box } from '@mui/material';
+import { usePageName } from '../../context/PageNameContext';
+
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
@@ -13,6 +16,13 @@ const wastageTypes = [
 ];
 
 const AddWastageForm = () => {
+
+    const { setPage } = usePageName();
+  
+    useEffect(() => {
+      setPage('To Add Wastage');
+    }, []);
+
   const [date, setDate] = useState('');
   const [type, setType] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -44,7 +54,7 @@ const AddWastageForm = () => {
   };
 
   return (
-    <Box className="max-w-md mx-auto mt-10 p-4 bg-white shadow-md rounded">
+    <Box className="max-w-md mx-auto mt-20 p-4 bg-white shadow-md rounded">
       <TextField
         label="Date"
         value={date}

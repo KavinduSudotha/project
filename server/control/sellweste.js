@@ -116,4 +116,24 @@ const getSuggestPrice = (req, res) => {
       res.status(200).send({ suggestPrice });
     });
   };
-module.exports = { getSuggestPrice,getBatches,sellWastage };
+
+
+// sell wastage table
+const sellWastagetable=(req, res) => {
+  const query = 'SELECT * FROM sellwastage';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching sellwastage data:', err);
+      res.status(500).send('Error fetching sellwastage data');
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+
+
+
+
+module.exports = { getSuggestPrice,getBatches,sellWastage,sellWastagetable };

@@ -25,7 +25,9 @@ const addjob =(req, res) => {
     weight,
     quantity,
     driverName,
-    vehicleType,
+    sheet_per_pallet,
+    container_size, 
+    pallets_per_container, 
     vehicleNumber,
     transportCompany,
     note,
@@ -34,8 +36,8 @@ const addjob =(req, res) => {
 
   const query = `
     INSERT INTO job 
-    (created_date, due_date, customer_name, address, employee_id,chip_type,peat_type, height, width, length, ratio_chips, ratio_peat, weight, quantity, driver_name, vehicle_type, vehicle_number, transport_company, note, status) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)
+    (created_date, due_date, customer_name, address, employee_id,chip_type,peat_type, height, width, length, ratio_chips, ratio_peat, weight, quantity,sheet_per_pallet,container_size, pallets_per_container,  driver_name, vehicle_number, transport_company, note, status) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)
   `;
 
   connection.query(query, [
@@ -53,8 +55,10 @@ const addjob =(req, res) => {
     ratioPeat,
     weight,
     quantity,
+    sheet_per_pallet,
+    container_size  , 
+    pallets_per_container, 
     driverName,
-    vehicleType,
     vehicleNumber,
     transportCompany,
     note,

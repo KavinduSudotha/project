@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MUIDataTable from 'mui-datatables';
+import { usePageName } from '../context/PageNameContext';
 
 
 const InventoryTable = () => {
+
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Inventory Records ' );
+  }, []);
+
   const [inventoryData, setInventoryData] = useState([]);
 
   useEffect(() => {

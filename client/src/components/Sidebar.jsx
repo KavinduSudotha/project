@@ -27,6 +27,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import { FiHome, FiShoppingCart, FiPackage, FiBarChart2, FiSettings, FiUsers } from 'react-icons/fi'; // Importing icons from react-icons
 
 const drawerWidth = 240; // Setting the drawer width
@@ -125,8 +126,7 @@ export default function MiniDrawer() {
     { name: 'Use RAW', icon: DeleteSweepIcon, link: '/sellwastagepage'} ,
     { name: 'Inventory', icon: AddchartIcon, link: '/inventory'},
     { name: 'Jobs', icon: WorkHistoryIcon, link: '/updatejob'},
-    { name: 'Sheets', icon: FiHome, link: '/sheetpage' },
-    { name: 'Reports', icon: FiBarChart2 },
+    { name: 'Reports', icon: TextSnippetIcon  , link: '/reports'},
     { name: 'Admins', icon: FiSettings },
     { name: 'Employee', icon: FiUsers , link: '/employeepage'}
   ];

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Autocomplete } from '@mui/material';
+import { TextField, Button, Autocomplete, Box ,Paper} from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import Box from '@mui/material/Box';
+import { usePageName } from '../../context/PageNameContext';
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
@@ -15,7 +15,15 @@ const wastageTypes = [
   'wastage_price_10c_upper_part',
 ];
 
-const SellWastageForm = () => {
+const SellWastageForm = ({ onSellWastage }) => {
+
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('To Sell Wastage');
+  }, []);
+
+
   const currentDate = new Date();
   const [date, setDate] = useState(currentDate);
   const [type, setType] = useState('');
@@ -49,7 +57,7 @@ const SellWastageForm = () => {
 
   const handleSellWastage = async () => {
     try {
-      await axios.post(`${BackendBaseUrl}/sellwastage`, {
+      const response = await axios.post(`${BackendBaseUrl}/sellwastage`, {
         date: date.toISOString().split('T')[0],
         type,
         quantity,
@@ -57,6 +65,7 @@ const SellWastageForm = () => {
         wasteId: batch.wastage_id,
       });
       console.log('Wastage sold successfully');
+      onSellWastage(response.data);  // Notify parent component
       clearForm();
     } catch (error) {
       console.error('Error selling wastage:', error);
@@ -73,7 +82,7 @@ const SellWastageForm = () => {
   };
 
   return (
-    <Box className="max-w-md mx-auto mt-10 p-4 bg-white shadow-md rounded">
+    <Box component={Paper} padding={2}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label="Date"

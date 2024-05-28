@@ -198,7 +198,7 @@ const UserRawForm = () => {
           <Button variant="contained" onClick={handlePredictedSand}>Get Predicted Sand</Button>
         </>
       )}
-      <Stack direction="row" spacing={3}>
+      <Stack direction="row" spacing={6}>
         <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ width: '45%', '&:hover': { backgroundColor: 'green' } }}>Submit</Button>
         <Button variant="contained"  color="secondary" onClick={clearForm}  sx={{ width: '45%', '&:hover': { backgroundColor: 'red' } }} >Clear</Button>
       </Stack>

@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import Swal from 'sweetalert2';
+import { usePageName } from '../../context/PageNameContext';
 
 const statusOptions = [
   'unstarted',
@@ -29,6 +30,13 @@ const statusOptions = [
 ];
 
 function JobTable() {
+
+  const { setPage } = usePageName();
+
+    useEffect(() => {
+      setPage('Jobs');
+    }, []);
+
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
@@ -170,23 +178,29 @@ function JobRow({ job, onDelete, onUpdate }) {
                 </TableBody>
               </Table>
               <Typography variant="h6" gutterBottom component="div">
-                Driver Details
+              Transport Details
               </Typography>
               <Table size="small" aria-label="driver details">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Driver Name</TableCell>
-                    <TableCell>Vehicle Type</TableCell>
-                    <TableCell>Vehicle Number</TableCell>
+                    <TableCell>container_size</TableCell>
+                    <TableCell>sheet_per_pallet</TableCell>
+                    <TableCell>pallets_per_container</TableCell>
                     <TableCell>Transport Company </TableCell>
+                    <TableCell>driver_name</TableCell>
+                    <TableCell>vehicle_number</TableCell>
+                    <TableCell>production_logistics_manager_id</TableCell>
                    </TableRow>
                   </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{job.driver_name}</TableCell>
-                    <TableCell>{job.vehicle_type}</TableCell>
-                    <TableCell>{job.vehicle_number}</TableCell>
+                    <TableCell>{job.container_size}</TableCell>
+                    <TableCell>{job.sheet_per_pallet}</TableCell>
+                    <TableCell>{job.pallets_per_container}</TableCell>
                     <TableCell>{job.transport_company}</TableCell>
+                    <TableCell>{job.driver_name}</TableCell>
+                    <TableCell>{job.vehicle_number}</TableCell>
+                    <TableCell>{job.production_logistics_manager_id}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

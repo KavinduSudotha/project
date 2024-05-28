@@ -11,7 +11,7 @@ function updatejob() {
        <Button 
             variant="contained" 
             component={Link} 
-            to="/AddPriceList"
+            to="/addjobpage"
             sx={{ '&:hover': { backgroundColor: 'green' } }}
           >
             <PostAddIcon />

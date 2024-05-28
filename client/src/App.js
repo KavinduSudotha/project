@@ -8,7 +8,7 @@ import AdminPage from './page/adminpage';
 import RawBuyPage from './page/rawbuypage';
 import RawUse from './page/rawuse';
 import EmployeePage from './page/employeepage';
-import AddJobPage from './page/AddJobPage';
+import AddJobPage from './page/JobPage';
 import{UserContext} from './helper/Context';
 import Sidebar from './components/Sidebar';
 import Addpricelist from './page/AddPriceList';
@@ -19,8 +19,9 @@ import RecordsPricelist from './page/Recordspricelist';
 import Updatejob from './page/updatejob';
 import Inventory from './page/inventory';
 import Inventoryrecord from './page/InventoryTable';
-import AddWastageForm from './page/AddWastageForm';
-import SellWastageForm from './page/SellWastageForm';
+import AddWastageForm from './page/AddWastage';
+import SellWastageForm from './page/SellWastage';
+import Reports from './page/Reports';
 
 function ConditionalSideBar() {
   const location = useLocation();
@@ -57,6 +58,7 @@ function App() {
               <Route path='/InventoryTable' element={<Inventoryrecord/>}/>
               <Route path='/addwastagepage' element={<AddWastageForm/>}/>
               <Route path='/sellwastagepage' element={<SellWastageForm/>}/>
+              <Route path='/reports' element={<Reports/>}/>
           </Routes>
         </div>
       </div>
