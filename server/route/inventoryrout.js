@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { getInventorySummary } = require('../control/inventory');
-const { getInventoryTable } = require('../control/InventoryTable');
+const { getInventoryTableData } = require('../control/InventoryTable');
 
 router.get('/Live', getInventorySummary);
-router.get('/inventorytable', getInventoryTable);
+router.get('/inventorytable', getInventoryTableData);
 
 module.exports = router;

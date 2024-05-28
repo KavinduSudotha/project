@@ -1,17 +1,14 @@
 const connection = require('../config/DBconnect');
-const { get } = require('./pricelist');
 
+const getInventoryTableData = (req, res) => {
+    connection.query('SELECT * FROM inventory', (err, results) => {
+        if (err) {
+            console.error('Error fetching inventory table data:', err);
+            return res.status(500).json({ error: 'Error fetching inventory table data' });
+        }
 
-  const getInventoryTable = (req, res) => {
-  const query = 'SELECT * FROM inventory';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).json(results);
-    }
-  });
+        res.json(results);
+    });
 };
 
-module.exports = {getInventoryTable};
+module.exports = { getInventoryTableData };
