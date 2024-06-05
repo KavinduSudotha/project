@@ -174,6 +174,7 @@ const UserRawForm = () => {
       />
             <Button variant="contained" onClick={handlePredictedQuantity}>Get Predicted Quantity</Button>
       <TextField
+        type='number'
         label="Released Weight"
         value={releasedWeight}
         onChange={(e) => setReleasedWeight(e.target.value)}

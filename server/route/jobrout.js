@@ -3,9 +3,11 @@ const router = express.Router();
 const cors = require('cors');
 const addjob = require('../control/addjob');
 
-const { getAllJobs, searchJobs, updateJob, deleteJob } = require('../control/updatejob');
+const { getAllJobs, searchJobs, updateJob, deleteJob,getJobs } = require('../control/updatejob');
 
 
+//for hometable
+router.get('/jobs', getJobs);
 
 // Get all jobs
 router.get('/jobs', async (req, res) => {

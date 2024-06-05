@@ -1,111 +1,176 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FiHome, FiMenu, FiPackage, FiShoppingCart, FiBarChart2, FiSettings, FiUsers } from 'react-icons/fi'; // Import icons from react-icons library
 
-const Sidebar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(null);
-  const [activeSubSection, setActiveSubSection] = useState(null);
+ok ineed code for charthome Component
 
-  const handleMouseEnter = () => {
-    setIsSidebarOpen(true);
-  };
 
-  const handleMouseLeave = () => {
-    setIsSidebarOpen(false);
-  };
+this is the code for chart
 
-  const handleSectionClick = (index) => {
-    if (activeSection === index) {
-      setActiveSection(null);
-    } else {
-      setActiveSection(index);
-      setActiveSubSection(null);
-    }
-  };
+import * as React from 'react';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 
-  const handleSubSectionClick = (index) => {
-    setActiveSubSection(index);
-  };
+import { PieChart } from '@mui/x-charts/PieChart';
 
-  const sections = [
-    { name: 'Home', icon: FiHome, link: '/homepage' },
-    { name: 'Price List', icon: FiShoppingCart, subSections: [{ name: 'Add', link: '/AddPriceList' },{ name: 'View', link: '/viewpricelist' }, { name: 'Records', link: '/RecordsPricelist' }] },
-    { name: 'RAW', icon: FiPackage, subSections: [{ name: 'Buy', link: '/rawbuypage' }, { name: 'Use', link: '/rawuse'}] },
-    { name: 'Wastage', icon: FiPackage, subSections: [{ name: 'Add', link: '/addwastagepage' }, { name: 'Sell', link: '/sellwastagepage'}] },
-    { name: 'Inventory', icon: FiPackage, subSections: [{ name: 'Live', link: '/inventory' }, { name: 'Record', link: '/InventoryTable'}] },
-    { name: 'Jobs', icon: FiBarChart2, subSections: [{ name: 'Add', link: '/AddJobPage' }, { name: 'Records and Update', link: '/updatejob' }] },
-    { name: 'sheets', icon: FiHome, link: '/sheetpage' },
-    { name: 'Reports', icon: FiBarChart2 },
-    { name: 'Admins', icon: FiSettings },
-    { name: 'Employee', icon: FiUsers , link: '/employeepage'}
-  ];
+import { HighlightedCode } from '@mui/docs/HighlightedCode';
+
+const data1 = [
+  { label: 'Group A', value: 400 },
+  { label: 'Group B', value: 300 },
+  { label: 'Group C', value: 300 },
+  { label: 'Group D', value: 200 },
+];
+
+const data2 = [
+  { label: 'A1', value: 100 },
+  { label: 'A2', value: 300 },
+  { label: 'B1', value: 100 },
+  { label: 'B2', value: 80 },
+  { label: 'B3', value: 40 },
+  { label: 'B4', value: 30 },
+  { label: 'B5', value: 50 },
+  { label: 'C1', value: 100 },
+  { label: 'C2', value: 200 },
+  { label: 'D1', value: 150 },
+  { label: 'D2', value: 50 },
+];
+const series = [
+  {
+    innerRadius: 0,
+    outerRadius: 80,
+    id: 'series-1',
+    data: data1,
+  },
+  {
+    innerRadius: 100,
+    outerRadius: 120,
+    id: 'series-2',
+    data: data2,
+  },
+];
+
+export default function PieClickNoSnap() {
+  const [itemData, setItemData] = React.useState();
 
   return (
-    <div
-      className="fixed left-0 top-0 h-screen bg-gray-800 text-white transition-all duration-300 z-10"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <Stack
+      direction={{ xs: 'column', md: 'row' }}
+      spacing={{ xs: 0, md: 4 }}
+      sx={{ width: '100%' }}
     >
-   
-      {/* Company Details */}
-      <div className={`p-4 ${isSidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="text-2xl font-bold mb-2">Thuselco Pvt Ltd</div>
-        <div className="text-sm mb-4 text-left">Coco Sheet Manufacturing <br></br> Management System</div>
-        <div className="flex items-center mb-4">
-          <div className="w-10 h-10 bg-gray-500 rounded-full mr-2"></div> {/* Placeholder for user avatar */}
-          <div>
-            <div className="text-sm font-medium">John Doe</div>
-            <div className="text-xs text-gray-400">User ID: 12345</div>
-            <div className="text-xs text-gray-400">Job Role: Admin</div>
-          </div>
-        </div>
-      </div>
+      <Box sx={{ flexGrow: 1 }}>
+        <PieChart
+          series={series}
+          width={400}
+          height={300}
+          slotProps={{
+            legend: { hidden: true },
+          }}
+          onItemClick={(event, d) => setItemData(d)}
+        />{' '}
+      </Box>
 
-      {/* Sidebar content */}
-      <div
-        className={`flex flex-col items-center bg-gray-800 text-white overflow-hidden `}
-        style={{ width: isSidebarOpen ? '240px' : '60px' }} >
-
-        {/* Sidebar sections */}
-        <div className={`flex flex-col items-start space-y-2 w-full`}>
-          {sections.map((section, index) => (
-            <div key={index} className="group">
-              <Link
-                to={section.link}
-                className={`p-2 flex items-center w-full ${activeSection === index ? 'bg-gray-700' : ''}`}
-                onClick={() => handleSectionClick(index)}
-              >
-                <div className="flex items-center">
-                  <section.icon size={20} />
-                  {isSidebarOpen && <span className="ml-2">{section.name}</span>}
-                </div>
-              </Link>
-              {activeSection === index && section.subSections && (
-                <div className={`overflow-hidden ${isSidebarOpen ? 'block' : 'hidden'}`}>
-                  {section.subSections.map((subSection, subIndex) => (
-                    <Link
-                      key={subIndex}
-                      to={typeof subSection === 'object' ? subSection.link : `/${section.name}/${subSection}`}
-                      className={`ml-4 text-base ${activeSubSection === subIndex ? 'text-white' : 'text-gray-300'} ${isSidebarOpen ? 'block' : 'hidden'}`}
-                      onClick={() => handleSubSectionClick(subIndex)}
-                      style={{ transition: 'opacity 0.5s ease', opacity: isSidebarOpen ? 1 : 0 }}
-                    >
-                      <div
-                        className={`hover:text-white hover:bg-gray-700 px-2 py-1 rounded transition-colors duration-300 ${activeSubSection === subIndex ? 'bg-gray-700' : ''}`}
-                      >
-                        {typeof subSection === 'object' ? subSection.name : subSection}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      <Stack direction="column" sx={{ width: { xs: '100%', md: '40%' } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography>Click on the chart</Typography>
+          <IconButton
+            aria-label="reset"
+            size="small"
+            onClick={() => {
+              setItemData(null);
+            }}
+          >
+            <UndoOutlinedIcon fontSize="small" />
+          </IconButton>
+        </Box>
+        <HighlightedCode
+          code={`// Data from item click
+${itemData ? JSON.stringify(itemData, null, 2) : '// The data will appear here'}
+`}
+          language="json"
+          copyButtonHidden
+        />
+      </Stack>
+    </Stack>
   );
-};
+}
 
-export default Sidebar;
+
+
+data 1 is 
+
+total_weight_raw
+total_weight_wastage
+total_weight
+free_space
+
+data 2 is
+
+total_weight_chips_11mm_unwashed
+total_weight_chips_11mm_washed
+total_weight_chips_9mm_unwashed
+total_weight_chips_9mm_washed
+total_weight_chips_7mm_unwashed
+total_weight_chips_7mm_washed
+total_weight_cocopeat_hi_ec
+total_weight_cocopeat_low_ec
+wastage_price_cocopeat_fiber
+wastage_price_cocopeat_fine_dust
+wastage_price_10c_sieved
+wastage_price_10c_not_sieve
+wastage_price_10c_upper_part
+
+
+
+
+i want to show data 1 and data 2 in the chart
+
+get defferent color for each attribute in data 1 and data 2
+
+
+get last newest data from this table 
+to filter newest data you can get date collum 
+
+===Database cocosys
+
+== Table structure for table inventory
+
+|------
+|Column|Type|Null|Default 
+|------
+|//**inventory_id**//|int(11)|No|
+|date|date|No|
+|time|time|No|
+|total_weight_chips_11mm_unwashed|int(11)|No|
+|total_weight_chips_11mm_washed|int(11)|No|
+|total_weight_chips_9mm_unwashed|int(11)|No|
+|total_weight_chips_9mm_washed|int(11)|No|
+|total_weight_chips_7mm_unwashed|int(11)|No|
+|total_weight_chips_7mm_washed|int(11)|No|
+|total_weight_cocopeat_hi_ec|int(11)|No|
+|total_weight_cocopeat_low_ec|int(11)|No|
+|wastage_price_cocopeat_fiber|int(10)|Yes|NULL
+|wastage_price_cocopeat_fine_dust|int(10)|Yes|NULL
+|wastage_price_10c_sieved|int(10)|Yes|NULL
+|wastage_price_10c_not_sieved|int(10)|Yes|NULL
+|wastage_price_10c_upper_part|int(10)|Yes|NULL
+|total_weight_raw|int(10)|Yes|NULL
+|total_weight_wastage|int(10)|Yes|NULL
+|total_weight|int(11)|No|
+|free_space|int(11)|No|
+== Dumping data for table inventory
+
+
+
+
+
+give me front end and back end code for this
+for back end use node js and fron end react taiwin css MUI
+

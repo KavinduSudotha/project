@@ -91,12 +91,12 @@ const priceCal = (req, res) => {
   };
   
   const buyRecord = (req, res) => {
-    const { date, rawType, type, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity } = req.body;
-    const employeeid = 1111; // Assuming you have an employee ID
+    const { Userid, date, rawType, type, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity } = req.body;
+
     
     // First query to insert data into buyraw table
     const insertBuyQuery = `INSERT INTO buyraw (date, type, employeeid, wastagechip, densitypeat, sandpeat, suggestprice, buyprice, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    connection.query(insertBuyQuery, [date, type, employeeid, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity], (err, results) => {
+    connection.query(insertBuyQuery, [date, type, Userid, wastageDeduction, density, sandPercentage, suggestPrice, buyPrice, quantity], (err, results) => {
         if (err) throw err;
 
         console.log('Data Saved Successfully');

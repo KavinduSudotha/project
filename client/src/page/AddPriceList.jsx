@@ -8,6 +8,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useEffect } from 'react';
 import { usePageName } from '../context/PageNameContext';
+import EmployeePage from './employeepage';
+import { jwtDecode } from "jwt-decode";
 
 
 const AddPriceList = () => {
@@ -15,7 +17,18 @@ const AddPriceList = () => {
 
   useEffect(() => {
     setPage('Add Standard Price List');
+        // Get today's date
+    const today = new Date().toISOString().slice(0, 10);
+    // Set today's date as the default value for the date input field
+    setDate(today);
+
   }, []);
+
+  const storedData = localStorage.getItem("token");
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
+
   const [date, setDate] = useState('');
   const [tabValue, setTabValue] = useState('one');
   const [inputs, setInputs] = useState({
@@ -39,6 +52,89 @@ const AddPriceList = () => {
     ]
   });
 
+  const [formErrors, setFormErrors] = useState({});
+
+  const isValidNumber = (value) => {
+    const regex = /^[-+]?[0-9]*\.?[0-9]+$/;
+    return regex.test(value);
+  };
+  
+  
+
+  const validateForm = () => {
+    let errors = {};
+    let isValid = true;
+
+    // Validate all input fields in the current tab
+    if (tabValue === 'one') {
+        // Validate Chips
+        ['chips_11mm_unwashed', 'chips_11mm_washed', 'chips_9mm_unwashed', 'chips_9mm_washed', 'chips_7mm_unwashed', 'chips_7mm_washed'].forEach((key) => {
+            if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+        // Validate Cocopeat
+        ['cocopeat_hi_ec', 'cocopeat_low_ec'].forEach((key) => {
+            if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+    } else if (tabValue === 'two') {
+        // Validate Wastage Deduction Chips
+        inputs.wastage_deduction_chips.forEach((value, index) => {
+            const key = `wastage_deduction_chips_${index}`;
+            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+    } else if (tabValue === 'three') {
+        // Validate Density
+        inputs.density.forEach((value, index) => {
+            const key = `density_${index}`;
+            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+        // Validate Sand
+        inputs.sand.forEach((value, index) => {
+            const key = `sand_${index}`;
+            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+    } else if (tabValue === 'four') {
+        // Validate Wastage Price
+        inputs.wastage_price.forEach((item, index) => {
+            const key = `wastage_price_${index}`;
+            if (!item.value || !isValidNumber(item.value) || parseFloat(item.value) < 0) {
+                errors[key] = 'Please enter a valid non-negative number.';
+                isValid = false;
+            }
+        });
+    }
+
+    // Validate date
+    if (!date) {
+        errors.date = 'Please enter a valid date.';
+        isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+};
+
+
+
+
+
+  
+
+
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
@@ -49,8 +145,18 @@ const AddPriceList = () => {
 
   const handleInputChange = (key, value) => {
     setInputs({ ...inputs, [key]: value });
+  
+    // Check if the input value is an empty string
+    if (value === '') {
+      // Set the corresponding formErrors state to null
+      setFormErrors({ ...formErrors, [key]: null });
+    } else {
+      // Validate the input value and set the corresponding formErrors state
+      const isValid = isValidNumber(value);
+      setFormErrors({ ...formErrors, [key]: isValid ? null : 'Please enter a valid non-negative number' });
+    }
   };
-
+  
   const handleArrayInputChange = (key, index, value) => {
     const newArray = [...inputs[key]];
     newArray[index] = value;
@@ -68,7 +174,7 @@ const AddPriceList = () => {
   
 
   const handleNextTab = () => {
-    if (tabValue !== 'four') {
+    if (validateForm()) {
       const tabs = ['one', 'two', 'three', 'four'];
       const currentIndex = tabs.indexOf(tabValue);
       setTabValue(tabs[currentIndex + 1]);
@@ -92,7 +198,7 @@ const AddPriceList = () => {
         density: inputs.density.map(value => parseInt(value)),
         sand: inputs.sand.map(value => parseInt(value)),
         wastage_price: inputs.wastage_price.map(item => parseInt(item.value)), // Only pass the value
-        employee_id: '0000'
+        employee_id: Userid 
       };
 
       console.log(formattedData);
@@ -104,7 +210,7 @@ const AddPriceList = () => {
     // Show success alert using Swal
     Swal.fire({
       title: "Success!",
-      text: "Your data has been submitted successfully.",
+      text: "New Price List has been Aded successfully.",
       icon: "success"
     });
   }
@@ -154,7 +260,7 @@ const AddPriceList = () => {
   
 
   return (
-    <div className='bg-white h-full mt-12'>
+    <div className='bg-white h-full '>
       <div className="container mx-auto py-8">
         
         <Box sx={{ width: '100%' }}>
@@ -172,7 +278,7 @@ const AddPriceList = () => {
           <h1 className="text-3xl font-bold"> </h1>
           <div className="flex items-center">
             <label htmlFor="date" className="mr-2">Date:</label>
-            <input
+              <input
               type="date"
               id="date"
               value={date}
@@ -190,65 +296,83 @@ const AddPriceList = () => {
             <h2 className="text-xl font-semibold mb-4">Chips</h2>
             <div className="grid grid-cols-2 gap-4">
            
-               <TextField
-                type='number'
-                label="11mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_11mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_11mm_unwashed', e.target.value)} // Handle input change
-              />
-                  <TextField
-                type='number'
-                label="11mm washed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_11mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_11mm_washed', e.target.value)} // Handle input change
-              />
-             <TextField
-                type='number'
-                label="9mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_9mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_9mm_unwashed', e.target.value)} // Handle input change
-              />
-              <TextField
-                type='number'
-                label="9mm washed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_9mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_9mm_washed', e.target.value)} // Handle input change
-              />
+            <TextField
+               type='number'
+              label="11mm Unwashed"
+              variant="outlined"
+              fullWidth
+              sx={{ maxWidth: '500px' }}
+              InputProps={{ endAdornment: <span>LKR</span> }}
+              value={inputs.chips_11mm_unwashed}
+              onChange={(e) => handleInputChange('chips_11mm_unwashed', e.target.value)}
+              error={!!formErrors.chips_11mm_unwashed}
+              helperText={formErrors.chips_11mm_unwashed}
+              color={isValidNumber(inputs.chips_11mm_unwashed) && inputs.chips_11mm_unwashed !== '' ? 'success' : (formErrors.chips_11mm_unwashed ? 'error' : 'warning')}
+               />
+           <TextField
+                 type='number'
+              label="11mm Washed"
+              variant="outlined"
+              fullWidth
+              sx={{ maxWidth: '500px' }}
+              InputProps={{ endAdornment: <span>LKR</span> }}
+              value={inputs.chips_11mm_washed}
+              onChange={(e) => handleInputChange('chips_11mm_washed', e.target.value)}
+              error={!!formErrors.chips_11mm_washed}
+              helperText={formErrors.chips_11mm_washed}
+              color={isValidNumber(inputs.chips_11mm_washed) && inputs.chips_11mm_washed !== '' ? 'success' : (formErrors.chips_11mm_washed ? 'error' : 'warning')}
+            />
                 <TextField
-                type='number'
-                label="7mm Unwashed"
-                variant="outlined"
-                fullWidth
-                sx={{ maxWidth: '500px' }}
-                InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_7mm_unwashed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_7mm_unwashed', e.target.value)} // Handle input change
-              />
+                    type='number'
+                    label="9mm Unwashed"
+                    variant="outlined"
+                    fullWidth
+                    sx={{ maxWidth: '500px' }}
+                    InputProps={{ endAdornment: <span>LKR</span> }}
+                    value={inputs.chips_9mm_unwashed}
+                    onChange={(e) => handleInputChange('chips_9mm_unwashed', e.target.value)}
+                    error={!!formErrors.chips_9mm_unwashed}
+                    helperText={formErrors.chips_9mm_unwashed}
+                    color={isValidNumber(inputs.chips_9mm_unwashed) && inputs.chips_9mm_unwashed !== '' ? 'success' : (formErrors.chips_9mm_unwashed ? 'error' : 'warning')}
+                  />
+            <TextField
+                   type='number'
+                    label="9mm Washed"
+                    variant="outlined"
+                    fullWidth
+                    sx={{ maxWidth: '500px' }}
+                    InputProps={{ endAdornment: <span>LKR</span> }}
+                    value={inputs.chips_9mm_washed}
+                    onChange={(e) => handleInputChange('chips_9mm_washed', e.target.value)}
+                    error={!!formErrors.chips_9mm_washed}
+                    helperText={formErrors.chips_9mm_washed}
+                    color={isValidNumber(inputs.chips_9mm_washed) && inputs.chips_9mm_washed !== '' ? 'success' : (formErrors.chips_9mm_washed ? 'error' : 'warning')}
+                  />
+                <TextField
+                  type='number'
+                  label="7mm Unwashed"
+                  variant="outlined"
+                  fullWidth
+                  sx={{ maxWidth: '500px' }}
+                  InputProps={{ endAdornment: <span>LKR</span> }}
+                  value={inputs.chips_7mm_unwashed}
+                  onChange={(e) => handleInputChange('chips_7mm_unwashed', e.target.value)}
+                  error={!!formErrors.chips_7mm_unwashed}
+                  helperText={formErrors.chips_7mm_unwashed}
+                  color={isValidNumber(inputs.chips_7mm_unwashed) && inputs.chips_7mm_unwashed !== '' ? 'success' : (formErrors.chips_7mm_unwashed ? 'error' : 'warning')}
+                />
               <TextField
                 type='number'
-                label="7mm washed"
+                label="7mm Washed"
                 variant="outlined"
                 fullWidth
                 sx={{ maxWidth: '500px' }}
                 InputProps={{ endAdornment: <span>LKR</span> }}
-                value={inputs.chips_7mm_washed} // Use value from inputs object
-                onChange={(e) => handleInputChange('chips_7mm_washed', e.target.value)} // Handle input change
+                value={inputs.chips_7mm_washed}
+                onChange={(e) => handleInputChange('chips_7mm_washed', e.target.value)}
+                error={!!formErrors.chips_7mm_washed}
+                helperText={formErrors.chips_7mm_washed}
+                color={isValidNumber(inputs.chips_7mm_washed) && inputs.chips_7mm_washed !== '' ? 'success' : (formErrors.chips_7mm_washed ? 'error' : 'warning')}
               />
               {/* Add other input fields similarly */}
             </div>
@@ -266,19 +390,26 @@ const AddPriceList = () => {
                   fullWidth
                   sx={{ maxWidth: '500px' }}
                   InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={inputs.cocopeat_hi_ec} // Use value from inputs object
-                  onChange={(e) => handleInputChange('cocopeat_hi_ec', e.target.value)} // Handle input change
-                />
+                  value={inputs.cocopeat_hi_ec}
+                  onChange={(e) => handleInputChange('cocopeat_hi_ec', e.target.value)}
+                  error={!!formErrors.cocopeat_hi_ec}
+                  helperText={formErrors.cocopeat_hi_ec}
+                  color={isValidNumber(inputs.cocopeat_hi_ec) && inputs.cocopeat_hi_ec !== '' ? 'success' : (formErrors.cocopeat_hi_ec ? 'error' : 'warning')}
+                  
+                  />
                   <TextField
-                  type='number'
-                  label="Low EC"
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={inputs.cocopeat_low_ec} // Use value from inputs object
-                  onChange={(e) => handleInputChange('cocopeat_low_ec', e.target.value)} // Handle input change
-                />
+                      type='number'
+                      label="Low EC"
+                      variant="outlined"
+                      fullWidth
+                      sx={{ maxWidth: '500px' }}
+                      InputProps={{ endAdornment: <span>LKR</span> }}
+                      value={inputs.cocopeat_low_ec}
+                      onChange={(e) => handleInputChange('cocopeat_low_ec', e.target.value)}
+                      error={!!formErrors.cocopeat_low_ec}
+                      helperText={formErrors.cocopeat_low_ec}
+                      color={isValidNumber(inputs.cocopeat_low_ec) && inputs.cocopeat_low_ec !== '' ? 'success' : (formErrors.cocopeat_low_ec ? 'error' : 'warning')}
+                      />
                 {/* Add other input fields similarly */}
               </div>
             </div>
@@ -291,17 +422,21 @@ const AddPriceList = () => {
             <h2 className="text-xl font-semibold mb-4">Deduction of Chips</h2>
             <div className="grid grid-cols-2 gap-4">
               {inputs.wastage_deduction_chips.map((value, index) => (
-                <TextField
-                type='number'
-                  key={index}
-                  label={`${index + 8}%`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={value}
-                  onChange={(e) => handleArrayInputChange('wastage_deduction_chips', index, e.target.value)}
-                />
+              <TextField
+              type='number'
+              key={index}
+              label={`${index + 8}%`}
+              variant="outlined"
+              fullWidth
+              sx={{ maxWidth: '500px' }}
+              InputProps={{ endAdornment: <span>LKR</span> }}
+              value={value}
+              onChange={(e) => handleArrayInputChange('wastage_deduction_chips', index, e.target.value)}
+              error={!!formErrors[`wastage_deduction_chips_${index}`]}
+              helperText={formErrors[`wastage_deduction_chips_${index}`]}
+              color={isValidNumber(value) && value !== '' ? 'success' : (formErrors[`wastage_deduction_chips_${index}`] ? 'error' : 'warning')}
+          />
+          
               ))}
             </div>
           </div>
@@ -315,16 +450,20 @@ const AddPriceList = () => {
             <div className="grid grid-cols-2 gap-4">
               {inputs.density.map((value, index) => (
                 <TextField
-                  type='number'
-                  key={index}
-                  label={`${index * 10 + 60}-${index * 10 + 69}`}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={value}
-                  onChange={(e) => handleArrayInputChange('density', index, e.target.value)}
-                />
+                type='number'
+                key={index}
+                label={`${index * 10 + 60}-${index * 10 + 69}`}
+                variant="outlined"
+                fullWidth
+                sx={{ maxWidth: '500px' }}
+                InputProps={{ endAdornment: <span>LKR</span> }}
+                value={value}
+                onChange={(e) => handleArrayInputChange('density', index, e.target.value)}
+                error={!!formErrors[`density_${index}`]}
+                helperText={formErrors[`density_${index}`]}
+                color={isValidNumber(value) && value !== '' ? 'success' : (formErrors[`density_${index}`] ? 'error' : 'warning')}
+            />
+            
               ))}
             </div>
           </div>
@@ -336,18 +475,22 @@ const AddPriceList = () => {
               <div className="grid grid-cols-2 gap-4">
                 {/* Iterate over inputs array to generate input fields */}
                 {inputs.sand.map((range, index) => (
-                      <TextField
-                        type='number'
-                        key={index}
-                        label={`${index * 5 + 20}-${index * 5 + 24}`}
-                        variant="outlined"
-                        fullWidth
-                        sx={{ maxWidth: '500px' }}
-                        InputProps={{ endAdornment: <span>LKR</span> }}
-                        value={range} // Use value from inputs array
-                        onChange={(e) => handleArrayInputChange('sand', index, e.target.value)} // Handle input change for array
-                      />
-                    ))}
+                          <TextField
+                          type='number'
+                              key={index}
+                              label={`${index * 5 + 20}-${index * 5 + 24}`}
+                              variant="outlined"
+                              fullWidth
+                              sx={{ maxWidth: '500px' }}
+                              InputProps={{ endAdornment: <span>LKR</span> }}
+                              value={range} // Changed 'value' to 'range'
+                              onChange={(e) => handleArrayInputChange('sand', index, e.target.value)}
+                              error={!!formErrors[`sand_${index}`]}
+                              helperText={formErrors[`sand_${index}`]}
+                              color={isValidNumber(range) && range !== '' ? 'success' : (formErrors[`sand_${index}`] ? 'error' : 'warning')}
+                          />
+                      ))}
+
                 </div> 
               </div>
         </div>
@@ -360,16 +503,20 @@ const AddPriceList = () => {
             <div className="grid grid-cols-2 gap-4">
               {inputs.wastage_price.map((item, index) => (
                 <TextField
-                  type='number'
-                  key={index}
-                  label={item.label}
-                  variant="outlined"
-                  fullWidth
-                  sx={{ maxWidth: '500px' }}
-                  InputProps={{ endAdornment: <span>LKR</span> }}
-                  value={item.value}
-                  onChange={(e) => handleObjectInputChange('wastage_price', index, e.target.value)}
-                />
+                type='number'
+                key={index}
+                label={item.label}
+                variant="outlined"
+                fullWidth
+                sx={{ maxWidth: '500px' }}
+                InputProps={{ endAdornment: <span>LKR</span> }}
+                value={item.value}
+                onChange={(e) => handleObjectInputChange('wastage_price', index, e.target.value)}
+                error={!!formErrors[`wastage_price_${index}`]}
+                helperText={formErrors[`wastage_price_${index}`]}
+                color={isValidNumber(item.value) && item.value !== '' ? 'success' : (formErrors[`wastage_price_${index}`] ? 'error' : 'warning')}
+            />
+            
               ))}
             </div>
           </div>

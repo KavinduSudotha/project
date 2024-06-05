@@ -9,6 +9,10 @@ import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
 import { useEffect } from 'react';
 import { usePageName } from '../../context/PageNameContext';
+import { jwtDecode } from "jwt-decode";
+import CalculateIcon from '@mui/icons-material/Calculate';
+
+
 
 const BackendBaseUrl = 'http://localhost:3001/buyraw'; // Update this with your actual backend base URL
 
@@ -18,6 +22,11 @@ const RawBuyForm = () => {
   useEffect(() => {
     setPage('To Buy Raw Material');
   }, []);
+
+  const storedData = localStorage.getItem("token");
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
 
   // Remaining code of RawBuyForm component as you provided...
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
@@ -61,6 +70,7 @@ const RawBuyForm = () => {
     try {
       // Call backend API to save data
       await axios.post(`${BackendBaseUrl}/buyrecord`, {
+        Userid,
         date,
         rawType,
         type,
@@ -92,7 +102,7 @@ const RawBuyForm = () => {
   };
 
   return (
-    <Box maxWidth={400} marginX={10}>
+    <Box maxWidth={400} marginX={10} paddingTop={3}>
       <TextField
         label="Date"
         type="date"
@@ -162,11 +172,13 @@ const RawBuyForm = () => {
         </>
       )}
       <Button
+      startIcon={<CalculateIcon />}
         variant="contained"
         color="primary"
         onClick={handleCalculate}
         disabled={!isCalculateButtonEnabled()}
         fullWidth
+        sx={{  '&:hover': { backgroundColor: 'darkblue' } }}
       >
         Calculate
       </Button>

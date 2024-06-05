@@ -1,5 +1,27 @@
 // services/jobService.js
 const connection = require('../config/DBconnect');
+const { format } = require('date-fns');
+
+const getJobs = async (req, res) => {
+    const query = `
+        SELECT 
+            job_id, 
+            DATE_FORMAT(due_date, '%Y-%m-%d') as due_date, 
+            chip_type, 
+            peat_type, 
+            address, 
+            status,
+            note 
+        FROM job
+    `;
+
+    connection.query(query, (error, results) => {
+        if (error) {
+            return res.status(500).json({ error: error.message });
+        }
+        res.json(results);
+    });
+};
 
 async function getAllJobs() {
   return new Promise((resolve, reject) => {
@@ -56,4 +78,8 @@ async function deleteJob(jobId) {
   });
 }
 
-module.exports = { getAllJobs, searchJobs, updateJob, deleteJob };
+
+
+
+
+module.exports = { getAllJobs, searchJobs, updateJob, deleteJob,getJobs };

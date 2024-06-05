@@ -8,6 +8,8 @@ const userawRoutes = require('./route/userawrout');
 const inventory = require('./route/inventoryrout');
 const wastage = require('./route/wastagerout');
 const buyraw = require('./route/buyrawrout');
+const Admin = require('./route/adminrout'); 
+const Home = require('./route/homerout');
 
 const app = express();
 const PORT = 3001;
@@ -26,6 +28,8 @@ app.use('/userawrout', userawRoutes);
 app.use('/Inventory',inventory)
 app.use('/wastage',wastage)
 app.use('/buyraw',buyraw)
+app.use('/admin', Admin);
+app.use('/home', Home);
  // Mount the authentication routes
 // app.use("/", require("./route/authloginrout"));
 

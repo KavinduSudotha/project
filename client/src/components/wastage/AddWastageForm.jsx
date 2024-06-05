@@ -1,9 +1,7 @@
-// AddWastageForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Autocomplete, Box } from '@mui/material';
 import { usePageName } from '../../context/PageNameContext';
-
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
@@ -54,7 +52,7 @@ const AddWastageForm = () => {
   };
 
   return (
-    <Box className="max-w-md mx-auto mt-20 p-4 bg-white shadow-md rounded">
+    <Box className="max-w-md mx-auto my-6 p-8 bg-white shadow-md rounded">
       <TextField
         label="Date"
         value={date}
@@ -63,7 +61,7 @@ const AddWastageForm = () => {
         margin="normal"
       />
       <Autocomplete
-        className="mt-4"
+        className="my-5"
         fullWidth
         options={wastageTypes}
         value={type}
@@ -71,7 +69,7 @@ const AddWastageForm = () => {
         renderInput={(params) => <TextField {...params} label="Type" />}
       />
       <TextField
-        className="mt-4"
+        className="my-5"
         label="Quantity"
         type="number"
         value={quantity}
@@ -79,7 +77,7 @@ const AddWastageForm = () => {
         fullWidth
       />
       <Button
-        className="mt-4"
+        sx={{ mt: 2 }} // Add margin-top using MUI sx prop
         variant="contained"
         color="primary"
         onClick={handleAddWastage}

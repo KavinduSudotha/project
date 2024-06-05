@@ -14,6 +14,7 @@ import {
   Typography,
   Select,
   MenuItem,
+  Button,
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import Swal from 'sweetalert2';
@@ -30,12 +31,10 @@ const statusOptions = [
 ];
 
 function JobTable() {
-
   const { setPage } = usePageName();
-
-    useEffect(() => {
-      setPage('Jobs');
-    }, []);
+  useEffect(() => {
+    setPage('Jobs');
+  }, []);
 
   const [jobs, setJobs] = useState([]);
 
@@ -82,17 +81,11 @@ function JobTable() {
             <TableCell>Customer</TableCell>
             <TableCell>Note</TableCell>
             <TableCell>Created by</TableCell>
-            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {jobs.map((job) => (
-            <JobRow
-              key={job.job_id}
-              job={job}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
+            <JobRow key={job.job_id} job={job} onDelete={handleDelete} onUpdate={handleUpdate} />
           ))}
         </TableBody>
       </Table>
@@ -110,7 +103,6 @@ function JobRow({ job, onDelete, onUpdate }) {
 
     try {
       await axios.put(`http://localhost:3001/jobrout/${job.job_id}`, { status: newStatus });
-      onUpdate(job.job_id, newStatus);
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -118,7 +110,7 @@ function JobRow({ job, onDelete, onUpdate }) {
 
   return (
     <>
-      <TableRow>
+      <TableRow sx={{ backgroundColor: '#f3f3f3' }}>
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -139,71 +131,79 @@ function JobRow({ job, onDelete, onUpdate }) {
         <TableCell>{job.customer_name}</TableCell>
         <TableCell>{job.note}</TableCell>
         <TableCell>{job.employee_id}</TableCell>
-        <TableCell>
-          <button onClick={() => onUpdate(job)} className="bg-green-500 mx-2 px-3 py-1 rounded-lg">
-            Update
-          </button>
-          <button onClick={() => onDelete(job.job_id)} className="bg-red-500 mx-2 px-3 py-1 rounded-lg">
-            Delete
-          </button>
-        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                Sheet Details
-              </Typography>
-              <Table size="small" aria-label="sheet details">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Height</TableCell>
-                    <TableCell>Width</TableCell>
-                    <TableCell>Length</TableCell>
-                    <TableCell>Ratio Chips</TableCell>
-                    <TableCell>Ratio Peat</TableCell>
-                    <TableCell>Quantity</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{job.height}</TableCell>
-                    <TableCell>{job.width}</TableCell>
-                    <TableCell>{job.length}</TableCell>
-                    <TableCell>{job.ratio_chips}</TableCell>
-                    <TableCell>{job.ratio_peat}</TableCell>
-                    <TableCell>{job.quantity}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              <Typography variant="h6" gutterBottom component="div">
-              Transport Details
-              </Typography>
-              <Table size="small" aria-label="driver details">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>container_size</TableCell>
-                    <TableCell>sheet_per_pallet</TableCell>
-                    <TableCell>pallets_per_container</TableCell>
-                    <TableCell>Transport Company </TableCell>
-                    <TableCell>driver_name</TableCell>
-                    <TableCell>vehicle_number</TableCell>
-                    <TableCell>production_logistics_manager_id</TableCell>
-                   </TableRow>
+              <Box sx={{ background: 'linear-gradient(to bottom right, #FFFFFF, #E0E0E0)' }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Sheet Details
+                </Typography>
+                <Table size="small" aria-label="sheet details">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Height</TableCell>
+                      <TableCell>Width</TableCell>
+                      <TableCell>Length</TableCell>
+                      <TableCell>Ratio Chips</TableCell>
+                      <TableCell>Ratio Peat</TableCell>
+                      <TableCell>Quantity</TableCell>
+                    </TableRow>
                   </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>{job.container_size}</TableCell>
-                    <TableCell>{job.sheet_per_pallet}</TableCell>
-                    <TableCell>{job.pallets_per_container}</TableCell>
-                    <TableCell>{job.transport_company}</TableCell>
-                    <TableCell>{job.driver_name}</TableCell>
-                    <TableCell>{job.vehicle_number}</TableCell>
-                    <TableCell>{job.production_logistics_manager_id}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>{job.height}</TableCell>
+                      <TableCell>{job.width}</TableCell>
+                      <TableCell>{job.length}</TableCell>
+                      <TableCell>{job.ratio_chips}</TableCell>
+                      <TableCell>{job.ratio_peat}</TableCell>
+                      <TableCell>{job.quantity}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+              <Box sx={{ background: `linear-gradient(to bottom, #FFFFFF, #FFFFFF), linear-gradient(to bottom, #007bff, #007bff)`,
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  border: '1px solid #FFFFFF',
+                  borderRadius: '4px',}}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Transport Details
+                </Typography>
+                <Table size="small" aria-label="driver details">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>container_size</TableCell>
+                      <TableCell>sheet_per_pallet</TableCell>
+                      <TableCell>pallets_per_container</TableCell>
+                      <TableCell>Transport Company </TableCell>
+                      <TableCell>driver_name</TableCell>
+                      <TableCell>vehicle_number</TableCell>
+                      <TableCell>production_logistics_manager_id</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>{job.container_size}</TableCell>
+                      <TableCell>{job.sheet_per_pallet}</TableCell>
+                      <TableCell>{job.pallets_per_container}</TableCell>
+                      <TableCell>{job.transport_company}</TableCell>
+                      <TableCell>{job.driver_name}</TableCell>
+                      <TableCell>{job.vehicle_number}</TableCell>
+                      <TableCell>{job.production_logistics_manager_id}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+              <Box>
+                <Button onClick={() => onUpdate(job.job_id)} variant="contained" color="primary" sx={{ marginRight: 2 }}>
+                  Update
+                </Button>
+                <Button onClick={() => onDelete(job.job_id)} variant="contained" color="error">
+                  Delete
+                </Button>
+              </Box>
             </Box>
           </Collapse>
         </TableCell>

@@ -12,18 +12,18 @@ const RawTable = () => {
   }, []);
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer component={Paper} sx={{ maxHeight: 850, overflow: 'auto' }}>
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>Use ID</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Released Weight</TableCell>
-            <TableCell>Job ID</TableCell>
-            <TableCell>Batch ID</TableCell>
-            <TableCell>Summary ID</TableCell>
-            <TableCell>Employee ID</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Use ID</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Date</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Type</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Released Weight</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Job ID</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Batch ID</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Summary ID</TableCell>
+            <TableCell sx={{ backgroundColor: 'lightblue' }}>Employee ID</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

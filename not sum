@@ -1,0 +1,151 @@
+i am developing web base invenoty management system for thuselco pvtltd, this company making coco sheet and the export that sheet to corresponding client.
+
+for that  company gettiong raw material from local supliyers 
+this are the raw material types 
+chips_11mm_unwashed
+cocopeat_hi_ec
+cocopeat_hi_ec
+chips_11mm_unwashed
+cocopeat_hi_ec
+chips_11mm_unwashed
+chips_11mm_unwashed
+chips_9mm_washed
+chips_9mm_washed
+cocopeat_hi_ec
+cocopeat_hi_ec
+
+that raw have some constrains it mean they are add some qulity mesers for that raw, if exist that qulity levels the reduse the buying price if that raw more quality then add some extra values. we maintain that pris by weekly price list this is table for that 
+
+== Table structure for table weeklypricelist
+
+|------
+|Column|Type|Null|Default
+|------
+|//**id**//|int(5)|No|
+|date|date|No|
+|chips_11mm_unwashed|float|Yes|NULL
+|chips_11mm_washed|float|Yes|NULL
+|chips_9mm_unwashed|float|Yes|NULL
+|chips_9mm_washed|float|Yes|NULL
+|chips_7mm_unwashed|float|Yes|NULL
+|chips_7mm_washed|float|Yes|NULL
+|cocopeat_hi_ec|float|Yes|NULL
+|cocopeat_low_ec|float|Yes|NULL
+|wastage_deduction_chips_8|float|Yes|NULL
+|wastage_deduction_chips_9|float|Yes|NULL
+|wastage_deduction_chips_10|float|Yes|NULL
+|wastage_deduction_chips_11|float|Yes|NULL
+|wastage_deduction_chips_12|float|Yes|NULL
+|wastage_deduction_chips_13|float|Yes|NULL
+|wastage_deduction_chips_14|float|Yes|NULL
+|wastage_deduction_chips_15|float|Yes|NULL
+|wastage_deduction_chips_16|float|Yes|NULL
+|wastage_deduction_chips_17|float|Yes|NULL
+|wastage_deduction_chips_18|float|Yes|NULL
+|wastage_deduction_chips_19|float|Yes|NULL
+|wastage_deduction_chips_20|float|Yes|NULL
+|density_60_69|float|Yes|NULL
+|density_70_79|float|Yes|NULL
+|density_80_89|float|Yes|NULL
+|density_90_99|float|Yes|NULL
+|density_100_109|float|Yes|NULL
+|sand_20_24|float|Yes|NULL
+|sand_25_29|float|Yes|NULL
+|sand_30_34|float|Yes|NULL
+|sand_35_39|float|Yes|NULL
+|sand_40_44|float|Yes|NULL
+|sand_45_49|float|Yes|NULL
+|sand_50_54|float|Yes|NULL
+|wastage_price_cocopeat_fiber|float|Yes|NULL
+|wastage_price_cocopeat_fine_dust|float|Yes|NULL
+|wastage_price_10c_sieved|float|Yes|NULL
+|wastage_price_10c_not_sieved|float|Yes|NULL
+|wastage_price_10c_upper_part|float|Yes|NULL
+|employee_id|varchar(8)|No|
+== Dumping data for table weeklypricelist
+
+|2|2024-05-08|10|20|15|25|12|22|30|35|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|60|70|80|90|100|20|25|30|35|40|45|50|5|10|15
+|3|2024-05-14|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|2|0000
+|4|2024-05-07|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|77|7|7|7|7|77|7|7|2|7|7|7|7|7|7|7|7|7|7|77|0000
+|5|2024-05-08|10|20|15|25|12|22|30|35|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|60|70|80|90|100|20|25|30|35|40|45|50|5|10|15
+|6|2024-05-13|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|77|7|7|7|7|77|7|7|2|7|7|7|7|7|7|7|7|7|7|77|0000
+|7|2024-05-15|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|7|77|7|7|NULL|NULL|NULL|NULL|NULL|NULL|NULL|NULL|NULL|NULL|NULL|NULL|2|7|7|7|77|0000
+|10|2024-04-29|9|9|9|99|9|9|9|9|9|9|9|9|9|9|9|9|9|9|9|9|99|9|7|99|7|7|2|7|7|7|7|7|7|9|9|9|9|9|0000
+|11|2024-05-08|80|20|15|25|12|22|30|35|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|60|70|80|90|100|20|25|30|35|40|45|50|5|10|15
+|12|2024-05-07|40|9|9|99|9|9|9|9|7|7|7|7|2|0|-2|7|7|7|77|7|7|9|2|-2|-3|7|2|3|0|-2|-4|7|7|20|89|78|98|99|0000
+|13|2024-05-12|37|40|35|38|35|38|62|60|0|0|0|1|1|1|2|2|2|3|3|4|4|-2|-1|0|1|2|-2|-1|0|1|2|3|4|10|35|20|25|40|0000
+
+we alwais get last record to mesure quality of chip and give price for that
+after that we buy raw 
+
+ system records this buying records
+ this is the table for that 
+ == Table structure for table buyraw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**buyid**//|int(10)|No|
+|date|date|No|
+|type|varchar(22)|No|
+|employeeid|varchar(8)|No|
+|wastagechip|int(3)|Yes|NULL
+|densitypeat|int(3)|Yes|NULL
+|sandpeat|int(3)|Yes|NULL
+|suggestprice|int(11)|No|
+|buyprice|int(11)|No|
+|quantity|int(11)|No|
+== Dumping data for table buyraw
+
+|13|2024-05-18|chips_11mm_unwashed|1111|14|0|0|35|36|98
+|14|0000-00-00|chips_11mm_washed|1111|17|0|0|37|35|199
+|15|0000-00-00|chips_7mm_unwashed|1111|15|0|0|33|33|250
+|16|2024-05-21|cocopeat_hi_ec|1111|0|12|8|66|65|200
+|17|0000-00-00|cocopeat_low_ec|1111|0|12|9|64|65|199
+|18|2024-05-25|chips_9mm_unwashed|1111|13|0|0|34|36|105
+|19|2024-05-28|chips_11mm_unwashed|1111|15|0|0|35|36|100
+|20|2024-05-29|chips_9mm_washed|1111|15|0|0|36|35|249
+|21|2024-05-29|chips_7mm_washed|1111|16|0|0|36|36|500
+|22|2024-05-29|cocopeat_hi_ec|1111|0|2|1|66|69|100
+|23|2024-05-29|chips_11mm_washed|1111|16|0|0|38|39|100
+|24|2024-05-30|chips_9mm_washed|1111|16|0|0|36|38|149
+|25|2024-05-30|cocopeat_hi_ec|1111|0|12|6|66|68|100
+|26|2024-06-02|cocopeat_low_ec|1111|0|15|9|64|64|100
+|27|2024-06-02|chips_9mm_unwashed|1111|18|0|0|32|32|250
+|28|2024-06-02|cocopeat_hi_ec|1111|0|18|18|66|66|100
+|29|2024-06-02|chips_9mm_washed|1111|17|0|0|35|35|250
+
+
+ the useraw mean after taht  getting that raw the sent to storage ,
+ after that to create sheet raw get back from storage 
+ that record keep here 
+
+== Table structure for table use_raw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**use_id**//|int(11)|No|
+|date|int(11)|No|
+|type|varchar(20)|No|
+|released_weight|int(11)|No|
+|job_id|int(11)|No|
+|batch_id|int(11)|No|
+|employee_id|int(11)|No|
+== Dumping data for table use_raw
+
+|8|2024|chips_11mm_unwashed|40|14|13|0
+|9|2024|cocopeat_hi_ec|150|14|16|0
+|10|2024|cocopeat_hi_ec|20|14|16|0
+|11|2024|chips_11mm_unwashed|8|14|13|0
+|12|2024|cocopeat_hi_ec|15|14|16|0
+|13|2024|chips_11mm_unwashed|50|14|19|0
+|14|2024|chips_11mm_unwashed|25|14|19|0
+|15|2024|chips_9mm_washed|50|18|24|0
+|16|2024|chips_9mm_washed|20|18|24|0
+|17|2024|cocopeat_hi_ec|50|18|25|0
+|18|2024|cocopeat_hi_ec|20|18|22|0
+== Table structure for table wastage
+
+
+when making sheet there are generate some wastage `

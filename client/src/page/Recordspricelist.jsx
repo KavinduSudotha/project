@@ -130,7 +130,7 @@ const RecordsPricelist = () => {
   ];
 
   return (
-    <div style={{ height: 400, width: '100%' }} className='mt-16'>
+    <div style={{ height: 400, width: '100%' }} className='mt-2 mx-5'>
       <Box sx={{ width: '100%', typography: 'body1', '& .MuiDataGrid-root': { border: 'none' } }}>
         <style>{styles}</style>
         <DataGrid

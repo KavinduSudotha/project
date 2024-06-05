@@ -40,7 +40,7 @@ const ViewPriceList = () => {
   }, []);
 
   return (
-    <div className='mt-20'>
+    <div className='ml-16 mt-2'>
       <Container maxWidth="auto">
         {priceList ? (
           <>
@@ -48,7 +48,7 @@ const ViewPriceList = () => {
               <Button 
                 variant="contained" 
                 component={Link} 
-                to="/AddPriceList"
+                to="/director-dashboard/AddPriceList"
                 sx={{ '&:hover': { backgroundColor: 'green' } }}
               >
                 <PostAddIcon />
@@ -57,7 +57,7 @@ const ViewPriceList = () => {
               <Button 
                 variant="contained" 
                 component={Link} 
-                to="/RecordsPricelist"
+                to="/director-dashboard/RecordsPricelist"
                 sx={{ '&:hover': { backgroundColor: 'secondary.dark' } }}
               >
                 <PlaylistAddCheckIcon />

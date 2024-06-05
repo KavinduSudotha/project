@@ -132,4 +132,17 @@ const insertInventoryData = () => {
 // Schedule the task to run every 8 hours
 cron.schedule('0 */8 * * *', insertInventoryData);
 
-module.exports = { getInventorySummary };
+
+const homechart = (req, res) => {
+  const query = `SELECT * FROM inventory ORDER BY date DESC, time DESC LIMIT 1`;
+  connection.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(result[0]);
+  });
+};
+
+
+
+module.exports = { getInventorySummary, insertInventoryData, homechart};

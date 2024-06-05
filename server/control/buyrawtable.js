@@ -1,7 +1,7 @@
 const db = require('../config/DBconnect');
 
 const Rawbuytable = (req, res) => {
-  const sql = 'SELECT * FROM buyraw';
+  const sql = 'SELECT * FROM buyraw ORDER BY buyid DESC';
   db.query(sql, (err, results) => {
     if (err) {
       console.error('Error fetching buy raw data:', err);

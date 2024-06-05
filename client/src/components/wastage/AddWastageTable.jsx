@@ -31,7 +31,7 @@ const EnhancedTableHead = () => {
     <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
-          <TableCell key={headCell.id}>{headCell.label}</TableCell>
+          <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }} key={headCell.id}>{headCell.label}</TableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -76,7 +76,7 @@ const AddWastageTable = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row.waste_id}>
-                    <TableCell>{row.date}</TableCell>
+                    <TableCell  >{row.date}</TableCell>
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
                   </TableRow>
@@ -85,7 +85,7 @@ const AddWastageTable = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[26]}
           component="div"
           count={wastageData.length}
           rowsPerPage={rowsPerPage}

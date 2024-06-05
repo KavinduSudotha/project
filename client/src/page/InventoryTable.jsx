@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MUIDataTable from 'mui-datatables';
 import { usePageName } from '../context/PageNameContext';
+import LineGraph from '../components/home/LineGraph';
 
 const InventoryTable = () => {
     const { setPage } = usePageName();
@@ -37,10 +38,15 @@ const InventoryTable = () => {
         'total_weight_chips_7mm_washed',
         'total_weight_cocopeat_hi_ec',
         'total_weight_cocopeat_low_ec',
+        'wastage_price_cocopeat_fiber', 
+        'wastage_price_cocopeat_fine_dust',  
+        'wastage_price_10c_sieved', 
+        'wastage_price_10c_not_sieved', 
+        'wastage_price_10c_upper_part', 
+        'total_weight_raw', 
+        'total_weight_wastage',
         'total_weight',
         'free_space',
-        'total_weight_raw', // New column for total weight of raw materials
-        'total_weight_wastage', // New column for total weight of wastage
     ];
 
     const options = {
@@ -49,6 +55,18 @@ const InventoryTable = () => {
 
     return (
         <div className="p-4 ml-20">
+            <div className="flex w-full">
+                <div className="flex w-full p-2">
+                    <div className="flex  w-2/5 ">
+                        <div className="flex flex-col w-3/6 p-2">
+                            <div className="h-full">
+                                <LineGraph />
+                            </div>
+                        </div>
+                    </div>
+
+                </div> </div>
+
             <MUIDataTable
                 title="Inventory Summary"
                 data={inventoryData}
