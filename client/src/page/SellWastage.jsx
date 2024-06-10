@@ -9,7 +9,7 @@ const sellwastage = () => {
   };
 
   return (
-    <Grid container spacing={2} padding={2} marginTop={6} marginLeft={16} >
+    <Grid container spacing={2} padding={2} marginTop={"2vh"} marginX={"7vh"} >
       <Grid item xs={12} md={4}>
         <SellWastageForm fetchWastageData={fetchWastageData} />
       </Grid>

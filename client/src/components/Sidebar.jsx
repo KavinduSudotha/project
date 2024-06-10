@@ -17,14 +17,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import LogoutIcon from '@mui/icons-material/Logout';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
+import LogoutIcon from "@mui/icons-material/Logout";
+import Badge from "@mui/material/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MoreIcon from "@mui/icons-material/MoreVert";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import HomeIcon from "@mui/icons-material/Home";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -36,18 +36,14 @@ import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { jwtDecode } from "jwt-decode";
-import {
-  FiLogOut,
-  FiSettings,
-  FiUsers,
-} from "react-icons/fi"; // Importing icons from react-icons
+import { FiLogOut, FiSettings, FiUsers } from "react-icons/fi"; // Importing icons from react-icons
 
 const drawerWidth = 240; // Setting the drawer width
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  alignItems: 'flex-start',
+  alignItems: "flex-start",
   paddingTop: theme.spacing(1),
   paddingBottom: theme.spacing(1),
-  '@media all': {
+  "@media all": {
     minHeight: 64,
   },
 }));
@@ -129,23 +125,23 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: `-${drawerWidth}px`,
     ...(open && {
-      transition: theme.transitions.create('margin', {
+      transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
     }),
-  }),
+  })
 );
 
 // Main component function
@@ -166,58 +162,165 @@ export default function MiniDrawer() {
 
   // Menu items data
   const storedData = localStorage.getItem("token");
-  const parsedData = JSON.parse(storedData);
-  const decodedToken = jwtDecode(parsedData.token);
-  const UserType = decodedToken.role;
+  let UserType = "";
+  if (storedData) {
+    const parsedData = JSON.parse(storedData);
+    const decodedToken = jwtDecode(parsedData.token);
+    UserType = decodedToken.role;
+  }
 
   switch (UserType) {
     case "Director":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/director-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/director-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/director-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/director-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/director-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/director-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/director-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/director-dashboard/updatejob" },
-        { name: "Admins", icon: SupervisorAccountIcon, link: "/director-dashboard/admin" },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/director-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/director-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/director-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/director-dashboard/addwastagepage",
+        },
+        {
+          name: "Sell wastage",
+          icon: DeleteSweepIcon,
+          link: "/director-dashboard/sellwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/director-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/director-dashboard/updatejob",
+        },
+        {
+          name: "Admins",
+          icon: SupervisorAccountIcon,
+          link: "/director-dashboard/admin",
+        },
         { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Manager":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/Manager-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Manager-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Manager-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Manager-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Manager-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/Manager-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Manager-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Manager-dashboard/updatejob" },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Manager-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/Manager-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Manager-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Manager-dashboard/addwastagepage",
+        },
+        {
+          name: "Sell wastage",
+          icon: DeleteSweepIcon,
+          link: "/Manager-dashboard/sellwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Manager-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Manager-dashboard/updatejob",
+        },
         { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Supervisor":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/Supervisor-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Supervisor-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Supervisor-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Supervisor-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Supervisor-dashboard/addwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Supervisor-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Supervisor-dashboard/updatejob" },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Supervisor-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/Supervisor-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Supervisor-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Supervisor-dashboard/addwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Supervisor-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Supervisor-dashboard/updatejob",
+        },
         { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Employer":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/Employer-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Employer-dashboard/pricelist" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Employer-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Employer-dashboard/addwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Employer-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Employer-dashboard/updatejob" },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Employer-dashboard/pricelist",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Employer-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Employer-dashboard/addwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Employer-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Employer-dashboard/updatejob",
+        },
         { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
@@ -248,42 +351,43 @@ export default function MiniDrawer() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem> {/* Added Logout MenuItem */}
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>{" "}
+      {/* Added Logout MenuItem */}
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
@@ -312,9 +416,13 @@ export default function MiniDrawer() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}> {/* Removed zIndex here */}
+    <Box sx={{ display: "flex" }}>
+      {" "}
+      {/* Removed zIndex here */}
       <CssBaseline /> {/* Adding baseline CSS for styling */}
-      <AppBar position="fixed" open={open}> {/* Removed zIndex here */}
+      <AppBar position="fixed" open={open}>
+        {" "}
+        {/* Removed zIndex here */}
         <StyledToolbar>
           <IconButton
             color="inherit"
@@ -332,8 +440,12 @@ export default function MiniDrawer() {
             {pageName} {/* Displaying the current page name */}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
               <Badge badgeContent={4} color="error">
                 <NotificationsIcon />
               </Badge>
@@ -350,7 +462,7 @@ export default function MiniDrawer() {
               <AccountCircle />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"
@@ -412,9 +524,10 @@ export default function MiniDrawer() {
           ))}
         </List>
       </Drawer>
-      <Main open={open}> {/* Added Main component */}
+      <Main open={open}>
+        {" "}
+        {/* Added Main component */}
         {/* <DrawerHeader /> */}
-       
       </Main>
     </Box>
   );

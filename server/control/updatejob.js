@@ -1,85 +1,56 @@
-// services/jobService.js
 const connection = require('../config/DBconnect');
-const { format } = require('date-fns');
 
-const getJobs = async (req, res) => {
-    const query = `
-        SELECT 
-            job_id, 
-            DATE_FORMAT(due_date, '%Y-%m-%d') as due_date, 
-            chip_type, 
-            peat_type, 
-            address, 
-            status,
-            note 
-        FROM job
-    `;
-
-    connection.query(query, (error, results) => {
-        if (error) {
-            return res.status(500).json({ error: error.message });
-        }
-        res.json(results);
-    });
+// Function to get all jobs
+const getJobs = (req, res) => {
+  connection.query('SELECT * FROM job', (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(results);
+  });
 };
 
-async function getAllJobs() {
-  return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM job', (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
+// Function to update job status
+const updateJobStatus = (req, res) => {
+  const { job_id } = req.params;
+  const { status } = req.body;
+  
+  connection.query('UPDATE job SET status = ? WHERE job_id = ?', [status, job_id], (error) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.status(200).json({ message: 'Job status updated successfully' });
   });
-}
+};
 
-async function searchJobs(searchBy, keyword) {
-  let query;
-  if (searchBy === 'job_id') {
-    query = 'SELECT * FROM job WHERE job_id = ?';
-  } else if (searchBy === 'status') {
-    query = 'SELECT * FROM job WHERE status = ?';
-  }
-
-  return new Promise((resolve, reject) => {
-    connection.query(query, [keyword], (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
+// Function to delete a job
+const deleteJob = (req, res) => {
+  const { job_id } = req.params;
+  
+  connection.query('DELETE FROM job WHERE job_id = ?', [job_id], (error) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.status(200).json({ message: 'Job deleted successfully' });
   });
-}
+};
 
-async function updateJob(jobId, updatedFields) {
-  return new Promise((resolve, reject) => {
-    connection.query('UPDATE job SET ? WHERE job_id = ?', [updatedFields, jobId], (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
+// Function to update full job details
+const updateJobDetails = (req, res) => {
+  const { job_id } = req.params;
+  const jobDetails = req.body;
+
+  connection.query('UPDATE job SET ? WHERE job_id = ?', [jobDetails, job_id], (error) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.status(200).json({ message: 'Job details updated successfully' });
   });
-}
+};
 
-async function deleteJob(jobId) {
-  return new Promise((resolve, reject) => {
-    connection.query('DELETE FROM job WHERE job_id = ?', [jobId], (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
-
-
-
-
-
-module.exports = { getAllJobs, searchJobs, updateJob, deleteJob,getJobs };
+module.exports = {
+  getJobs,
+  updateJobStatus,
+  deleteJob,
+  updateJobDetails,
+};

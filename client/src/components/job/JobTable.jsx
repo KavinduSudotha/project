@@ -1,66 +1,286 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
-import {  Card,CardContent,TableRow, TableCell, IconButton, Collapse, Box, Typography, Select, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
 import Swal from 'sweetalert2';
-import { usePageName } from '../../context/PageNameContext';
-import { jwtDecode } from "jwt-decode";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-const statusOptions = [
-  'unstarted',
-  'started',
-  'Gathering raw',
-  'Processing',
-  'Hold',
-  'completed',
-  'cancelled',
-];
+function createData(job_id, created_date, due_date, customer_name, address, chip_type, peat_type, status, note, sheetDetails, transportDetails) {
+  return {
+    job_id,
+    created_date,
+    due_date,
+    customer_name,
+    address,
+    chip_type,
+    peat_type,
+    status,
+    note,
+    sheetDetails,
+    transportDetails,
+  };
+}
 
-function JobTable() {
-  const { setPage } = usePageName();
-  useEffect(() => {
-    setPage('Jobs');
-  }, []);
+function Row(props) {
 
-  const [jobs, setJobs] = useState([]);
+  const { row, updateStatus, deleteJob, updateJob } = props;
+  const [open, setOpen] = React.useState(false);
+  const [status, setStatus] = React.useState(row.status);
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
+  const [editedRow, setEditedRow] = React.useState({ ...row });
 
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+    updateStatus(row.job_id, event.target.value);
+  };
 
-
-
-  useEffect(() => {
-    async function fetchJobs() {
-      try {
-        const response = await axios.get('http://localhost:3001/jobrout/jobs');
-        setJobs(response.data);
-      } catch (error) {
-        console.error('Error fetching jobs:', error);
+  const handleDelete = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteJob(row.job_id);
+        Swal.fire('Deleted!', 'Your job has been deleted.', 'success');
       }
-    }
+    });
+  };
 
-    fetchJobs();
+  const handleEdit = () => {
+    setEditModalOpen(true);
+    Swal.fire({
+      title: 'Edit Job',
+      html: `
+        <form id="editForm">
+          <input id="customer_name" class="swal2-input" placeholder="Customer Name" value="${editedRow.customer_name}">
+          <input id="address" class="swal2-input" placeholder="Address" value="${editedRow.address}">
+          <input id="chip_type" class="swal2-input" placeholder="Chip Type" value="${editedRow.chip_type}">
+          <input id="peat_type" class="swal2-input" placeholder="Peat Type" value="${editedRow.peat_type}">
+          <input id="note" class="swal2-input" placeholder="Note" value="${editedRow.note}">
+        </form>
+      `,
+      preConfirm: () => {
+        const customer_name = Swal.getPopup().querySelector('#customer_name').value;
+        const address = Swal.getPopup().querySelector('#address').value;
+        const chip_type = Swal.getPopup().querySelector('#chip_type').value;
+        const peat_type = Swal.getPopup().querySelector('#peat_type').value;
+        const note = Swal.getPopup().querySelector('#note').value;
+
+        if (!customer_name || !address || !chip_type || !peat_type) {
+          Swal.showValidationMessage(`Please fill in all fields`);
+        }
+
+        return { customer_name, address, chip_type, peat_type, note };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedData = result.value;
+        setEditedRow({ ...editedRow, ...updatedData });
+        updateJob({ ...editedRow, ...updatedData });
+        setEditModalOpen(false);
+      }
+    });
+  };
+
+  return (
+    <React.Fragment>
+      <TableRow className="bg-gray-100">
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell>{row.job_id}</TableCell>
+        <TableCell>{row.created_date}</TableCell>
+        <TableCell>{row.due_date}</TableCell>
+        <TableCell>{row.customer_name}</TableCell>
+        <TableCell>{row.address}</TableCell>
+        <TableCell>{row.chip_type}</TableCell>
+        <TableCell>{row.peat_type}</TableCell>
+        <TableCell>
+          <Select value={status} onChange={handleStatusChange}>
+            {['unstarted', 'started', 'Gathering raw', 'Processing', 'Hold', 'completed', 'cancelled'].map((status) => (
+              <MenuItem key={status} value={status}>
+                {status}
+              </MenuItem>
+            ))}
+          </Select>
+        </TableCell>
+        <TableCell>
+          <IconButton aria-label="delete" onClick={handleDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
+        <TableCell>
+          <IconButton aria-label="edit" onClick={handleEdit}>
+            <EditIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box className="m-2">
+              <Typography variant="h6" gutterBottom component="div">
+                Sheet Details
+              </Typography>
+              <Table size="small" aria-label="sheet details">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Height</TableCell>
+                    <TableCell>Width</TableCell>
+                    <TableCell>Length</TableCell>
+                    <TableCell>Ratio Chips</TableCell>
+                    <TableCell>Ratio Peat</TableCell>
+                    <TableCell>Weight</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Sheet per Pallet</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{row.height ?? 'N/A'}</TableCell>
+                    <TableCell>{row.width ?? 'N/A'}</TableCell>
+                    <TableCell>{row.length ?? 'N/A'}</TableCell>
+                    <TableCell>{row.ratio_chips ?? 'N/A'}</TableCell>
+                    <TableCell>{row.ratio_peat ?? 'N/A'}</TableCell>
+                    <TableCell>{row.weight ?? 'N/A'}</TableCell>
+                    <TableCell>{row.quantity ?? 'N/A'}</TableCell>
+                    <TableCell>{row.sheet_per_pallet ?? 'N/A'}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+
+              <Typography variant="h6" gutterBottom component="div" className="mt-4">
+                Transport Details
+              </Typography>
+              <Table size="small" aria-label="transport details">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Container Size</TableCell>
+                    <TableCell>Pallets per Container</TableCell>
+                    <TableCell>Driver Name</TableCell>
+                    <TableCell>Vehicle Type</TableCell>
+                    <TableCell>Vehicle Number</TableCell>
+                    <TableCell>Transport Company</TableCell>
+                    <TableCell>Production Logistics Manager ID</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{row.container_size ?? 'N/A'}</TableCell>
+                    <TableCell>{row.pallets_per_container ?? 'N/A'}</TableCell>
+                    <TableCell>{row.driver_name ?? 'N/A'}</TableCell>
+                    <TableCell>{row.vehicle_type ?? 'N/A'}</TableCell>
+                    <TableCell>{row.vehicle_number ?? 'N/A'}</TableCell>
+                    <TableCell>{row.transport_company ?? 'N/A'}</TableCell>
+                    <TableCell>{row.production_logistics_manager_id ?? 'N/A'}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    job_id: PropTypes.number.isRequired,
+    created_date: PropTypes.string.isRequired,
+    due_date: PropTypes.string.isRequired,
+    customer_name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    chip_type: PropTypes.string.isRequired,
+    peat_type: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    note: PropTypes.string,
+    sheetDetails: PropTypes.shape({
+      height: PropTypes.number,
+      width: PropTypes.number,
+      length: PropTypes.number,
+      ratio_chips: PropTypes.number,
+      ratio_peat: PropTypes.number,
+      weight: PropTypes.number,
+      quantity: PropTypes.number,
+      sheet_per_pallet: PropTypes.number,
+    }),
+    transportDetails: PropTypes.shape({
+      container_size: PropTypes.number,
+      pallets_per_container: PropTypes.number,
+      driver_name: PropTypes.string,
+      vehicle_type: PropTypes.string,
+      vehicle_number: PropTypes.number,
+      transport_company: PropTypes.string,
+      production_logistics_manager_id: PropTypes.string,
+    }),
+  }).isRequired,
+  updateStatus: PropTypes.func.isRequired,
+  deleteJob: PropTypes.func.isRequired,
+  updateJob: PropTypes.func.isRequired,
+};
+
+export default function CollapsibleTable() {
+  const [rows, setRows] = React.useState([]);
+
+  React.useEffect(() => {
+    axios.get('http://localhost:3001/jobrout/jobs')
+      .then((response) => setRows(response.data))
+      .catch((error) => console.error(error));
   }, []);
+  
 
-  const handleDelete = async (jobId) => {
-    try {
-      await axios.delete(`http://localhost:3001/jobrout/${jobId}`);
-      setJobs(jobs.filter((job) => job.job_id !== jobId));
-    } catch (error) {
-      console.error('Error deleting job:', error);
-    }
-  };
-  const handleUpdate = async (jobId, updatedFields) => {
-    try {
-      await axios.put(`http://localhost:3001/jobrout/${jobId}`, updatedFields);
-      const updatedJobs = jobs.map((job) =>
-        job.job_id === jobId ? { ...job, ...updatedFields } : job
-      );
-      setJobs(updatedJobs);
-    } catch (error) {
-      console.error('Error updating job:', error);
-    }
+  const updateStatus = (job_id, newStatus) => {
+    axios.put(`http://localhost:3001/jobrout/updatejobstatus/${job_id}`, { status: newStatus })
+      .then((response) => {
+        setRows((prevRows) => prevRows.map((row) => (row.job_id === job_id ? { ...row, status: newStatus } : row)));
+      })
+      .catch((error) => console.error(error));
   };
 
+  const deleteJob = (job_id) => {
+    axios.delete(`http://localhost:3001/jobrout/deletejob/${job_id}`)
+      .then((response) => {
+        setRows((prevRows) => prevRows.filter((row) => row.job_id !== job_id));
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const updateJob = (updatedRow) => {
+    axios.put(`http://localhost:3001/jobrout/updatejob/${updatedRow.job_id}`, updatedRow)
+      .then((response) => {
+        setRows((prevRows) => prevRows.map((row) => (row.job_id === updatedRow.job_id ? updatedRow : row)));
+      })
+      .catch((error) => console.error(error));
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -71,399 +291,21 @@ function JobTable() {
             <TableCell>Job ID</TableCell>
             <TableCell>Created Date</TableCell>
             <TableCell>Due Date</TableCell>
+            <TableCell>Customer Name</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Chip Type</TableCell>
+            <TableCell>Peat Type</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Customer</TableCell>
             <TableCell>Note</TableCell>
-            <TableCell>Created by</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {jobs.map((job) => (
-            <JobRow key={job.job_id} job={job} onDelete={handleDelete} onUpdate={handleUpdate} />
+          {rows.map((row) => (
+            <Row key={row.job_id} row={row} updateStatus={updateStatus} deleteJob={deleteJob} updateJob={updateJob} />
           ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
 }
-
-function JobRow({ job, onDelete, onUpdate }) {
-
-  const storedData = localStorage.getItem("token");
-  const parsedData = JSON.parse(storedData);
-  const decodedToken = jwtDecode(parsedData.token);
-  const UserType = decodedToken.role;
-
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState(job.status);
-  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
-  const [updatedFields, setUpdatedFields] = useState({
-    height: job.height,
-    width: job.width,
-    length: job.length,
-    ratio_chips: job.ratio_chips,
-    ratio_peat: job.ratio_peat,
-    quantity: job.quantity,
-    container_size: job.container_size,
-    sheet_per_pallet: job.sheet_per_pallet,
-    pallets_per_container: job.pallets_per_container,
-    transport_company: job.transport_company,
-    driver_name: job.driver_name,
-    vehicle_number: job.vehicle_number,
-    due_date: job.due_date,
-    customer_name: job.customer_name,
-    address: job.address,
-    chip_type: job.chip_type,
-    peat_type: job.peat_type,
-       weight: job.weight,
-container_size: job.container_size,
-driver_name: job.driver_name,
-vehicle_number: job.vehicle_number,
-transport_company: job.transport_company,
-note: job.note
-
-    // Add other fields here
-  });
-
-  const handleChange = async (event) => {
-    const newStatus = event.target.value;
-    setStatus(newStatus);
-
-    try {
-      await axios.put(`http://localhost:3001/jobrout/${job.job_id}`, { status: newStatus });
-    } catch (error) {
-      console.error('Error updating status:', error);
-    }
-  };
-
-  const handleOpenUpdateDialog = () => {
-    setUpdatedFields({
-      height: job.height,
-      width: job.width,
-      length: job.length,
-      ratio_chips: job.ratio_chips,
-      ratio_peat: job.ratio_peat,
-      quantity: job.quantity,
-      container_size: job.container_size,
-      sheet_per_pallet: job.sheet_per_pallet,
-      pallets_per_container: job.pallets_per_container,
-      transport_company: job.transport_company,
-      driver_name: job.driver_name,
-      vehicle_number: job.vehicle_number,
-      due_date: job.due_date,
-      customer_name: job.customer_name,
-      address: job.address,
-      chip_type: job.chip_type,
-      peat_type: job.peat_type,
-         weight: job.weight,
-  container_size: job.container_size,
-  driver_name: job.driver_name,
-  vehicle_number: job.vehicle_number,
-  transport_company: job.transport_company,
-  note: job.note
-    });
-    setUpdateDialogOpen(true);
-  };
-
-
-  const handleCloseUpdateDialog = () => {
-    setUpdateDialogOpen(false);
-  };
-
-  const handleUpdateFieldsChange = (event) => {
-    const { name, value } = event.target;
-    setUpdatedFields((prevFields) => ({
-      ...prevFields,
-      [name]: value,
-    }));
-  };
-
-  const handleUpdate = async () => {
-    onUpdate(job.job_id, updatedFields);
-    handleCloseUpdateDialog();
-  };
-
-
-  return (
-    <>
-      <TableRow sx={{ backgroundColor: '#f3f3f3' }}>
-        <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          </IconButton>
-        </TableCell>
-        <TableCell>{job.job_id}</TableCell>
-        <TableCell>{job.created_date}</TableCell>
-        <TableCell>{job.due_date}</TableCell>
-        <TableCell>
-        <Select value={status} onChange={handleChange} fullWidth>
-            {statusOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </TableCell>
-        <TableCell>{job.customer_name}</TableCell>
-        <TableCell>{job.note}</TableCell>
-        <TableCell>{job.employee_id}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h6" gutterBottom component="div">
-                    Sheet Details
-                  </Typography>
-                  <Table size="small" aria-label="sheet details">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Height</TableCell>
-                        <TableCell>Width</TableCell>
-                        <TableCell>Length</TableCell>
-                        <TableCell>Ratio Chips</TableCell>
-                        <TableCell>Ratio Peat</TableCell>
-                        <TableCell>Quantity</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>{job.height}</TableCell>
-                        <TableCell>{job.width}</TableCell>
-                        <TableCell>{job.length}</TableCell>
-                        <TableCell>{job.ratio_chips}</TableCell>
-                        <TableCell>{job.ratio_peat}</TableCell>
-                        <TableCell>{job.quantity}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                  <Typography variant="h6" gutterBottom component="div" style={{ marginTop: '1rem' }}>
-                    Transport Details
-                  </Typography>
-                  <Table size="small" aria-label="driver details">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>container_size</TableCell>
-                        <TableCell>sheet_per_pallet</TableCell>
-                        <TableCell>pallets_per_container</TableCell>
-                        <TableCell>Transport Company </TableCell>
-                        <TableCell>driver_name</TableCell>
-                        <TableCell>vehicle_number</TableCell>
-                        <TableCell>production_logistics_manager_id</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>{job.container_size}</TableCell>
-                        <TableCell>{job.sheet_per_pallet}</TableCell>
-                        <TableCell>{job.pallets_per_container}</TableCell>
-                        <TableCell>{job.transport_company}</TableCell>
-                        <TableCell>{job.driver_name}</TableCell>
-                        <TableCell>{job.vehicle_number}</TableCell>
-                        <TableCell>{job.production_logistics_manager_id}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                  <Box marginTop="1rem" display="flex" justifyContent="flex-end">
-                  {((UserType === "Director") && 
-    <> <Button onClick={handleOpenUpdateDialog} variant="contained" color="primary" sx={{ marginRight: 2 }}>
-                Update
-              </Button>
-              <Button onClick={() => onDelete(job.job_id)} variant="contained" color="error">
-                Delete
-              </Button>     </>
-)}
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-      <Dialog open={updateDialogOpen} onClose={handleCloseUpdateDialog}>
-        <DialogTitle>Update Job</DialogTitle>
-        <DialogContent>
-        <DialogContent>
-  <TextField
-    autoFocus
-    margin="dense"
-    label="Height"
-    type="number"
-    fullWidth
-    name="height"
-    value={updatedFields.height}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Width"
-    type="number"
-    fullWidth
-    name="width"
-    value={updatedFields.width}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Length"
-    type="number"
-    fullWidth
-    name="length"
-    value={updatedFields.length}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Ratio Chips"
-    type="number"
-    fullWidth
-    name="ratio_chips"
-    value={updatedFields.ratio_chips}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Ratio Peat"
-    type="number"
-    fullWidth
-    name="ratio_peat"
-    value={updatedFields.ratio_peat}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Quantity"
-    type="number"
-    fullWidth
-    name="quantity"
-    value={updatedFields.quantity}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Container Size"
-    fullWidth
-    name="container_size"
-    value={updatedFields.container_size}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Sheet Per Pallet"
-    type="number"
-    fullWidth
-    name="sheet_per_pallet"
-    value={updatedFields.sheet_per_pallet}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Pallets Per Container"
-    type="number"
-    fullWidth
-    name="pallets_per_container"
-    value={updatedFields.pallets_per_container}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Transport Company"
-    fullWidth
-    name="transport_company"
-    value={updatedFields.transport_company}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Driver Name"
-    fullWidth
-    name="driver_name"
-    value={updatedFields.driver_name}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Vehicle Number"
-    fullWidth
-    name="vehicle_number"
-    value={updatedFields.vehicle_number}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Due Date"
-    type="date"
-    fullWidth
-    name="due_date"
-    value={updatedFields.due_date}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Customer Name"
-    fullWidth
-    name="customer_name"
-    value={updatedFields.customer_name}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Address"
-    fullWidth
-    name="address"
-    value={updatedFields.address}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Chip Type"
-    fullWidth
-    name="chip_type"
-    value={updatedFields.chip_type}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Peat Type"
-    fullWidth
-    name="peat_type"
-    value={updatedFields.peat_type}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Weight"
-    type="number"
-    fullWidth
-    name="weight"
-    value={updatedFields.weight}
-    onChange={handleUpdateFieldsChange}
-  />
-  <TextField
-    margin="dense"
-    label="Note"
-    fullWidth
-    name="note"
-    value={updatedFields.note}
-    onChange={handleUpdateFieldsChange}
-  />
-</DialogContent>
-
-          {/* Add other fields for update */}
-        </DialogContent>
-        <DialogActions>
-    
-        <Button onClick={handleCloseUpdateDialog}>Cancel</Button>
-        <Button onClick={handleUpdate} color="primary">Update</Button>
-
-
-        </DialogActions>
-      </Dialog>
-
-    </>
-  );
-}
-
-export default JobTable;

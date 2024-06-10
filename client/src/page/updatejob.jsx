@@ -16,7 +16,7 @@ function updatejob() {
 
 
   return (
-    <div className=' mt-20 ml-16'>
+    <div style={{ marginTop: '4vh', marginX :'16vh' }}>
  {(UserType=== "Director" ) && <Button
       variant="contained"
       component={Link}

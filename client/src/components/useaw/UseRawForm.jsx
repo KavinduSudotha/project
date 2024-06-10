@@ -111,7 +111,7 @@ const UserRawForm = () => {
   const isPeatType = types.slice(6).includes(type);
 
   return (
-    <Stack spacing={2} sx={{ width: '100%' }} >
+    <Stack spacing={2} sx={{ width: '100%',  height:"30vh"}} >
       <TextField
         label="Date"
         value={date}

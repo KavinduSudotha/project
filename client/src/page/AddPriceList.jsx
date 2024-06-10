@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -6,22 +6,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useEffect } from 'react';
 import { usePageName } from '../context/PageNameContext';
-import EmployeePage from './employeepage';
 import { jwtDecode } from "jwt-decode";
-
 
 const AddPriceList = () => {
   const { setPage } = usePageName();
 
   useEffect(() => {
     setPage('Add Standard Price List');
-        // Get today's date
     const today = new Date().toISOString().slice(0, 10);
-    // Set today's date as the default value for the date input field
     setDate(today);
-
   }, []);
 
   const storedData = localStorage.getItem("token");
@@ -31,6 +25,7 @@ const AddPriceList = () => {
 
   const [date, setDate] = useState('');
   const [tabValue, setTabValue] = useState('one');
+  const [enabledTabs, setEnabledTabs] = useState(['one']);
   const [inputs, setInputs] = useState({
     chips_11mm_unwashed: '',
     chips_11mm_washed: '',
@@ -58,105 +53,87 @@ const AddPriceList = () => {
     const regex = /^[-+]?[0-9]*\.?[0-9]+$/;
     return regex.test(value);
   };
-  
-  
 
   const validateForm = () => {
     let errors = {};
     let isValid = true;
 
-    // Validate all input fields in the current tab
     if (tabValue === 'one') {
-        // Validate Chips
-        ['chips_11mm_unwashed', 'chips_11mm_washed', 'chips_9mm_unwashed', 'chips_9mm_washed', 'chips_7mm_unwashed', 'chips_7mm_washed'].forEach((key) => {
-            if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
-        // Validate Cocopeat
-        ['cocopeat_hi_ec', 'cocopeat_low_ec'].forEach((key) => {
-            if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
+      ['chips_11mm_unwashed', 'chips_11mm_washed', 'chips_9mm_unwashed', 'chips_9mm_washed', 'chips_7mm_unwashed', 'chips_7mm_washed'].forEach((key) => {
+        if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
+      ['cocopeat_hi_ec', 'cocopeat_low_ec'].forEach((key) => {
+        if (!inputs[key] || !isValidNumber(inputs[key]) || parseFloat(inputs[key]) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
     } else if (tabValue === 'two') {
-        // Validate Wastage Deduction Chips
-        inputs.wastage_deduction_chips.forEach((value, index) => {
-            const key = `wastage_deduction_chips_${index}`;
-            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
+      inputs.wastage_deduction_chips.forEach((value, index) => {
+        const key = `wastage_deduction_chips_${index}`;
+        if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
     } else if (tabValue === 'three') {
-        // Validate Density
-        inputs.density.forEach((value, index) => {
-            const key = `density_${index}`;
-            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
-        // Validate Sand
-        inputs.sand.forEach((value, index) => {
-            const key = `sand_${index}`;
-            if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
+      inputs.density.forEach((value, index) => {
+        const key = `density_${index}`;
+        if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
+      inputs.sand.forEach((value, index) => {
+        const key = `sand_${index}`;
+        if (!value || !isValidNumber(value) || parseFloat(value) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
     } else if (tabValue === 'four') {
-        // Validate Wastage Price
-        inputs.wastage_price.forEach((item, index) => {
-            const key = `wastage_price_${index}`;
-            if (!item.value || !isValidNumber(item.value) || parseFloat(item.value) < 0) {
-                errors[key] = 'Please enter a valid non-negative number.';
-                isValid = false;
-            }
-        });
+      inputs.wastage_price.forEach((item, index) => {
+        const key = `wastage_price_${index}`;
+        if (!item.value || !isValidNumber(item.value) || parseFloat(item.value) < 0) {
+          errors[key] = 'Please enter a valid non-negative number.';
+          isValid = false;
+        }
+      });
     }
 
-    // Validate date
     if (!date) {
-        errors.date = 'Please enter a valid date.';
-        isValid = false;
+      errors.date = 'Please enter a valid date.';
+      isValid = false;
     }
 
     setFormErrors(errors);
     return isValid;
-};
-
-
-
-
-
-  
-
+  };
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
 
   const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
+    if (enabledTabs.includes(newValue)) {
+      setTabValue(newValue);
+    }
   };
 
   const handleInputChange = (key, value) => {
     setInputs({ ...inputs, [key]: value });
-  
-    // Check if the input value is an empty string
+
     if (value === '') {
-      // Set the corresponding formErrors state to null
       setFormErrors({ ...formErrors, [key]: null });
     } else {
-      // Validate the input value and set the corresponding formErrors state
       const isValid = isValidNumber(value);
       setFormErrors({ ...formErrors, [key]: isValid ? null : 'Please enter a valid non-negative number' });
     }
   };
-  
+
   const handleArrayInputChange = (key, index, value) => {
     const newArray = [...inputs[key]];
     newArray[index] = value;
@@ -171,19 +148,21 @@ const AddPriceList = () => {
       [key]: newArray
     }));
   };
-  
 
   const handleNextTab = () => {
     if (validateForm()) {
       const tabs = ['one', 'two', 'three', 'four'];
       const currentIndex = tabs.indexOf(tabValue);
-      setTabValue(tabs[currentIndex + 1]);
+      if (currentIndex + 1 < tabs.length) {
+        const nextTab = tabs[currentIndex + 1];
+        setEnabledTabs([...enabledTabs, nextTab]);
+        setTabValue(nextTab);
+      }
     }
   };
 
   const handleFinish = async () => {
     try {
-      console.log('Input data:', inputs);
       const formattedData = {
         date,
         chips_11mm_unwashed: parseInt(inputs.chips_11mm_unwashed),
@@ -197,46 +176,43 @@ const AddPriceList = () => {
         wastage_deduction_chips: inputs.wastage_deduction_chips.map(value => parseInt(value)),
         density: inputs.density.map(value => parseInt(value)),
         sand: inputs.sand.map(value => parseInt(value)),
-        wastage_price: inputs.wastage_price.map(item => parseInt(item.value)), // Only pass the value
-        employee_id: Userid 
+        wastage_price: inputs.wastage_price.map(item => parseInt(item.value)),
+        employee_id: Userid
       };
 
-      console.log(formattedData);
       const response = await axios.post("http://localhost:3001/pricelist/pricelist", formattedData);
-      console.log(response.data);
 
-      // If response is "OK", show success alert
-  if (response.data === "OK") {
-    // Show success alert using Swal
-    Swal.fire({
-      title: "Success!",
-      text: "New Price List has been Aded successfully.",
-      icon: "success"
-    });
-  }
+      if (response.data === "OK") {
+        Swal.fire({
+          title: "Success!",
+          text: "New Price List has been added successfully.",
+          icon: "success"
+        });
 
-      // Reset inputs and date after successful submission
-      setInputs({
-        chips_11mm_unwashed: '',
-        chips_11mm_washed: '',
-        chips_9mm_unwashed: '',
-        chips_9mm_washed: '',
-        chips_7mm_unwashed: '',
-        chips_7mm_washed: '',
-        cocopeat_hi_ec: '',
-        cocopeat_low_ec: '',
-        wastage_deduction_chips: Array(13).fill(''),
-        density: Array(5).fill(''),
-        sand: Array(7).fill(''),
-        wastage_price: [
-          { label: 'Cocopeat Fiber', value: '' },
-          { label: 'Cocopeat Fine Dust', value: '' },
-          { label: '10C Sieved', value: '' },
-          { label: '10C not Sieved', value: '' },
-          { label: '10C upper part', value: '' }
-        ]
-      });
-      setDate('');
+        setInputs({
+          chips_11mm_unwashed: '',
+          chips_11mm_washed: '',
+          chips_9mm_unwashed: '',
+          chips_9mm_washed: '',
+          chips_7mm_unwashed: '',
+          chips_7mm_washed: '',
+          cocopeat_hi_ec: '',
+          cocopeat_low_ec: '',
+          wastage_deduction_chips: Array(13).fill(''),
+          density: Array(5).fill(''),
+          sand: Array(7).fill(''),
+          wastage_price: [
+            { label: 'Cocopeat Fiber', value: '' },
+            { label: 'Cocopeat Fine Dust', value: '' },
+            { label: '10C Sieved', value: '' },
+            { label: '10C not Sieved', value: '' },
+            { label: '10C upper part', value: '' }
+          ]
+        });
+        setDate('');
+        setEnabledTabs(['one']);
+        setTabValue('one');
+      }
     } catch (error) {
       console.error("ADD FAILED", error);
       const Toast = Swal.mixin({
@@ -246,17 +222,17 @@ const AddPriceList = () => {
         timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
         }
       });
+
       Toast.fire({
         icon: "error",
-        title: "Data not submitted"
+        title: "Failed to add new Price List"
       });
     }
   };
-  
   
 
   return (
@@ -264,16 +240,13 @@ const AddPriceList = () => {
       <div className="container mx-auto py-8">
         
         <Box sx={{ width: '100%' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleChangeTab}
-            aria-label="wrapped label tabs example"
-          >
-            <Tab value="one" label="Standard Price" />
-            <Tab value="two" label="Deduction of Chips" />
-            <Tab value="three" label="Deduction of Cocopeat" />
-            <Tab value="four" label="Wastage Price" />
-          </Tabs>
+        <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
+  <Tab label="Standard Price" value="one" disabled={!enabledTabs.includes('one')} />
+  <Tab label="Deduction of Chips" value="two" disabled={!enabledTabs.includes('two')} />
+  <Tab label="Deduction of Cocopeat" value="three" disabled={!enabledTabs.includes('three')} />
+  <Tab label="Wastage Price" value="four" disabled={!enabledTabs.includes('four')} />
+      </Tabs>
+
           <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold"> </h1>
           <div className="flex items-center">
@@ -524,23 +497,15 @@ const AddPriceList = () => {
 
         <div className="fixed right-20 bottom-20">
           {tabValue !== 'four' ? (
-            <Button
-              variant="contained"
-              onClick={handleNextTab}
-              color="primary"
-              size="large"
-            >
-              Next
-            </Button>
+            <Button onClick={handleNextTab} variant="contained" color="primary">
+            Next
+          </Button>
+          
           ) : (
-            <Button
-              variant="contained"
-              color="success"
-              size="large"
-              onClick={handleFinish}
-            >
-              Finish
-            </Button>
+            <Button onClick={handleFinish} variant="contained" color="primary">
+            Finish
+          </Button>
+          
           )}
         </div>
       </div>

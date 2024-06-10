@@ -136,7 +136,7 @@ const Inventory = () => {
                         Record
                     </Button>}
             <Grid container spacing={4}>
-                <Grid item xs={12} md={6.5}>
+                <Grid item xs={612} md={6.8}>
                     <Paper className="p-4">
                         <Typography variant="h6" className="mb-4">All Data</Typography>
                         <PieChart

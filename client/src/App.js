@@ -95,6 +95,7 @@ function App() {
             <Routes>
               {RenderProtectedRoutes(UserType, isAuthenticated)}
               <Route exact path="/" element={<Login />} />
+              {/* <Route exact path="/login" element={<Login />} /> */}
               <Route exact path="*" element={<LandingPage />} />
             </Routes>
           </div>
@@ -107,7 +108,7 @@ function App() {
 // Function to render protected routes based on user role
 function RenderProtectedRoutes(UserType, isAuthenticated) {
   if (!isAuthenticated && !publicRoutes.includes(window.location.pathname)) {
-    return <Route path="*" element={<Navigate to="/login" replace />} />;
+    return <Route path="*" element={<Navigate to="/" replace />} />;
   }
   console.log(isAuthenticated);
   console.log(UserType);

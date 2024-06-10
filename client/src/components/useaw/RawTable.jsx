@@ -12,7 +12,7 @@ const RawTable = () => {
   }, []);
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 850, overflow: 'auto' }}>
+    <TableContainer component={Paper} sx={{ maxHeight:"87.5vh", overflow: 'auto', }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>

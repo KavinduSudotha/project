@@ -28,7 +28,7 @@ const BuyRawTable = () => {
 
   return (
     <Paper>
-      <div style={{ height: '850px', overflowY: 'auto' }}>
+      <div style={{ height: '87.5vh', overflowY: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
