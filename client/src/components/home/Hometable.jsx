@@ -97,7 +97,7 @@ const JobTable = () => {
   }, []);
 
   return (
-    <Paper style={{ height: 450, width: '100%' }}>
+    <Paper style={{ height: 480, width: '100%' }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

@@ -5,6 +5,9 @@ import UserTable from '../components/admin/users/Usertable'
 import { Box } from '@mui/material';
 
 function users() {
+
+  
+
   return (
     <div className=' flex-col  h-screen'>
     <Box display="flex" flexDirection="row" height="100vh" marginLeft={2} >

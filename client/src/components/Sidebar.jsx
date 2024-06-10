@@ -17,8 +17,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import LogoutIcon from '@mui/icons-material/Logout';
+import Badge from '@mui/material/Badge';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import HomeIcon from "@mui/icons-material/Home";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -32,14 +38,19 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { jwtDecode } from "jwt-decode";
 import {
   FiLogOut,
-  FiShoppingCart,
-  FiPackage,
-  FiBarChart2,
   FiSettings,
   FiUsers,
 } from "react-icons/fi"; // Importing icons from react-icons
 
 const drawerWidth = 240; // Setting the drawer width
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+  alignItems: 'flex-start',
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
+  '@media all': {
+    minHeight: 64,
+  },
+}));
 
 const handleLogout = () => {
   // Clear the local storage
@@ -78,7 +89,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -119,6 +129,25 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: `-${drawerWidth}px`,
+    ...(open && {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    }),
+  }),
+);
+
 // Main component function
 export default function MiniDrawer() {
   const theme = useTheme(); // Hook to use the theme
@@ -132,10 +161,10 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false); // Function to close the drawer
   };
+
   let menuItems = [];
 
   // Menu items data
-
   const storedData = localStorage.getItem("token");
   const parsedData = JSON.parse(storedData);
   const decodedToken = jwtDecode(parsedData.token);
@@ -152,11 +181,8 @@ export default function MiniDrawer() {
         { name: "Sell wastage", icon: DeleteSweepIcon, link: "/director-dashboard/sellwastagepage" },
         { name: "Inventory", icon: AddchartIcon, link: "/director-dashboard/inventory" },
         { name: "Jobs", icon: WorkHistoryIcon, link: "/director-dashboard/updatejob" },
-        { name: "Reports", icon: TextSnippetIcon, link: "/director-dashboard/reports" },
         { name: "Admins", icon: SupervisorAccountIcon, link: "/director-dashboard/admin" },
-        { name: "Settings", icon: FiSettings, link: "/director-dashboard/settings" },
-        { name: "Employee", icon: FiUsers, link: "/director-dashboard/employeepage" },
-        { name: "Logout", icon: FiLogOut, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Manager":
@@ -169,7 +195,7 @@ export default function MiniDrawer() {
         { name: "Sell wastage", icon: DeleteSweepIcon, link: "/Manager-dashboard/sellwastagepage" },
         { name: "Inventory", icon: AddchartIcon, link: "/Manager-dashboard/inventory" },
         { name: "Jobs", icon: WorkHistoryIcon, link: "/Manager-dashboard/updatejob" },
-        { name: "Logout", icon: FiLogOut, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Supervisor":
@@ -181,7 +207,7 @@ export default function MiniDrawer() {
         { name: "Add wastage", icon: DeleteIcon, link: "/Supervisor-dashboard/addwastagepage" },
         { name: "Inventory", icon: AddchartIcon, link: "/Supervisor-dashboard/inventory" },
         { name: "Jobs", icon: WorkHistoryIcon, link: "/Supervisor-dashboard/updatejob" },
-        { name: "Logout", icon: FiLogOut, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Employer":
@@ -190,17 +216,106 @@ export default function MiniDrawer() {
         { name: "Price List", icon: ContentPasteIcon, link: "/Employer-dashboard/pricelist" },
         { name: "Use RAW", icon: FileUploadIcon, link: "/Employer-dashboard/rawuse" },
         { name: "Add wastage", icon: DeleteIcon, link: "/Employer-dashboard/addwastagepage" },
+        { name: "Inventory", icon: AddchartIcon, link: "/Employer-dashboard/inventory" },
         { name: "Jobs", icon: WorkHistoryIcon, link: "/Employer-dashboard/updatejob" },
-        { name: "Logout", icon: FiLogOut, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
+      break;
+    default:
       break;
   }
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const menuId = 'primary-search-account-menu';
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem> {/* Added Logout MenuItem */}
+    </Menu>
+  );
+
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+          <Badge badgeContent={4} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+    </Menu>
+  );
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
+    <Box sx={{ display: "flex" }}> {/* Removed zIndex here */}
+      <CssBaseline /> {/* Adding baseline CSS for styling */}
+      <AppBar position="fixed" open={open}> {/* Removed zIndex here */}
+        <StyledToolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -213,11 +328,44 @@ export default function MiniDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {pageName}
+          <Typography variant="h4" noWrap component="div">
+            {pageName} {/* Displaying the current page name */}
           </Typography>
-        </Toolbar>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </Box>
+        </StyledToolbar>
       </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -230,66 +378,44 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-  {menuItems.map((item, index) => (
-    <React.Fragment key={item.name}>
-      <ListItem disablePadding sx={{ display: "block" }}>
-        <ListItemButton
-          sx={{
-            minHeight: 48,
-            justifyContent: open ? "initial" : "center",
-            px: 2.5,
-          }}
-          component={item.link ? "a" : "button"}
-          href={item.link ? item.link : undefined}
-          onClick={item.action ? item.action : undefined}
-        >
-          <ListItemIcon
-            sx={{
-              minWidth: 0,
-              mr: open ? 3 : "auto",
-              justifyContent: "center",
-            }}
-          >
-            {React.createElement(item.icon)}
-          </ListItemIcon>
-          <ListItemText
-            primary={item.name}
-            sx={{ opacity: open ? 1 : 0 }}
-          />
-        </ListItemButton>
-      </ListItem>
-      {item.subSections &&
-        item.subSections.map((subItem) => (
-          <ListItem
-            key={subItem.name}
-            disablePadding
-            sx={{ display: "block", pl: 4 }}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 36,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
-              component="a"
-              href={subItem.link}
-            >
-              <ListItemText
-                primary={subItem.name}
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
-    </React.Fragment>
-  ))}
-</List>
-
+          {menuItems.map((item) => (
+            <ListItem key={item.name} disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+                onClick={() => {
+                  if (item.link) {
+                    window.location.href = item.link;
+                  } else if (item.action) {
+                    item.action();
+                  }
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <item.icon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.name}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <DrawerHeader />
-        {/* Content can be added here */}
-      </Box>
+      <Main open={open}> {/* Added Main component */}
+        {/* <DrawerHeader /> */}
+       
+      </Main>
     </Box>
   );
 }

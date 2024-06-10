@@ -12,12 +12,12 @@ import { TableVirtuoso } from 'react-virtuoso';
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
 const columns = [
-  { width: 200, label: 'Sell ID', dataKey: 'sell_id' },
-  { width: 200, label: 'Type', dataKey: 'type' },
-  { width: 120, label: 'Quantity', dataKey: 'quantity', numeric: true },
-  { width: 120, label: 'Price', dataKey: 'price', numeric: true },
+  { width: 10, label: 'Sell ID', dataKey: 'sell_id' },
+  { width: 60, label: 'Type', dataKey: 'type' },
+  { width: 20, label: 'Quantity', dataKey: 'quantity', numeric: true },
+  { width: 50, label: 'Price', dataKey: 'price', numeric: true },
   { width: 120, label: 'Date', dataKey: 'date' },
-  { width: 120, label: 'Waste ID', dataKey: 'waste_id', numeric: true },
+  { width: 30, label: 'Waste ID', dataKey: 'waste_id', numeric: true },
 ];
 
 const VirtuosoTableComponents = {
@@ -82,7 +82,7 @@ export default function SellWastageTable() {
   };
 
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
+    <Paper style={{ height: 400, width: 1100 }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

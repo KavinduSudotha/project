@@ -1,149 +1,78 @@
-
-ok ineed code for charthome Component
-
-
-this is the code for chart
-
-import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
-
-import { PieChart } from '@mui/x-charts/PieChart';
-
-import { HighlightedCode } from '@mui/docs/HighlightedCode';
-
-const data1 = [
-  { label: 'Group A', value: 400 },
-  { label: 'Group B', value: 300 },
-  { label: 'Group C', value: 300 },
-  { label: 'Group D', value: 200 },
-];
-
-const data2 = [
-  { label: 'A1', value: 100 },
-  { label: 'A2', value: 300 },
-  { label: 'B1', value: 100 },
-  { label: 'B2', value: 80 },
-  { label: 'B3', value: 40 },
-  { label: 'B4', value: 30 },
-  { label: 'B5', value: 50 },
-  { label: 'C1', value: 100 },
-  { label: 'C2', value: 200 },
-  { label: 'D1', value: 150 },
-  { label: 'D2', value: 50 },
-];
-const series = [
-  {
-    innerRadius: 0,
-    outerRadius: 80,
-    id: 'series-1',
-    data: data1,
-  },
-  {
-    innerRadius: 100,
-    outerRadius: 120,
-    id: 'series-2',
-    data: data2,
-  },
-];
-
-export default function PieClickNoSnap() {
-  const [itemData, setItemData] = React.useState();
-
-  return (
-    <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      spacing={{ xs: 0, md: 4 }}
-      sx={{ width: '100%' }}
-    >
-      <Box sx={{ flexGrow: 1 }}>
-        <PieChart
-          series={series}
-          width={400}
-          height={300}
-          slotProps={{
-            legend: { hidden: true },
-          }}
-          onItemClick={(event, d) => setItemData(d)}
-        />{' '}
-      </Box>
-
-      <Stack direction="column" sx={{ width: { xs: '100%', md: '40%' } }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography>Click on the chart</Typography>
-          <IconButton
-            aria-label="reset"
-            size="small"
-            onClick={() => {
-              setItemData(null);
-            }}
-          >
-            <UndoOutlinedIcon fontSize="small" />
-          </IconButton>
-        </Box>
-        <HighlightedCode
-          code={`// Data from item click
-${itemData ? JSON.stringify(itemData, null, 2) : '// The data will appear here'}
-`}
-          language="json"
-          copyButtonHidden
-        />
-      </Stack>
-    </Stack>
-  );
-}
+import { stat } from "fs"
+import { statistics } from "./server/config/DBconnect"
+import { report } from "./server/route/adminrout"
 
 
+ok. I need report generation part 
 
-data 1 is 
-
-total_weight_raw
-total_weight_wastage
-total_weight
-free_space
-
-data 2 is
-
-total_weight_chips_11mm_unwashed
-total_weight_chips_11mm_washed
-total_weight_chips_9mm_unwashed
-total_weight_chips_9mm_washed
-total_weight_chips_7mm_unwashed
-total_weight_chips_7mm_washed
-total_weight_cocopeat_hi_ec
-total_weight_cocopeat_low_ec
-wastage_price_cocopeat_fiber
-wastage_price_cocopeat_fine_dust
-wastage_price_10c_sieved
-wastage_price_10c_not_sieve
-wastage_price_10c_upper_part
-
-
-
-
-i want to show data 1 and data 2 in the chart
-
-get defferent color for each attribute in data 1 and data 2
-
-
-get last newest data from this table 
-to filter newest data you can get date collum 
-
+this is my data basen
 ===Database cocosys
 
+== Table structure for table addwastage
+
+|------
+|Column|Type|Null|Default
+|------
+|//**waste_id**//|int(11)|No|
+|type|varchar(20)|No|
+|quantity|int(8)|No|
+|date|date|No|
+== Dumping data for table addwastage
+
+|1|wastage_price_cocope|50|2024-05-24
+|2|wastage_price_cocope|100|2024-05-24
+|3|wastage_price_cocope|500|2024-05-24
+|4|wastage_price_cocope|500|2024-05-24
+|5|wastage_price_cocope|500|2024-05-24
+|6|wastage_price_10c_si|500|2024-05-28
+|7|wastage_price_cocope|100|2024-05-29
+|8|wastage_price_cocope|150|2024-05-29
+|9|wastage_price_10c_no|200|2024-05-29
+|10|wastage_price_10c_up|170|2024-05-29
+|11|wastage_price_cocope|500|2024-05-29
+|12|wastage_price_10c_up|200|2024-05-30
+|13|wastage_price_cocope|500|2024-06-04
+|14|wastage_price_10c_si|5005|2024-06-04
+== Table structure for table buyraw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**buyid**//|int(10)|No|
+|date|date|No|
+|type|varchar(22)|No|
+|employeeid|int(8)|No|
+|wastagechip|int(3)|Yes|NULL
+|densitypeat|int(3)|Yes|NULL
+|sandpeat|int(3)|Yes|NULL
+|suggestprice|int(11)|No|
+|buyprice|int(11)|No|
+|quantity|int(11)|No|
+== Dumping data for table buyraw
+
+|13|2024-05-18|chips_11mm_unwashed|1|14|0|0|35|36|98
+|14|0000-00-00|chips_11mm_washed|5|17|0|0|37|35|199
+|15|0000-00-00|chips_7mm_unwashed|1111|15|0|0|33|33|250
+|16|2024-05-21|cocopeat_hi_ec|1111|0|12|8|66|65|200
+|17|0000-00-00|cocopeat_low_ec|1111|0|12|9|64|65|199
+|18|2024-05-25|chips_9mm_unwashed|1111|13|0|0|34|36|105
+|19|2024-05-28|chips_11mm_unwashed|1111|15|0|0|35|36|100
+|20|2024-05-29|chips_9mm_washed|1111|15|0|0|36|35|249
+|21|2024-05-29|chips_7mm_washed|1111|16|0|0|36|36|500
+|22|2024-05-29|cocopeat_hi_ec|1111|0|2|1|66|69|100
+|23|2024-05-29|chips_11mm_washed|1111|16|0|0|38|39|100
+|24|2024-05-30|chips_9mm_washed|1111|16|0|0|36|38|149
+|25|2024-05-30|cocopeat_hi_ec|1111|0|12|6|66|68|100
+|26|2024-06-02|cocopeat_low_ec|1111|0|15|9|64|64|100
+|27|2024-06-02|chips_9mm_unwashed|1111|18|0|0|32|32|250
+|28|2024-06-02|cocopeat_hi_ec|1111|0|18|18|66|66|100
+|29|2024-06-02|chips_9mm_washed|1111|17|0|0|35|35|250
+|31|2024-06-04|chips_11mm_washed|1|12|0|0|39|40|100
+|32|2024-06-06|chips_7mm_unwashed|3|8|0|0|35|36|50
 == Table structure for table inventory
 
 |------
-|Column|Type|Null|Default 
+|Column|Type|Null|Default
 |------
 |//**inventory_id**//|int(11)|No|
 |date|date|No|
@@ -167,10 +96,193 @@ to filter newest data you can get date collum
 |free_space|int(11)|No|
 == Dumping data for table inventory
 
+|54|2024-06-27|19:00:56|100|100|10|100|10|10|10|10|10|10|10|10|10|100|800|900|9100
+|55|2024-05-28|03:42:20|100|199|105|0|250|0|15|199|0|0|300|0|0|868|300|1168|8832
+|56|2024-05-29|03:42:25|100|199|105|0|250|0|15|199|0|0|300|0|0|868|300|1168|8832
+|57|2024-05-30|03:42:30|100|199|105|0|250|0|15|199|0|0|300|0|0|868|300|1168|8832
+|58|2024-05-31|03:42:35|100|199|105|0|250|0|15|199|0|0|300|0|0|868|300|1168|8832
+|63|2024-06-01|00:00:00|75|299|105|249|250|500|115|199|100|650|0|200|170|1792|1120|2912|7088
+|64|2024-06-01|16:00:00|75|299|105|328|250|500|145|199|100|650|0|200|170|1901|1120|3021|6979
+|65|2024-06-01|00:00:00|75|299|105|328|250|500|145|199|100|650|0|200|170|1901|1120|3021|6979
+|66|2024-06-02|16:00:00|75|299|105|328|250|500|145|199|100|650|0|200|170|1901|1120|3021|6979
+|67|2024-06-02|00:00:00|75|299|355|578|250|500|245|299|100|650|0|200|170|2601|1120|3721|6279
+|68|2024-06-03|16:00:00|75|299|355|578|250|500|245|299|100|650|0|200|170|2601|1120|3721|6279
+|69|2024-06-03|00:00:00|75|299|355|578|250|500|245|299|100|650|0|200|170|2601|1120|3721|6279
+|70|2024-06-04|16:00:00|75|299|355|578|250|500|245|299|100|650|0|200|170|2601|1120|3721|6279
+|71|2024-06-04|00:00:00|1075|299|355|578|250|500|245|299|100|650|0|200|170|3601|1120|4721|5279
+|73|2024-06-06|00:00:00|75|399|355|578|300|500|195|299|600|650|5005|200|170|2701|6625|9326|674
+== Table structure for table job
+
+|------
+|Column|Type|Null|Default
+|------
+|//**job_id**//|int(8)|No|
+|created_date|date|Yes|NULL
+|due_date|date|Yes|NULL
+|customer_name|varchar(30)|Yes|NULL
+|address|varchar(40)|Yes|NULL
+|employee_id|int(8)|No|
+|chip_type|varchar(20)|No|
+|peat_type|varchar(20)|No|
+|height|int(6)|No|
+|width|int(6)|No|
+|length|int(6)|No|
+|ratio_chips|int(4)|No|
+|ratio_peat|int(4)|No|
+|weight|int(11)|No|
+|quantity|int(10)|No|
+|sheet_per_pallet|int(8)|No|
+|container_size|varchar(20)|No|
+|pallets_per_container|int(8)|No|
+|driver_name|varchar(40)|Yes|NULL
+|vehicle_number|int(8)|Yes|NULL
+|transport_company|varchar(40)|Yes|NULL
+|production_logistics_manager_id|varchar(8)|Yes|NULL
+|note|text|Yes|NULL
+|status|varchar(10)|No|
+== Dumping data for table job
+
+|14|2024-05-20|2024-06-01|achila|US|2|chips_11mm_unwashed|cocopeat_hi_ec|3|50|100|2|1|100|500|0|0|0| |0|DHL|NULL|GOOD|cancelled
+|18|2024-05-28|2024-06-05|Ravidu|US|3|chips_9mm_washed|cocopeat_hi_ec|1|35|105|3|2|50|105|15|20FT Flat Rack with |40|udara|11256|DHL|NULL|notes|started
+
+== Table structure for table sellwastage
+
+|------
+|Column|Type|Null|Default
+|------
+|//**sell_id**//|int(10)|No|
+|type|varchar(20)|No|
+|quantity|int(8)|No|
+|price|int(8)|No|
+|date|date|No|
+|waste_id|int(11)|No|
+== Dumping data for table sellwastage
+
+|1|wastage_price_cocope|681|7000|2024-05-24|5
+|2|wastage_price_10c_si|200|3500|2024-05-28|6
+|3|wastage_price_10c_si|300|6500|2024-05-29|6
+|4|wastage_price_10c_si|300|6500|2024-05-29|6
+|5|wastage_price_10c_up|200|8500|2024-05-30|12
+== Table structure for table summarytable
+
+|------
+|Column|Type|Null|Default
+|------
+|//**summary_id**//|int(11)|No|
+|date|date|No|
+|type|varchar(20)|No|
+|availablequantity|float|No|
+|buy_id|int(11)|No|
+
+== Table structure for table use_raw
+
+|------
+|Column|Type|Null|Default
+|------
+|//**use_id**//|int(11)|No|
+|date|int(11)|No|
+|type|varchar(20)|No|
+|released_weight|int(11)|No|
+|job_id|int(11)|No|
+|batch_id|int(11)|No|
+|employee_id|int(11)|No|
+== Dumping data for table use_raw
+
+|8|2024|chips_11mm_unwashed|40|14|13|0
+|9|2024|cocopeat_hi_ec|150|14|16|0
+|10|2024|cocopeat_hi_ec|20|14|16|0
+|11|2024|chips_11mm_unwashed|8|14|13|0
+|12|2024|cocopeat_hi_ec|15|14|16|0
+|13|2024|chips_11mm_unwashed|50|14|19|0
+|14|2024|chips_11mm_unwashed|25|14|19|0
+|15|2024|chips_9mm_washed|50|18|24|0
+|16|2024|chips_9mm_washed|20|18|24|0
+|17|2024|cocopeat_hi_ec|50|18|25|0
+|18|2024|cocopeat_hi_ec|20|18|22|0
+|19|2024|cocopeat_hi_ec|50|18|28|0
+== Table structure for table wastage
+
+|------
+|Column|Type|Null|Default
+|------
+|//**waste_id**//|int(8)|No|
+|date|date|No|
+|type|varchar(22)|No|
+|employeeid|int(8)|No|
+|quantity|int(8)|No|
+== Dumping data for table wastage
+
+== Table structure for table weeklypricelist
+
+|------
+|Column|Type|Null|Default
+|------
+|//**id**//|int(5)|No|
+|date|date|No|
+|chips_11mm_unwashed|float|Yes|NULL
+|chips_11mm_washed|float|Yes|NULL
+|chips_9mm_unwashed|float|Yes|NULL
+|chips_9mm_washed|float|Yes|NULL
+|chips_7mm_unwashed|float|Yes|NULL
+|chips_7mm_washed|float|Yes|NULL
+|cocopeat_hi_ec|float|Yes|NULL
+|cocopeat_low_ec|float|Yes|NULL
+|wastage_deduction_chips_8|float|Yes|NULL
+|wastage_deduction_chips_9|float|Yes|NULL
+|wastage_deduction_chips_10|float|Yes|NULL
+|wastage_deduction_chips_11|float|Yes|NULL
+|wastage_deduction_chips_12|float|Yes|NULL
+|wastage_deduction_chips_13|float|Yes|NULL
+|wastage_deduction_chips_14|float|Yes|NULL
+|wastage_deduction_chips_15|float|Yes|NULL
+|wastage_deduction_chips_16|float|Yes|NULL
+|wastage_deduction_chips_17|float|Yes|NULL
+|wastage_deduction_chips_18|float|Yes|NULL
+|wastage_deduction_chips_19|float|Yes|NULL
+|wastage_deduction_chips_20|float|Yes|NULL
+|density_60_69|float|Yes|NULL
+|density_70_79|float|Yes|NULL
+|density_80_89|float|Yes|NULL
+|density_90_99|float|Yes|NULL
+|density_100_109|float|Yes|NULL
+|sand_20_24|float|Yes|NULL
+|sand_25_29|float|Yes|NULL
+|sand_30_34|float|Yes|NULL
+|sand_35_39|float|Yes|NULL
+|sand_40_44|float|Yes|NULL
+|sand_45_49|float|Yes|NULL
+|sand_50_54|float|Yes|NULL
+|wastage_price_cocopeat_fiber|float|Yes|NULL
+|wastage_price_cocopeat_fine_dust|float|Yes|NULL
+|wastage_price_10c_sieved|float|Yes|NULL
+|wastage_price_10c_not_sieved|float|Yes|NULL
+|wastage_price_10c_upper_part|float|Yes|NULL
+|employee_id|int(8)|No|
+== Dumping data for table weeklypricelist
+
+|13|2024-05-12|37|40|35|38|35|38|62|60|0|0|0|1|1|1|2|2|2|3|3|4|4|-2|-1|0|1|2|-2|-1|0|1|2|3|4|10|35|20|25|40|0
+
+
+
+i need get statistic base report generation part
+like   mean,mid,mod,minimum,maximum,standard deviation,range,quartile,percentile,interquartile range,coefficient of variation,skewness,kurtosis,confidence interval,correlation,regression,chi-square test,anova test,normality test,significance test,probability,probability distribution
+pesentage change time intavlal, 
+
+how i do it 
+i use React, tailwind css ,MUI for front end and node js for back end
+
+
+1.i need this report part for all above tables
+(like if i select table AND TIME  i need to get all above statistics for THAT table,
+IF I SELECT MORE THAN ONE TABLE , I NEED IT FOR ALL SELECTED TABLES)
+2.ITS BETTER TO INCLUDE CHARTS A,
+3.FINALIY I NEED TO DOWNLOAD IT AS PDF AND,EXEL FILE
+4.actually i want get some reports and analitcs report for this and get some insights from this data
 
 
 
 
-give me front end and back end code for this
-for back end use node js and fron end react taiwin css MUI
 
+for that do what you want to do
+DO it perfectly
+give full code

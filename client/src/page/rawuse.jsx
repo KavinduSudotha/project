@@ -5,7 +5,7 @@ import RawTable from '../components/useaw/RawTable';
 
 const MainPage = () => {
   return (
-    <div className=' flex flex-col'>
+    <div className=' flex flex-col '>
     <Box display="flex" flexDirection="row" height="100vh" marginLeft={10} >
       <Box width="33%" maxHeight={850} padding="30px" paddingX={6} boxShadow={2} marginTop={2}>
         <UserRawForm />

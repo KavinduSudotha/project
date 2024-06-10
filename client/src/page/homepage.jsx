@@ -7,6 +7,7 @@ import Pricelisthome from '../components/home/Pricelisthome';
 import Notes from '../components/home/notes';
 
 
+
 export const Homepage = () => {
   const { setPage } = usePageName();
 

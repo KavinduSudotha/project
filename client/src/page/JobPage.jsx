@@ -124,7 +124,7 @@ export default function AddJob() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Add a Job</h1>
+     
       <AppBar position="static" color="default">
         <Tabs
           value={value}

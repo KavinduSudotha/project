@@ -7,7 +7,7 @@ import { Box } from '@mui/material';
 
 const YourPageComponent = () => {
   return (
-    <div className=' flex-col  h-screen'>
+    <div className=' flex-col  h-screen '>
       <Box display="flex" flexDirection="row" height="100vh" marginLeft={2} >
         <Box width="33%" boxShadow={2} maxHeight={850} overflow="auto" marginTop={2} marginLeft={8}>
           <RawBuyForm />

@@ -25,4 +25,42 @@ const addNote = async (req, res) => {
   }
 };
 
-module.exports = { addNote };
+// Function to update a note
+const updateNote =(req, res) => {
+  const { id } = req.params;
+  const { date, time, note, employee_id } = req.body;
+  const sql = 'UPDATE notes SET date = ?, time = ?, note = ?, employee_id = ? WHERE note_id = ?';
+  db.query(sql, [date, time, note, employee_id, id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+};
+
+
+// Function to delete a note
+const deleteNote = (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM notes WHERE note_id = ?';
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+};
+
+
+
+const getnote = (req, res) => {
+  const sql = 'SELECT * FROM notes';
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+};
+
+module.exports = { addNote, updateNote, deleteNote,getnote };

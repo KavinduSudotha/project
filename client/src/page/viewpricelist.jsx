@@ -40,7 +40,7 @@ const ViewPriceList = () => {
   }, []);
 
   return (
-    <div className='ml-16 mt-2'>
+    <div className='ml-16 mt-6'>
       <Container maxWidth="auto">
         {priceList ? (
           <>

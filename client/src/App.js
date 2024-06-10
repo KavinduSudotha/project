@@ -15,16 +15,17 @@ import Inventory from './page/inventory';
 import Inventoryrecord from './page/InventoryTable';
 import AddWastageForm from './page/AddWastage';
 import SellWastageForm from './page/SellWastage';
-import Reports from './page/Reports';
+import Reports from './page/ReportsHome';
 import Addpricelist from './page/AddPriceList';
 import Viewpricelist from './page/viewpricelist';
 import AdminPage from './page/adminpage';
 import RawBuyPage from './page/rawbuypage';
 import RawUse from './page/rawuse';
-import EmployeePage from './page/employeepage';
 import AddJobPage from './page/JobPage';
 import Users from "./page/users.jsx";
-
+import InventoryTable from "./page/InventoryTable";
+import AddNote from "./page/Addnote";
+import Report from "./components/report/report"
 
 const publicRoutes = ["/", "/login", "/*"];
 
@@ -139,10 +140,19 @@ function RenderProtectedRoutes(UserType, isAuthenticated) {
               />
               <Route
                 exact
+                path="/director-dashboard/Addnote"
+                element={<AddNote/>}
+                />
+              <Route
+                exact
                 path="/director-dashboard/addwastagepage"
                 element={<AddWastageForm />}
+              />                    
+             <Route
+                exact
+                path="/director-dashboard/InventoryTable"
+                element={<InventoryTable/>}
               />
-             
               <Route
                 exact
                 path="/director-dashboard/sellwastagepage"
@@ -150,14 +160,15 @@ function RenderProtectedRoutes(UserType, isAuthenticated) {
               />
               <Route
                 exact
-                path="/director-dashboard/admin"
-                element={<AdminPage />}
+                path="/director-dashboard/report"
+                element={<Report />}
               />
               <Route
                 exact
-                path="/director-dashboard/employeepage"
-                element={<EmployeePage />}
+                path="/director-dashboard/admin"
+                element={<AdminPage />}
               />
+          
               <Route
                 exact
                 path="/director-dashboard/addjobpage"

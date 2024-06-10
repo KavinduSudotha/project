@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Bu
 import { Link } from 'react-router-dom';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { usePageName } from '../context/PageNameContext';
+import { jwtDecode } from "jwt-decode";
 
 const Inventory = () => {
     const { setPage } = usePageName();
@@ -11,6 +12,12 @@ const Inventory = () => {
     useEffect(() => {
         setPage('Inventory');
     }, [setPage]);
+
+    const storedData = localStorage.getItem("token");
+    const parsedData = JSON.parse(storedData);
+    const decodedToken = jwtDecode(parsedData.token);
+    const UserType = decodedToken.role;
+
 
     const [summary, setSummary] = useState([]);
     const [totalWeight, setTotalWeight] = useState(0);
@@ -117,8 +124,8 @@ const Inventory = () => {
     console.log("Raw Materials Data:", rawMaterialsData);
 
     return (
-        <div className="ml-16 p-4">
-               <Button
+        <div className="ml-16 p-4 mt-6">
+              {(UserType=== "Director" ) && <Button
                         variant="contained"
                         color="primary"
                         component={Link}
@@ -127,7 +134,7 @@ const Inventory = () => {
                         sx={{ '&:hover': { backgroundColor: 'secondary.dark' } }}
                     >
                         Record
-                    </Button>
+                    </Button>}
             <Grid container spacing={4}>
                 <Grid item xs={12} md={6.5}>
                     <Paper className="p-4">
