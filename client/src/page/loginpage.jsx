@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import LoginImg from "../asset/loginbga.jpg";
+import LoginImg from "../asset/image.png";
 import { jwtDecode } from "jwt-decode"; // Correct named import
 
 const LoginPage = () => {
