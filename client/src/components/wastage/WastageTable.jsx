@@ -82,7 +82,7 @@ export default function SellWastageTable() {
   };
 
   return (
-    <Paper style={{ height: 400, width: 1100 }}>
+    <Paper style={{ height:"87.9vh", width: "120vh"  }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

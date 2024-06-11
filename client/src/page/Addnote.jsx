@@ -1,7 +1,7 @@
 import React from 'react'
 import AddNoteForm from '../components/admin/note/AddNoteForm'
 import NoteTable from '../components/admin/note/notetable'
-import { Container, Paper, Typography } from '@mui/material';
+import { Container, Paper, Typography,Box } from '@mui/material';
 import { useEffect } from 'react';
 import { usePageName } from '../context/PageNameContext';
 
@@ -19,19 +19,23 @@ function Addnote() {
   
 
   return (
-      <div className='flex gap-5 mt-10 mx-10'>
-         
-      
-      <Paper elevation={3} className="w-1/2 p-4 mb-4 ">
-        <AddNoteForm />
-      </Paper>
-      <Paper elevation={3} className="w-full p-4">
-        <NoteTable />
-      </Paper>
+ 
+
+   <Box display="flex" justifyContent="space-between " marginTop={6} marginX={4}>
+   <Box width="33%"  boxShadow={2} height={"88vh"} overflow="auto" marginLeft={4}  >
+
+   <AddNoteForm />
    
-      </div>
-   
+   </Box>
+   <Box width="66%"  boxShadow={2} height={"88vh"} overflow="auto" marginLeft={2}>
+   <NoteTable />
+   </Box>
+ </Box>
+ 
+
+
   )
+
 }
 
 export default Addnote

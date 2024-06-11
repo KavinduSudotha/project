@@ -9,14 +9,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
@@ -41,7 +33,7 @@ const EnhancedTableHead = () => {
 const AddWastageTable = () => {
   const [wastageData, setWastageData] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15); // Set default rows per page to 15
 
   useEffect(() => {
     fetchWastageData();
@@ -66,9 +58,9 @@ const AddWastageTable = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
+    <Box >
+      <Paper >
+        <TableContainer sx={{ height: '82.5vh' }}> {/* Set table height to 80vh */}
           <Table aria-labelledby="tableTitle" size="medium">
             <EnhancedTableHead />
             <TableBody>
@@ -76,7 +68,7 @@ const AddWastageTable = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row.waste_id}>
-                    <TableCell  >{row.date}</TableCell>
+                    <TableCell>{row.date}</TableCell>
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
                   </TableRow>
@@ -85,7 +77,7 @@ const AddWastageTable = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[26]}
+          rowsPerPageOptions={[15, 25, 50, 100]} // Adjust available options
           component="div"
           count={wastageData.length}
           rowsPerPage={rowsPerPage}

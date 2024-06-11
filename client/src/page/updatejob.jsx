@@ -6,17 +6,24 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 
 import JobTable from '../components/job/JobTable';
 import { jwtDecode } from "jwt-decode";
+import { usePageName } from '../context/PageNameContext';
 
 
-function updatejob() {
+
+function Updatejob() {
   const storedData = localStorage.getItem("token");
   const parsedData = JSON.parse(storedData);
   const decodedToken = jwtDecode(parsedData.token);
   const UserType = decodedToken.role;
 
+  const { setPage } = usePageName();
+
+  useEffect(() => {
+    setPage('Jobs');
+  }, []);
 
   return (
-    <div style={{ marginTop: '4vh', marginX :'16vh' }}>
+    <div style={{ marginTop: '4vh',marginLeft:'8vh'} } >
  {(UserType=== "Director" ) && <Button
       variant="contained"
       component={Link}
@@ -37,5 +44,5 @@ function updatejob() {
   )
 }
 
-export default updatejob
+export default Updatejob
 

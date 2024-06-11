@@ -7,10 +7,10 @@ import WastageTable from '../components/wastage/AddWastageTable.jsx';
 const WastageManagementPage = () => {
   return (
     <Box display="flex" justifyContent="space-between " marginTop={6} marginX={4}>
-      <Box width="33%"  boxShadow={2} maxHeight={850} overflow="auto" marginLeft={8}>
+      <Box width="33%"  boxShadow={2} height={"88vh"} overflow="auto" marginLeft={8} >
         <AddWastageForm />
       </Box>
-      <Box width="66%"  boxShadow={2} maxHeight={850} overflow="auto" marginLeft={2}>
+      <Box width="66%"  boxShadow={2} height={"88vh"} overflow="auto" marginLeft={2}>
         <WastageTable />
       </Box>
     </Box>

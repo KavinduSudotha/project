@@ -105,25 +105,6 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-function EnhancedTableToolbar() {
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
-      <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-        Users
-      </Typography>
-      <Tooltip title="Filter list">
-        <IconButton>
-          <FilterListIcon />
-        </IconButton>
-      </Tooltip>
-    </Toolbar>
-  );
-}
 
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
@@ -228,12 +209,12 @@ export default function EnhancedTable() {
 
   const renderTable = (rows, title) => (
     <Paper sx={{ width: '100%', mb: 2 }}>
-      <Typography variant="h6" gutterBottom component="div" sx={{ padding: '16px', textAlign: 'center' }}>
+      <Typography variant="h6" gutterBottom component="div" sx={{ padding: '6px', textAlign: 'center', fontStyle: 'italic' }}>
         {title}
       </Typography>
-      <EnhancedTableToolbar />
+      
       <TableContainer>
-        <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="small">
+        <Table sx={{ minWidth: 750  }} aria-labelledby="tableTitle" size="small">
           <EnhancedTableHead
             order={order}
             orderBy={orderBy}
@@ -303,8 +284,12 @@ export default function EnhancedTable() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {renderTable(activeRows, "Active Users")}
-      {renderTable(inactiveRows, "Inactive Users")}
+      <Box sx={{ width: '100%', mb: 4 }}>
+        {renderTable(activeRows, "Active Users")}
+      </Box>
+      <Box sx={{ width: '100%' }}>
+        {renderTable(inactiveRows, "Inactive Users")}
+      </Box>
       <Modal open={open} onClose={handleClose}>
         <Box sx={{ p: 4, bgcolor: 'background.paper', boxShadow: 24, margin: 'auto', width: '50%' }}>
           {selectedUser && (

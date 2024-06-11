@@ -52,7 +52,13 @@ const AddWastageForm = () => {
   };
 
   return (
-    <Box className="max-w-md mx-auto my-6 p-8 bg-white shadow-md rounded">
+    <Box
+  className="max-w-md mx-auto my-6 p-8 bg-white rounded"
+  style={{
+    marginTop: "20vh",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)" // Add shadow here
+  }}
+>
       <TextField
         label="Date"
         value={date}

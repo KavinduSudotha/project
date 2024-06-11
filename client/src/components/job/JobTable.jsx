@@ -123,8 +123,13 @@ function Row(props) {
         <TableCell>{row.address}</TableCell>
         <TableCell>{row.chip_type}</TableCell>
         <TableCell>{row.peat_type}</TableCell>
+        
         <TableCell>
-          <Select value={status} onChange={handleStatusChange}>
+        <Select
+  value={status}
+  onChange={handleStatusChange}
+  style={{ width: "13vh" }} // Apply custom height using inline style
+>
             {['unstarted', 'started', 'Gathering raw', 'Processing', 'Hold', 'completed', 'cancelled'].map((status) => (
               <MenuItem key={status} value={status}>
                 {status}
@@ -132,14 +137,13 @@ function Row(props) {
             ))}
           </Select>
         </TableCell>
-        <TableCell>
-          <IconButton aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </IconButton>
-        </TableCell>
-        <TableCell>
+        <TableCell>{row.note}</TableCell>
+        <TableCell>  
           <IconButton aria-label="edit" onClick={handleEdit}>
             <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={handleDelete}>
+            <DeleteIcon />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -185,22 +189,18 @@ function Row(props) {
                   <TableRow>
                     <TableCell>Container Size</TableCell>
                     <TableCell>Pallets per Container</TableCell>
-                    <TableCell>Driver Name</TableCell>
-                    <TableCell>Vehicle Type</TableCell>
+                    <TableCell>Driver Name</TableCell>               
                     <TableCell>Vehicle Number</TableCell>
-                    <TableCell>Transport Company</TableCell>
-                    <TableCell>Production Logistics Manager ID</TableCell>
+                    <TableCell>Transport Company</TableCell>                
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow>
                     <TableCell>{row.container_size ?? 'N/A'}</TableCell>
                     <TableCell>{row.pallets_per_container ?? 'N/A'}</TableCell>
-                    <TableCell>{row.driver_name ?? 'N/A'}</TableCell>
-                    <TableCell>{row.vehicle_type ?? 'N/A'}</TableCell>
+                    <TableCell>{row.driver_name ?? 'N/A'}</TableCell>               
                     <TableCell>{row.vehicle_number ?? 'N/A'}</TableCell>
                     <TableCell>{row.transport_company ?? 'N/A'}</TableCell>
-                    <TableCell>{row.production_logistics_manager_id ?? 'N/A'}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

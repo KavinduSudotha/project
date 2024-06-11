@@ -82,7 +82,7 @@ const SellWastageForm = ({ onSellWastage }) => {
   };
 
   return (
-    <Box component={Paper} padding={2}>
+    <Box component={Paper} padding={2} marginTop={"10vh"} className=' flex flex-col gap-5'>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label="Date"

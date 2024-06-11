@@ -24,14 +24,14 @@ const AddNoteForm = () => {
   };
 
   return (
-    <div className='ml-20 mt-20'>
+    <div style={{ marginLeft: '5vh', marginRight: '5vh', marginTop:"15vh"}}>
     <form onSubmit={handleSubmit}>
       <TextField
         label="Note"
         variant="outlined"
         fullWidth
         multiline
-        rows={4}
+        rows={10}
         value={note}
         onChange={(e) => setNote(e.target.value)}
         required

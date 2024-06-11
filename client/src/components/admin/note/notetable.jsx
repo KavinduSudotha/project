@@ -8,7 +8,7 @@ const EnhancedTable = () => {
   const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(6); // Update default rows per page to 15
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState({});
@@ -107,33 +107,9 @@ const EnhancedTable = () => {
   };
 
   return (
-    <Box className="container mx-auto p-4">
-      <Paper className="mb-4">
-        <div className="flex justify-between p-4">
-          <div className="flex items-center">
-            {selected.length > 0 ? (
-              <span>{selected.length} selected</span>
-            ) : (
-              <span>Nutrition</span>
-            )}
-          </div>
-          <div>
-            {selected.length > 0 ? (
-              <Tooltip title="Delete">
-                <IconButton onClick={() => handleDelete(selected[0])}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Filter list">
-                <IconButton>
-                  <FilterListIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-        </div>
-        <TableContainer>
+    <Box className="container mx-auto">
+      <Paper>
+        <TableContainer style={{ maxHeight: '82.5vh', overflow: 'auto' }}> {/* Adjusted style */}
           <Table aria-labelledby="tableTitle" size="medium">
             <TableHead>
               <TableRow>
@@ -189,7 +165,7 @@ const EnhancedTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={rows          .length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -243,3 +219,6 @@ const EnhancedTable = () => {
 };
 
 export default EnhancedTable;
+
+
+
