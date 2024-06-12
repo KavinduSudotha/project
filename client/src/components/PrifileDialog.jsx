@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from '../asset/Logo.png';
-import AfLogin from '../components/AfLogin';
+import AfLogin from './AfLogin';
 
 function TopBar() {
   return (
