@@ -37,13 +37,9 @@ import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import {jwtDecode} from "jwt-decode";
 import { FiLogOut, FiSettings, FiUsers } from "react-icons/fi";
 import { useState } from "react";
-
-// Importing ProfileDialog component
 import ProfileDialog from './ProfileDialog';
-// Add MailIcon import
-import MailIcon from "@mui/icons-material/Mail";
 
-const drawerWidth = 240;
+const drawerWidth = 240; // Setting the drawer width
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   alignItems: "flex-start",
   paddingTop: theme.spacing(1),
@@ -54,10 +50,14 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 const handleLogout = () => {
+  // Clear the local storage
   localStorage.removeItem("token");
+
+  // Redirect to the login page or any other page
   window.location.href = "/";
 };
 
+// Mixin for opened drawer
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -67,6 +67,7 @@ const openedMixin = (theme) => ({
   overflowX: "hidden",
 });
 
+// Mixin for closed drawer
 const closedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
@@ -79,6 +80,7 @@ const closedMixin = (theme) => ({
   },
 });
 
+// Drawer header styling
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -87,6 +89,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
+// AppBar styling
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -105,6 +108,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+// Drawer styling
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -141,21 +145,31 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-export default function MiniDrawer({ children }) {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const { pageName } = usePageName();
+// Main component function
+export default function MiniDrawer() {
+  const theme = useTheme(); // Hook to use the theme
+  const [open, setOpen] = React.useState(false); // State to manage drawer open/close
+  const { pageName } = usePageName(); // Accessing pageName from context
+// Inside MiniDrawer component
+const handleMobileMenuClose = () => {
+  setMobileMoreAnchorEl(null);
+};
+
+const handleProfileMenuOpen = (event) => {
+  setAnchorEl(event.currentTarget);
+};
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpen(true); // Function to open the drawer
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(false); // Function to close the drawer
   };
 
   let menuItems = [];
 
+  // Menu items data
   const storedData = localStorage.getItem("token");
   let UserType = "";
   let userId = null; // Declare userId variable
@@ -165,56 +179,170 @@ export default function MiniDrawer({ children }) {
     UserType = decodedToken.role;
     userId = decodedToken.userid; // Extract userId from the token
   }
-
   switch (UserType) {
     case "Director":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/director-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/director-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/director-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/director-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/director-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/director-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/director-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/director-dashboard/updatejob" },
-        { name: "Admins", icon: SupervisorAccountIcon, link: "/director-dashboard/admin" },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/director-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/director-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/director-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/director-dashboard/addwastagepage",
+        },
+        {
+          name: "Sell wastage",
+          icon: DeleteSweepIcon,
+          link: "/director-dashboard/sellwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/director-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/director-dashboard/updatejob",
+        },
+        {
+          name: "Admins",
+          icon: SupervisorAccountIcon,
+          link: "/director-dashboard/admin",
+        },
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Manager":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/Manager-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Manager-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Manager-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Manager-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Manager-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/Manager-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Manager-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Manager-dashboard/updatejob" },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Manager-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/Manager-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Manager-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Manager-dashboard/addwastagepage",
+        },
+        {
+          name: "Sell wastage",
+          icon: DeleteSweepIcon,
+          link: "/Manager-dashboard/sellwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Manager-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Manager-dashboard/updatejob",
+        },
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     case "Supervisor":
       menuItems = [
         { name: "Home", icon: HomeIcon, link: "/Supervisor-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Supervisor-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Supervisor-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Supervisor-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Supervisor-dashboard/addwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Supervisor-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Supervisor-dashboard/updatejob" },
-       // continued from previous code snippet...
-
-       { name: "Logout", icon: LogoutIcon, action: handleLogout },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Supervisor-dashboard/pricelist",
+        },
+        {
+          name: "Buy RAW",
+          icon: FileDownloadIcon,
+          link: "/Supervisor-dashboard/buyraw",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Supervisor-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Supervisor-dashboard/addwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Supervisor-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Supervisor-dashboard/updatejob",
+        },
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
+      ];
+      break;
+    case "Employer":
+      menuItems = [
+        { name: "Home", icon: HomeIcon, link: "/Employer-dashboard" },
+        {
+          name: "Price List",
+          icon: ContentPasteIcon,
+          link: "/Employer-dashboard/pricelist",
+        },
+        {
+          name: "Use RAW",
+          icon: FileUploadIcon,
+          link: "/Employer-dashboard/rawuse",
+        },
+        {
+          name: "Add wastage",
+          icon: DeleteIcon,
+          link: "/Employer-dashboard/addwastagepage",
+        },
+        {
+          name: "Inventory",
+          icon: AddchartIcon,
+          link: "/Employer-dashboard/inventory",
+        },
+        {
+          name: "Jobs",
+          icon: WorkHistoryIcon,
+          link: "/Employer-dashboard/updatejob",
+        },
+        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
       ];
       break;
     default:
-      menuItems = [
-        { name: "Home", icon: HomeIcon, link: "/" },
-        { name: "Login", icon: AccountCircle, link: "/login" },
-        { name: "Register", icon: AccountCircle, link: "/register" },
-      ];
+      break;
   }
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
 
@@ -225,55 +353,89 @@ export default function MiniDrawer({ children }) {
   const handleProfileDialogClose = () => {
     setProfileDialogOpen(false);
   };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
 
-  // Define renderMenu and renderMobileMenu functions
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
-      anchorEl={null}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id="primary-search-account-menu"
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
       keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={false}
-      onClose={() => {}} // Replace with proper onClose logic
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleProfileDialogOpen}>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>{" "}
+      {/* Added Logout MenuItem */}
     </Menu>
   );
 
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
-      anchorEl={null}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id="primary-search-account-menu-mobile"
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={mobileMenuId}
       keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={false}
-      onClose={() => {}} // Replace with proper onClose logic
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileDialogOpen}>
-        <IconButton size="large" aria-label="account of current user" color="inherit">
+      <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+          <Badge badgeContent={4} color="error">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem onClick={handleLogout}>
-        <IconButton size="large" aria-label="logout" color="inherit">
-          <FiLogOut />
-        </IconButton>
-        <p>Logout</p>
-      </MenuItem>
     </Menu>
   );
-  
-  // Return JSX structure
+
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+      {" "}
+      {/* Removed zIndex here */}
+      <CssBaseline /> {/* Adding baseline CSS for styling */}
       <AppBar position="fixed" open={open}>
+        {" "}
+        {/* Removed zIndex here */}
         <StyledToolbar>
-          <IconButton
+        <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
@@ -292,9 +454,7 @@ export default function MiniDrawer({ children }) {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
+             
             </IconButton>
             <IconButton
               size="large"
@@ -329,6 +489,8 @@ export default function MiniDrawer({ children }) {
           </Box>
         </StyledToolbar>
       </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -348,8 +510,8 @@ export default function MiniDrawer({ children }) {
         </List>
       </Drawer>
       <Main open={open}>
-        <DrawerHeader />
-        {children}
+        
+       
       </Main>
       {/* ProfileDialog component */}
       <ProfileDialog open={profileDialogOpen} handleClose={handleProfileDialogClose}  userId={userId}/>
@@ -358,7 +520,4 @@ export default function MiniDrawer({ children }) {
       {renderMobileMenu}
     </Box>
   );
-
-  
 }
-

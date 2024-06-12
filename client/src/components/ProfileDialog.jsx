@@ -6,8 +6,6 @@ import {
   DialogActions,
   TextField,
   Button,
-  Switch,
-  FormControlLabel,
   IconButton,
   Typography,
   Box,
@@ -15,9 +13,16 @@ import {
   CardContent,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
+import HomeIcon from '@mui/icons-material/Home';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import LockIcon from '@mui/icons-material/Lock';
+import CloseIcon from '@mui/icons-material/Close';
 
 const ProfileDialog = ({ open, handleClose, userId }) => {
   const [userDetails, setUserDetails] = useState({});
@@ -79,34 +84,61 @@ const ProfileDialog = ({ open, handleClose, userId }) => {
   return (
     <>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Profile Details</DialogTitle>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            Profile Details
+            <IconButton onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           <Card variant="outlined" sx={{ mb: 2, p: 2, boxShadow: 3 }}>
             <CardContent>
               <List>
                 <ListItem>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Username" secondary={userDetails.username || ''} />
                 </ListItem>
                 <ListItem>
+                  <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon>
                   <ListItemText primary="First Name" secondary={userDetails.firstname || ''} />
                 </ListItem>
                 <ListItem>
+                  <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Last Name" secondary={userDetails.lastname || ''} />
                 </ListItem>
                 <ListItem>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Address" secondary={userDetails.address || ''} />
                 </ListItem>
                 <ListItem>
+                  <ListItemIcon>
+                    <EmailIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Email" secondary={userDetails.email || ''} />
                 </ListItem>
                 <ListItem>
+                  <ListItemIcon>
+                    <PhoneIcon />
+                  </ListItemIcon>
                   <ListItemText primary="Mobile Number" secondary={userDetails.mobilenumber || ''} />
                 </ListItem>
               </List>
             </CardContent>
           </Card>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Button onClick={handleClose} color="primary">Close</Button>
+            <Button onClick={handleClose} color="primary" variant="contained">
+              Close
+            </Button>
             <IconButton color="primary" onClick={() => setChangePasswordOpen(true)}>
               <LockIcon />
             </IconButton>
@@ -151,8 +183,12 @@ const ProfileDialog = ({ open, handleClose, userId }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setChangePasswordOpen(false)} color="primary">Cancel</Button>
-          <Button onClick={handlePasswordChange} color="primary">Change Password</Button>
+          <Button onClick={() => setChangePasswordOpen(false)} color="primary" variant="contained">
+            Cancel
+          </Button>
+          <Button onClick={handlePasswordChange} color="primary" variant="contained">
+            Change Password
+          </Button>
         </DialogActions>
       </Dialog>
     </>
