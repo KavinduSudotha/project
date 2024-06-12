@@ -69,7 +69,7 @@ const ChartHome = () => {
       <Grid item xs={12}>
         <Paper elevation={3} sx={{ padding: '14px', borderRadius: '8px' }}>
     
-      <CardHeader title="Inventory Pie Chart" />
+      <CardHeader title="Current Inventory " />
       {/* <h2>Inventory Pie Chart</h2> */}
       
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 0, xy:0, md: 0 }} sx={{ width: '50%' }}>

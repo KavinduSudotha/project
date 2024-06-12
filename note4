@@ -1,173 +1,47 @@
-for now i need table component using this table 
+<TableRow>
+                    <TableCell>Height</TableCell>
+                    <TableCell>Width</TableCell>
+                    <TableCell>Length</TableCell>
+                    <TableCell>Ratio Chips</TableCell>
+                    <TableCell>Ratio Peat</TableCell>
+                    <TableCell>Weight</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Sheet per Pallet</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{row.height ?? 'N/A'}</TableCell>
+                    <TableCell>{row.width ?? 'N/A'}</TableCell>
+                    <TableCell>{row.length ?? 'N/A'}</TableCell>
+                    <TableCell>{row.ratio_chips ?? 'N/A'}</TableCell>
+                    <TableCell>{row.ratio_peat ?? 'N/A'}</TableCell>
+                    <TableCell>{row.weight ?? 'N/A'}</TableCell>
+                    <TableCell>{row.quantity ?? 'N/A'}</TableCell>
+                    <TableCell>{row.sheet_per_pallet ?? 'N/A'}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
 
-
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { TableVirtuoso } from 'react-virtuoso';
-import { SocketAddress } from 'net'
-
-const sample = [
-  ['Frozen yoghurt', 159, 6.0, 24, 4.0],
-  ['Ice cream sandwich', 237, 9.0, 37, 4.3],
-  ['Eclair', 262, 16.0, 24, 6.0],
-  ['Cupcake', 305, 3.7, 67, 4.3],
-  ['Gingerbread', 356, 16.0, 49, 3.9],
-];
-
-function createData(id, dessert, calories, fat, carbs, protein) {
-  return { id, dessert, calories, fat, carbs, protein };
-}
-
-const columns = [
-  {
-    width: 200,
-    label: 'Dessert',
-    dataKey: 'dessert',
-  },
-  {
-    width: 120,
-    label: 'Calories\u00A0(g)',
-    dataKey: 'calories',
-    numeric: true,
-  },
-  {
-    width: 120,
-    label: 'Fat\u00A0(g)',
-    dataKey: 'fat',
-    numeric: true,
-  },
-  {
-    width: 120,
-    label: 'Carbs\u00A0(g)',
-    dataKey: 'carbs',
-    numeric: true,
-  },
-  {
-    width: 120,
-    label: 'Protein\u00A0(g)',
-    dataKey: 'protein',
-    numeric: true,
-  },
-];
-
-const rows = Array.from({ length: 200 }, (_, index) => {
-  const randomSelection = sample[Math.floor(Math.random() * sample.length)];
-  return createData(index, ...randomSelection);
-});
-
-const VirtuosoTableComponents = {
-  Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
-  )),
-  Table: (props) => (
-    <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
-  ),
-  TableHead,
-  TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
-};
-
-function fixedHeaderContent() {
-  return (
-    <TableRow>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          variant="head"
-          align={column.numeric || false ? 'right' : 'left'}
-          style={{ width: column.width }}
-          sx={{
-            backgroundColor: 'background.paper',
-          }}
-        >
-          {column.label}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
-}
-
-function rowContent(_index, row) {
-  return (
-    <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
-        >
-          {row[column.dataKey]}
-        </TableCell>
-      ))}
-    </React.Fragment>
-  );
-}
-
-export default function ReactVirtualizedTable() {
-  return (
-    <Paper style={{ height: 400, width: '100%' }}>
-      <TableVirtuoso
-        data={rows}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
-      />
-    </Paper>
-  );
-}
-
-
-show this colums in tables 
-
-1.job Id
-2. duedate
-3. chip type  
-4. peat type
-5.Address
-6.note
-
-
-
-this data get from  this table 
-
-===Database cocosys
-
-== Table structure for table job
-
-|------
-|Column|Type|Null|Default
-|------
-|//**job_id**//|int(8)|No|
-|created_date|date|Yes|NULL
-|due_date|date|Yes|NULL
-|customer_name|varchar(30)|Yes|NULL
-|address|varchar(40)|Yes|NULL
-|employee_id|varchar(8)|No|
-|chip_type|varchar(20)|No|
-|peat_type|varchar(20)|No|
-|height|int(6)|No|
-|width|int(6)|No|
-|length|int(6)|No|
-|ratio_chips|int(4)|No|
-|ratio_peat|int(4)|No|
-|weight|int(11)|No|
-|quantity|int(10)|No|
-|sheet_per_pallet|int(8)|No|
-|container_size|varchar(20)|No|
-|pallets_per_container|int(8)|No|
-|driver_name|varchar(40)|Yes|NULL
-|vehicle_number|int(8)|Yes|NULL
-|transport_company|varchar(40)|Yes|NULL
-|production_logistics_manager_id|varchar(8)|Yes|NULL
-|note|text|Yes|NULL
-|status|varchar(10)|No|
-== Dumping data for table job
-
-
-back end Node.js
-front end react  taiwim css
+              <Typography variant="h6" gutterBottom component="div" className="mt-4">
+                Transport Details
+              </Typography>
+              <Table size="small" aria-label="transport details">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Container Size</TableCell>
+                    <TableCell>Pallets per Container</TableCell>
+                    <TableCell>Driver Name</TableCell>               
+                    <TableCell>Vehicle Number</TableCell>
+                    <TableCell>Transport Company</TableCell>                
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{row.container_size ?? 'N/A'}</TableCell>
+                    <TableCell>{row.pallets_per_container ?? 'N/A'}</TableCell>
+                    <TableCell>{row.driver_name ?? 'N/A'}</TableCell>               
+                    <TableCell>{row.vehicle_number ?? 'N/A'}</TableCell>
+                    <TableCell>{row.transport_company ?? 'N/A'}</TableCell>
+                  </TableRow>
+                </TableBody>

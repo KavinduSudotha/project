@@ -17,10 +17,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 
 function createData(job_id, created_date, due_date, customer_name, address, chip_type, peat_type, status, note, sheetDetails, transportDetails) {
   return {
@@ -39,12 +43,12 @@ function createData(job_id, created_date, due_date, customer_name, address, chip
 }
 
 function Row(props) {
-
   const { row, updateStatus, deleteJob, updateJob } = props;
   const [open, setOpen] = React.useState(false);
   const [status, setStatus] = React.useState(row.status);
   const [editModalOpen, setEditModalOpen] = React.useState(false);
   const [editedRow, setEditedRow] = React.useState({ ...row });
+  const [errors, setErrors] = React.useState({});
 
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
@@ -68,40 +72,34 @@ function Row(props) {
     });
   };
 
-  const handleEdit = () => {
+  const handleEditOpen = () => {
     setEditModalOpen(true);
-    Swal.fire({
-      title: 'Edit Job',
-      html: `
-        <form id="editForm">
-          <input id="customer_name" class="swal2-input" placeholder="Customer Name" value="${editedRow.customer_name}">
-          <input id="address" class="swal2-input" placeholder="Address" value="${editedRow.address}">
-          <input id="chip_type" class="swal2-input" placeholder="Chip Type" value="${editedRow.chip_type}">
-          <input id="peat_type" class="swal2-input" placeholder="Peat Type" value="${editedRow.peat_type}">
-          <input id="note" class="swal2-input" placeholder="Note" value="${editedRow.note}">
-        </form>
-      `,
-      preConfirm: () => {
-        const customer_name = Swal.getPopup().querySelector('#customer_name').value;
-        const address = Swal.getPopup().querySelector('#address').value;
-        const chip_type = Swal.getPopup().querySelector('#chip_type').value;
-        const peat_type = Swal.getPopup().querySelector('#peat_type').value;
-        const note = Swal.getPopup().querySelector('#note').value;
+  };
 
-        if (!customer_name || !address || !chip_type || !peat_type) {
-          Swal.showValidationMessage(`Please fill in all fields`);
-        }
+  const handleEditClose = () => {
+    setEditModalOpen(false);
+  };
 
-        return { customer_name, address, chip_type, peat_type, note };
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const updatedData = result.value;
-        setEditedRow({ ...editedRow, ...updatedData });
-        updateJob({ ...editedRow, ...updatedData });
-        setEditModalOpen(false);
-      }
-    });
+  const validate = () => {
+    let tempErrors = {};
+    tempErrors.customer_name = editedRow.customer_name ? "" : "Customer Name is required.";
+    tempErrors.address = editedRow.address ? "" : "Address is required.";
+    tempErrors.chip_type = editedRow.chip_type ? "" : "Chip Type is required.";
+    tempErrors.peat_type = editedRow.peat_type ? "" : "Peat Type is required.";
+    setErrors(tempErrors);
+    return Object.values(tempErrors).every(x => x === "");
+  };
+
+  const handleEditSave = () => {
+    if (validate()) {
+      updateJob(editedRow);
+      handleEditClose();
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditedRow({ ...editedRow, [name]: value });
   };
 
   return (
@@ -125,11 +123,11 @@ function Row(props) {
         <TableCell>{row.peat_type}</TableCell>
         
         <TableCell>
-        <Select
-  value={status}
-  onChange={handleStatusChange}
-  style={{ width: "13vh" }} // Apply custom height using inline style
->
+          <Select
+            value={status}
+            onChange={handleStatusChange}
+            style={{ width: "13vh" }}
+          >
             {['unstarted', 'started', 'Gathering raw', 'Processing', 'Hold', 'completed', 'cancelled'].map((status) => (
               <MenuItem key={status} value={status}>
                 {status}
@@ -139,7 +137,7 @@ function Row(props) {
         </TableCell>
         <TableCell>{row.note}</TableCell>
         <TableCell>  
-          <IconButton aria-label="edit" onClick={handleEdit}>
+          <IconButton aria-label="edit" onClick={handleEditOpen}>
             <EditIcon />
           </IconButton>
           <IconButton aria-label="delete" onClick={handleDelete}>
@@ -208,6 +206,198 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
+      <Dialog open={editModalOpen} onClose={handleEditClose} fullWidth maxWidth="sm">
+        <DialogTitle>Edit Job</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Customer Name"
+            type="text"
+            fullWidth
+            name="customer_name"
+            value={editedRow.customer_name}
+            onChange={handleChange}
+            error={Boolean(errors.customer_name)}
+            helperText={errors.customer_name}
+          />
+          <TextField
+            margin="dense"
+            label="Address"
+            type="text"
+            fullWidth
+            name="address"
+            value={editedRow.address}
+            onChange={handleChange}
+            error={Boolean(errors.address)}
+            helperText={errors.address}
+          />
+          <TextField
+            margin="dense"
+            label="Chip Type"
+            type="text"
+            fullWidth
+            name="chip_type"
+            value={editedRow.chip_type}
+            onChange={handleChange}
+            error={Boolean(errors.chip_type)}
+            helperText={errors.chip_type}
+          />
+          <TextField
+            margin="dense"
+            label="Peat Type"
+            type="text"
+            fullWidth
+            name="peat_type"
+            value={editedRow.peat_type}
+            onChange={handleChange}
+            error={Boolean(errors.peat_type)}
+            helperText={errors.peat_type}
+          />
+          <TextField
+            margin="dense"
+            label="Status"
+            type="text"
+            fullWidth
+            name="status"
+            value={editedRow.status}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Note"
+            type="text"
+            fullWidth
+            name="note"
+            value={editedRow.note}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Height"
+            type="text"
+            fullWidth
+            name="height"
+            value={editedRow.height}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Width"
+            type="text"
+            fullWidth
+            name="width"
+            value={editedRow.width}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Length"
+            type="text"
+            fullWidth
+            name="length"
+            value={editedRow.length}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Ratio Chips"
+            type="text"
+            fullWidth
+            name="ratio_chips"
+            value={editedRow.ratio_chips}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Ratio Peat"
+            type="text"
+            fullWidth
+            name="ratio_peat"
+            value={editedRow.ratio_peat}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Weight"
+            type="text"
+            fullWidth
+            name="weight"
+            value={editedRow.weight}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Quantity"
+            type="text"
+            fullWidth
+            name="quantity"
+            value={editedRow.quantity}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Sheet per Pallet"
+            type="text"
+            fullWidth
+            name="sheet_per_pallet"
+            value={editedRow.sheet_per_pallet}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Container Size"
+            type="text"
+            fullWidth
+            name="container_size"
+            value={editedRow.container_size}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Pallets per Container"
+            type="text"
+            fullWidth
+            name="pallets_per_container"
+            value={editedRow.pallets_per_container}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Driver Name"
+            type="text"
+            fullWidth
+            name="driver_name"
+            value={editedRow.driver_name}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Vehicle Number"
+            type="text"
+            fullWidth
+            name="vehicle_number"
+            value={editedRow.vehicle_number}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Transport Company"
+            type="text"
+            fullWidth
+            name="transport_company"
+            value={editedRow.transport_company}
+            onChange={handleChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }

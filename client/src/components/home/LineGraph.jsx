@@ -103,7 +103,7 @@ const LineChartComponent = () => {
   return (
     <Card>
     <div className="flex justify-between items-center p-4">
-      <CardHeader title="Inventory Line Chart" />
+      <CardHeader title="Storage Level Over Time Visualization" />
       <FormControl variant="outlined" className="w-1/3">
         <InputLabel>Interval</InputLabel>
         <Select value={interval} onChange={handleIntervalChange} label="Interval">

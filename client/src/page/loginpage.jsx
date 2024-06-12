@@ -54,11 +54,11 @@ const LoginPage = () => {
       <div className="w-1/2 flex items-center justify-center">
         <form className="bg-white/55 text-left shadow-md rounded w-3/4 pt-6 pb-8 mb-4">
           <div className="px-4 size-auto">
-            <h1 className="text-sm mb-4 tex font-mono font-semibold text-gray-800">
+            <h1 className=" text-lg mb-4 tex font-mono font-semibold text-gray-800">
               COCO SHEET MANUFACTURING MANAGEMENT SYSTEM
             </h1>
             <h2 className="text-3xl mb-4 text-gray-800 font-mono">
-              Login to your account,
+              Login
             </h2>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-sans font-semibold mb-1" htmlFor="username">
