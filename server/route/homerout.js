@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { shownote } = require('../control/home');
+const { shownote,Userprofile,changePassword } = require('../control/home');
 
 router.get('/shownote', shownote);
+router.get('/userprofile/:userId', Userprofile);
+router.post('/userprofile/:userId/change-password', changePassword);
 
 
 module.exports = router;
