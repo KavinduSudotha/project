@@ -95,7 +95,7 @@ const EnhancedTable = () => {
                     key={row.note_id}
                   >
                     <TableCell>{row.note_id}</TableCell>
-                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.date.split('T')[0]}</TableCell> 
                     <TableCell>{row.time}</TableCell>
                     <TableCell>{row.note}</TableCell>
                     <TableCell>{row.employee_id}</TableCell>

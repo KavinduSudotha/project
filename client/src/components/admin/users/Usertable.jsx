@@ -56,6 +56,7 @@ const headCells = [
   { id: 'username', numeric: false, disablePadding: false, label: 'Username' },
   { id: 'role', numeric: false, disablePadding: false, label: 'Role' },
   { id: 'firstname', numeric: false, disablePadding: false, label: 'First Name' },
+  { id: 'lastname', numeric: false, disablePadding: false, label: 'Last Name' },
   { id: 'address', numeric: false, disablePadding: false, label: 'Address' },
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   { id: 'mobilenumber', numeric: false, disablePadding: false, label: 'Mobile Number' },
@@ -233,6 +234,7 @@ export default function EnhancedTable() {
                   <TableCell align="center">{row.username}</TableCell>
                   <TableCell align="center">{row.role}</TableCell>
                   <TableCell align="center">{row.firstname}</TableCell>
+                  <TableCell align="center">{row.lastname}</TableCell>
                   <TableCell align="center">{row.address}</TableCell>
                   <TableCell align="center">{row.email}</TableCell>
                   <TableCell align="center">{row.mobilenumber}</TableCell>

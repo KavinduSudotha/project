@@ -11,7 +11,7 @@ const cors = require('cors');
 
 
 const usertable = (req, res) => {
-    const query = 'SELECT userid, username, role, firstname, address, email, mobilenumber, status, admin_id FROM user';
+    const query = 'SELECT userid, username, role, firstname, lastname, address, email, mobilenumber, status, admin_id FROM user';
     connection.query(query, (err, results) => {
       if (err) throw err;
       res.json(results);

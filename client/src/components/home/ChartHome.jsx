@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardHeader, CardContent, Stack, Box, Typography, IconButton } from '@mui/material';
-import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
+import { CardHeader, Stack, Box, Paper, Grid } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 
 const ChartHome = () => {
   const [latestData, setLatestData] = useState(null);
@@ -28,7 +25,6 @@ const ChartHome = () => {
   const data1 = [
     { label: 'Total Weight Raw', value: latestData.total_weight_raw },
     { label: 'Total Weight Wastage', value: latestData.total_weight_wastage },
-   
     { label: 'Free Space', value: latestData.free_space },
   ];
 
@@ -64,30 +60,25 @@ const ChartHome = () => {
   ];
 
   return (
-
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper elevation={3} sx={{ padding: '14px', borderRadius: '8px' }}>
-    
-      <CardHeader title="Current Inventory " />
-      {/* <h2>Inventory Pie Chart</h2> */}
-      
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 0, xy:0, md: 0 }} sx={{ width: '50%' }}>
-          <Box sx={{ flexGrow: 1 }}>
-            <PieChart
-              series={series}
-              width={400}
-              height={250}
-              slotProps={{
-                legend: { hidden: true },
-              }}
-              onItemClick={(event, d) => setItemData(d)}
-            />
-          </Box>
-        </Stack>
-  
-    </Paper>
-    </Grid>
+          <CardHeader title="Current Inventory" />
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 0, md: 0 }} sx={{ width: '50%' }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <PieChart
+                series={series}
+                width={400}
+                height={250}
+                slotProps={{
+                  legend: { hidden: true },
+                }}
+                onItemClick={(event, d) => setItemData(d)}
+              />
+            </Box>
+          </Stack>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };

@@ -4,7 +4,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { jwtDecode } from "jwt-decode";
 
-const roles = ['Director', 'Manager', 'Supervisor', 'Employer'];
+const roles = ['Director', 'Manager', 'Supervisor'];
 
 const UserForm = () => {
   const [formData, setFormData] = useState({

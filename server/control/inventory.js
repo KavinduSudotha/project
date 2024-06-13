@@ -134,15 +134,15 @@ cron.schedule('0 */8 * * *', insertInventoryData);
 
 
 const homechart = (req, res) => {
-  const query = `SELECT * FROM inventory ORDER BY date DESC, time DESC LIMIT 1`;
-  connection.query(query, (err, result) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json(result[0]);
-  });
-};
-
+    const query = `SELECT * FROM inventory ORDER BY inventory_id DESC LIMIT 1`;
+    connection.query(query, (err, result) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      res.json(result[0]);
+    });
+  };
+  
 
 
 module.exports = { getInventorySummary, insertInventoryData, homechart};
