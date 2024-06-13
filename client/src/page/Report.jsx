@@ -21,7 +21,7 @@ const Report = () => {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/admin/generate-report', {
+      const response = await axios.post('http://localhost:5000/generate-report', {
         reportType,
         startDate,
         endDate

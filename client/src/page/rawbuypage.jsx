@@ -12,7 +12,7 @@ const YourPageComponent = () => {
         <Box
           width="33%"
           boxShadow={2}
-          maxHeight={850}
+          height={"90vh"}
           overflow="auto"
           marginTop={3}
           marginLeft={8}
@@ -23,7 +23,7 @@ const YourPageComponent = () => {
           width="67%"
           boxShadow={2}
           marginLeft={2}
-          maxHeight={850}
+          height={"90vh"}
           overflow="auto"
           marginTop={3}
         >

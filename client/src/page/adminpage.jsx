@@ -46,7 +46,7 @@ const AdminPage = () => {
       id: 4,
       title: "Reports",
       description: "Generate reports",
-      path: "/reports",
+      path: "/director-dashboard/report",
       bgColor: "bg-gradient-to-b from-blue-500 to-indigo-500",
     },
     // { id: 5, title: 'Notifications', description: 'View notifications', path: '/notifications', bgColor: 'bg-purple-500' },

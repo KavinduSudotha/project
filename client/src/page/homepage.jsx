@@ -22,6 +22,7 @@ export const Homepage = () => {
       <div className="flex w-full">
         <div className="flex w-full p-5">
          <div className="flex flex-col w-9/12 p-2">
+
            <div className="h-full">
               <LineGraph />
              </div>
