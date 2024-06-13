@@ -2,29 +2,29 @@ import React, { useState } from 'react';
 import { Container, TextField, MenuItem, Button, Typography } from '@mui/material';
 import axios from 'axios';
 
+const reportTypes = [
+  { value: 'dailyWastage', label: 'Daily Wastage Report' },
+  { value: 'monthlyWastage', label: 'Monthly Wastage Summary' },
+  { value: 'dailyPurchases', label: 'Daily Raw Material Purchases' },
+  { value: 'monthlyPurchases', label: 'Monthly Raw Material Cost Summary' },
+  { value: 'currentInventory', label: 'Current Inventory Status' },
+  { value: 'inventoryChange', label: 'Inventory Change Over Time' },
+  { value: 'wastageInventoryCorrelation', label: 'Wastage and Inventory Correlation' },
+  { value: 'purchaseInventoryEffect', label: 'Raw Material Purchase and Inventory Levels' },
+];
+
 const Report = () => {
   const [reportType, setReportType] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState(null);
 
-  const reportTypes = [
-    { value: 'dailyWastage', label: 'Daily Wastage Report' },
-    { value: 'monthlyWastage', label: 'Monthly Wastage Summary' },
-    { value: 'dailyPurchases', label: 'Daily Raw Material Purchases' },
-    { value: 'monthlyPurchases', label: 'Monthly Raw Material Cost Summary' },
-    { value: 'currentInventory', label: 'Current Inventory Status' },
-    { value: 'inventoryChange', label: 'Inventory Change Over Time' },
-    { value: 'wastageInventoryCorrelation', label: 'Wastage and Inventory Correlation' },
-    { value: 'purchaseInventoryEffect', label: 'Raw Material Purchase and Inventory Levels' },
-  ];
-
   const handleGenerateReport = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/generate-report', {
+      const response = await axios.post('http://localhost:3001/admin/generate-report', {
         reportType,
         startDate,
-        endDate
+        endDate,
       });
       setReportData(response.data);
     } catch (error) {

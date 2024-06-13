@@ -1,450 +1,337 @@
-i need to validate this form 
-// src/pages/AddJob.js
-import React, { useState } from 'react';
-import { AppBar, Tabs, Tab, TextField, Box, Button,  Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import SwipeableViews from 'react-swipeable-views';
-import { useTheme } from '@mui/material/styles';
-import axios from 'axios';
-import { useEffect } from 'react';
-import { usePageName } from '../context/PageNameContext';
+import React, { useState, useEffect } from "react";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Autocomplete from "@mui/material/Autocomplete";
+import MenuItem from "@mui/material/MenuItem";
+import axios from "axios";
+import { format } from "date-fns";
+import { Box } from "@mui/system";
+import { usePageName } from "../../context/PageNameContext";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
+const types = [
+  "chips_11mm_unwashed",
+  "chips_11mm_washed",
+  "chips_9mm_unwashed",
+  "chips_9mm_washed",
+  "chips_7mm_unwashed",
+  "chips_7mm_washed",
+  "cocopeat_hi_ec",
+  "cocopeat_low_ec",
+];
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const UserRawForm = () => {
+  const [open, setOpen] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState("");
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </div>
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        UNDO
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
   );
-}
-
-export default function AddJob() {
 
   const { setPage } = usePageName();
 
-    useEffect(() => {
-      setPage('Add Job');
-    }, []);
-  
-  const theme = useTheme();
-  const [value, setValue] = useState(0);
-  const [formData, setFormData] = useState({
-    createdDate: new Date().toISOString().split('T')[0],
-    dueDate: '',
-    customerName: '',
-    address: '',
-    note: '',
-    chip_type: '',
-    peat_type: '',
-    height: '',
-    width: '',
-    length: '',
-    ratioChips: '',
-    ratioPeat: '',
-    weight: '',
-    quantity: '',
-    sheet_per_pallet: '',
-    container_size : '',
-    pallets_per_container : '',
-    driverName: '',
-    vehicleType: '',
-    vehicleNumber: '',
-    transportCompany: '',
-  });
+  useEffect(() => {
+    setPage("To Use Raw Material");
+  }, []);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const [useId, setUseId] = useState(0);
+  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [jobOptions, setJobOptions] = useState([]);
+  const [batchOptions, setBatchOptions] = useState([]);
+  const [type, setType] = useState("");
+  const [jobId, setJobId] = useState("");
+  const [batchId, setBatchId] = useState("");
+  const [predictedQuantity, setPredictedQuantity] = useState("");
+  const [releasableWeight, setReleasableWeight] = useState("");
+  const [releasedWeight, setReleasedWeight] = useState("");
+  const [predictedWastage, setPredictedWastage] = useState("");
+  const [predictedSand, setPredictedSand] = useState("");
+  const [chipType, setChipType] = useState("");
+  const [peatType, setPeatType] = useState("");
+  const [batchQuantity, setBatchQuantity] = useState(0);
+  const [alert, setAlert] = useState(null);
+
+  // Function to clear all input fields
+  const clearForm = () => {
+    setDate(format(new Date(), "yyyy-MM-dd"));
+    setJobId("");
+    setBatchId("");
+    setType("");
+    setPredictedQuantity("");
+    setReleasableWeight("");
+    setReleasedWeight("");
+    setPredictedWastage("");
+    setPredictedSand("");
+    setChipType("");
+    setPeatType("");
+    setAlert(null);
   };
 
-  const handleChangeIndex = (index) => {
-    setValue(index);
-  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/userawrout/getUseId")
+      .then((res) => setUseId(res.data.useId))
+      .catch((err) => console.error(err));
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+    axios
+      .get("http://localhost:3001/userawrout/getJobOptions")
+      .then((res) => setJobOptions(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
-  const handleNext = () => {
-    setValue((prevValue) => prevValue + 1);
-  };
-
-  const handleClear = () => {
-    setFormData({
-      ...formData,
-      dueDate: '',
-      customerName: '',
-      address: '',
-      note: '',
-      chip_type: '',
-      peat_type: '',
-      height: '',
-      width: '',
-      length: '',
-      ratioChips: '',
-      ratioPeat: '',
-      weight: '',
-      quantity: '',
-      sheet_per_pallet: '',
-      container_size : '',
-      pallets_per_container : '', 
-      driverName: '',
-      vehicleType: '',
-      vehicleNumber: '',
-      transportCompany: '',
-    });
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post('http://localhost:3001/jobrout/addjob', {
-        ...formData,
-        employeeId: '0000',
-        status:'unstarted'// hardcoded employee ID
-      });
-      console.log('Response:', response.data);
-      handleClear(); // Clear form data after submission
-    } catch (error) {
-      console.error('Error submitting form:', error);
+  useEffect(() => {
+    if (type) {
+      axios
+        .post("http://localhost:3001/userawrout/getBatchOptions", { type })
+        .then((res) => setBatchOptions(res.data))
+        .catch((err) => console.error(err));
     }
+  }, [type]);
+
+  const handlePredictedQuantity = () => {
+    axios
+      .post("http://localhost:3001/userawrout/getPredictedQuantity", {
+        type,
+        jobId,
+      })
+      .then((res) =>
+        setPredictedQuantity(parseFloat(res.data.predictedQuantity).toFixed(2))
+      )
+      .catch((err) => console.error(err));
   };
+
+  const handleReleasableWeight = () => {
+    axios
+      .post("http://localhost:3001/userawrout/getReleasableWeight", { batchId })
+      .then((res) => setReleasableWeight(res.data.releasableWeight))
+      .catch((err) => console.error(err));
+  };
+
+  const handlePredictedWastage = () => {
+    axios
+      .post("http://localhost:3001/userawrout/getPredictedWastage", {
+        q: releasedWeight,
+        type,
+      })
+      .then((res) =>
+        setPredictedWastage(parseFloat(res.data.predictedWastage).toFixed(2))
+      )
+      .catch((err) => console.error(err));
+  };
+
+  const handlePredictedSand = () => {
+    axios
+      .post("http://localhost:3001/userawrout/getPredictedSand", {
+        q: releasedWeight,
+        type,
+      })
+      .then((res) =>
+        setPredictedSand(parseFloat(res.data.predictedSand).toFixed(2))
+      )
+      .catch((err) => console.error(err));
+  };
+
+  const handleSubmit = () => {
+    if (releasedWeight > batchQuantity) {
+      // setAlert(
+      //   <Alert severity="error">
+      //     Released quantity must not exceed batch quantity
+      //   </Alert>
+      // );
+      setErrorMsg("Released quantity must not exceed batch quantity");
+      handleClick();
+      return;
+    }
+
+    const data = {
+      date,
+      jobId,
+      type,
+      releasedWeight,
+      batchId,
+    };
+    axios
+      .post("http://localhost:3001/userawrout/submit", data)
+      .then((res) =>
+        setAlert(<Alert severity="success">{res.data.message}</Alert>)
+      )
+      .catch((err) => {
+        console.error(err);
+        setErrorMsg("Released quantity must not exceed batch quantity");
+        handleClick();
+        // setAlert(<Alert severity="error">Submission failed</Alert>);
+      });
+  };
+
+  const isChipType = types.slice(0, 6).includes(type);
+  const isPeatType = types.slice(6).includes(type);
 
   return (
-    <div className="container mx-auto p-4">
-     
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Basic Job Details" />
-          <Tab label="Sheet Details" />
-          <Tab label="Transport Details" />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
+    <Stack spacing={2} sx={{ width: "100%", height: "30vh" }}>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="errorMsg"
+        action={action}
+      />
+      {/* {alert}  */}
+      <TextField
+        label="Date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        type="date"
+      />
+      <Autocomplete
+        options={jobOptions}
+        getOptionLabel={(option) =>
+          `${option.job_id} - ${option.customer_name}`
+        }
+        renderInput={(params) => <TextField {...params} label="Job ID" />}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            setJobId(newValue.job_id);
+            axios
+              .post("http://localhost:3001/userawrout/getJobDetails", {
+                jobId: newValue.job_id,
+              })
+              .then((res) => {
+                setChipType(res.data.chip_type);
+                setPeatType(res.data.peat_type);
+              })
+              .catch((err) => console.error(err));
+          } else {
+            setJobId("");
+            setChipType("");
+            setPeatType("");
+          }
+        }}
+      />
+      <TextField
+        label="Chip Type"
+        value={chipType}
+        InputProps={{ readOnly: true }}
+      />
+      <TextField
+        label="Peat Type"
+        value={peatType}
+        InputProps={{ readOnly: true }}
+      />
+      <TextField
+        label="Type"
+        select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
       >
-        <TabPanel value={value} index={0} dir={theme.direction}>
+        {types.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </TextField>
+      <Autocomplete
+        options={batchOptions}
+        getOptionLabel={(option) =>
+          `${option.buy_id} - Available: ${option.availablequantity}`
+        }
+        renderInput={(params) => <TextField {...params} label="Batch ID" />}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            setBatchId(newValue.buy_id);
+            setBatchQuantity(newValue.availablequantity);
+          } else {
+            setBatchId("");
+            setBatchQuantity(0);
+          }
+        }}
+      />
+      <TextField
+        label="Predicted Quantity"
+        value={predictedQuantity}
+        InputProps={{ readOnly: true }}
+      />
+      <Button variant="contained" onClick={handlePredictedQuantity}>
+        Get Predicted Quantity
+      </Button>
+      <TextField
+        type="number"
+        label="Released Weight"
+        value={releasedWeight}
+        onChange={(e) => setReleasedWeight(e.target.value)}
+      />
+      {isChipType && (
+        <>
           <TextField
-            name="createdDate"
-            label="Created Date"
-            type="date"
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-            value={formData.createdDate}
-            disabled
+            label="Predicted Wastage"
+            value={predictedWastage}
+            InputProps={{ readOnly: true }}
           />
+          <Button variant="contained" onClick={handlePredictedWastage}>
+            Get Predicted Wastage
+          </Button>
+        </>
+      )}
+      {isPeatType && (
+        <>
           <TextField
-            name="dueDate"
-            label="Due Date"
-            type="date"
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-            value={formData.dueDate}
-            onChange={handleInputChange}
+            label="Predicted Sand"
+            value={predictedSand}
+            InputProps={{ readOnly: true }}
           />
-          <TextField
-            name="customerName"
-            label="Customer Name"
-            fullWidth
-            margin="normal"
-            value={formData.customerName}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="address"
-            label="Destination Address"
-            fullWidth
-            margin="normal"
-            value={formData.address}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="note"
-            label="Special Note"
-            fullWidth
-            margin="normal"
-            multiline
-            rows={4}
-            value={formData.note}
-            onChange={handleInputChange}
-          />
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button variant="contained" color="primary" onClick={handleNext}>
-              Next
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleClear}>
-              Clear
-            </Button>
-          </div>
-        </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
-            <div>
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="chip-type-label">Chip Type</InputLabel>
-                <Select
-                  labelId="chip-type-label"
-                  id="chip-type"
-                  name="chip_type"
-                  value={formData.chip_type}
-                  onChange={handleInputChange}
-                  label="Chip Type"
-                >
-                  <MenuItem value="chips_11mm_unwashed">chips_11mm_unwashed</MenuItem>
-                  <MenuItem value="chips_11mm_washed">chips_11mm_washed</MenuItem>
-                  <MenuItem value="chips_9mm_unwashed">chips_9mm_unwashed</MenuItem>
-                  <MenuItem value="chips_9mm_washed">chips_9mm_washed</MenuItem>
-                  <MenuItem value="chips_7mm_unwashed">chips_7mm_unwashed</MenuItem>
-                  <MenuItem value="chips_7mm_washed">chips_7mm_washed</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="peat-type-label">Peat Type</InputLabel>
-                <Select
-                  labelId="peat-type-label"
-                  id="peat-type"
-                  name="peat_type"
-                  value={formData.peat_type}
-                  onChange={handleInputChange}
-                  label="Peat Type"
-                >
-                  <MenuItem value="cocopeat_hi_ec">cocopeat_hi_ec</MenuItem>
-                  <MenuItem value="cocopeat_low_ec">cocopeat_low_ec</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          <TextField
-            name="height"
-            label="Sheet Height"
-            fullWidth
-            margin="normal"
-            value={formData.height}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="width"
-            label="Sheet Width"
-            fullWidth
-            margin="normal"
-            value={formData.width}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="length"
-            label="Sheet Length"
-            fullWidth
-            margin="normal"
-            value={formData.length}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="ratioChips"
-            label="Sheet Ratio (Chips)"
-            fullWidth
-            margin="normal"
-            value={formData.ratioChips}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="ratioPeat"
-            label="Sheet Ratio (Peat)"
-            fullWidth
-            margin="normal"
-            value={formData.ratioPeat}
-            onChange={handleInputChange}
-          />
-           <TextField
-            name="weight"
-            label="weight of sheet"
-            fullWidth
-            margin="normal"
-            value={formData.weight}
-            onChange={handleInputChange}
-          />
-        
-           <TextField
-            name="quantity"
-            label="Quantity"
-            fullWidth
-            margin="normal"
-            value={formData.quantity}
-            onChange={handleInputChange}
-          />
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button variant="contained" color="primary" onClick={handleNext}>
-              Next
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleClear}>
-              Clear
-            </Button>
-          </div>
-        </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
-        <FormControl fullWidth margin="normal">
-                <InputLabel id="peat-type-label">Container Size</InputLabel>
-                <Select
-                  labelId="container_size"
-                  id="container_size"
-                  name="container_size"
-                  value={formData.container_size}
-                  onChange={handleInputChange}
-                  label="container_size"
-                >
-                  <MenuItem value="20FT Flat Rack with sides">20FT Flat Rack with sides</MenuItem>
-                  <MenuItem value="20FT Flat Rack without sides">20FT Flat Rack without sides</MenuItem>
-                  <MenuItem value="40FT Flat Rack with Sides">40FT Flat Rack with Sides</MenuItem>
-                  <MenuItem value="40FT Flat Rack without sides">40FT Flat Rack without sides</MenuItem>
-                </Select>
-              </FormControl>
-          
-        
-          <TextField
-            name="sheet_per_pallet"
-            label="Sheet Per Pallet"
-            fullWidth
-            margin="normal"
-            value={formData.sheet_per_pallet}
-            onChange={handleInputChange}
-          />
-           <TextField
-            name="pallets_per_container"
-            label="Pallets_Per_Container"
-            fullWidth
-            margin="normal"
-            value={formData.pallets_per_container}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="transportCompany"
-            label="Transport Company"
-            fullWidth
-            margin="normal"
-            value={formData.transportCompany}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="driverName"
-            label="Driver Name"
-            fullWidth
-            margin="normal"
-            value={formData.driverName}
-            onChange={handleInputChange}
-          />
-          <TextField
-            name="vehicleNumber"
-            label="Vehicle Number"
-            fullWidth
-            margin="normal"
-            value={formData.vehicleNumber}
-            onChange={handleInputChange}
-          />
-          
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Submit
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={handleClear}>
-              Clear
-            </Button>
-          </div>
-        </TabPanel>
-      </SwipeableViews>
-    </div>
+          <Button variant="contained" onClick={handlePredictedSand}>
+            Get Predicted Sand
+          </Button>
+        </>
+      )}
+      <Stack direction="row" spacing={6}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          sx={{ width: "45%", "&:hover": { backgroundColor: "green" } }}
+        >
+          Submit
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={clearForm}
+          sx={{ width: "45%", "&:hover": { backgroundColor: "red" } }}
+        >
+          Clear
+        </Button>
+      </Stack>
+    </Stack>
   );
-}
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-fore that set caracter limit and data type  use this table structer
-|Column|Type|Null|Default
-|------
-|//**job_id**//|int(8)|No|
-|created_date|date|Yes|NULL
-|due_date|date|Yes|NULL
-|customer_name|varchar(30)|Yes|NULL
-|address|varchar(40)|Yes|NULL
-|employee_id|varchar(8)|No|
-|chip_type|varchar(20)|No|
-|peat_type|varchar(20)|No|
-|height|int(6)|No|
-|width|int(6)|No|
-|length|int(6)|No|
-|ratio_chips|int(4)|No|
-|ratio_peat|int(4)|No|
-|weight|int(11)|No|
-|quantity|int(10)|No|
-|sheet_per_pallet|int(8)|No|
-|container_size|varchar(20)|No|
-|pallets_per_container|int(8)|No|
-|driver_name|varchar(40)|Yes|NULL
-|vehicle_number|int(8)|Yes|NULL
-|transport_company|varchar(40)|Yes|NULL
-|production_logistics_manager_id|varchar(8)|Yes|NULL
-|note|text|Yes|NULL
-|status|varchar(10)|No|
-== Dumping data for table job
-canot be null user must fill
-if  it not fill it should show error message
-and dont allow to go  next tab,lock next tabs
-
-this are other validations
-customer name- only string
-due date -canot be null user must fill this
-
-chip type -canot be null user must fill this user must select 
-peast typ-canot be null user must fill this user must select 
-sheet height -canot be null user must fill this  (only number)
-sheet weight -canot be null user must fill this (only number)
-sheet length -canot be null user must fill this(only number)
-sheet width -canot be null user must fill this(only number)
-sheet ratio chips -canot be null user must fill this(only number)
-sheet ratio peat -canot be null user must fill this(only number)
-sheet weight -canot be null user must fill this(only number)
-sheet quantity -canot be null user must fill this(only number)
-container_size -canot be null user must fill this
-sheet per pallet -canot be null user must fill this(only number)
-pallets per container -(only number)
-driver name -only string
-
-add sweet alert for success message
-
-fror 
-sheet.height
-sheet.width
-sheet.length
-add cm end of the feild
-weight add g end of the feild
+export default UserRawForm;

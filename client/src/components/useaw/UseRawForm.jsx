@@ -6,7 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Box } from '@mui/system';
 import { usePageName } from '../../context/PageNameContext';
 
 const types = [
@@ -15,7 +14,7 @@ const types = [
   'cocopeat_hi_ec', 'cocopeat_low_ec'
 ];
 
-const UserRawForm = () => {
+const UserRawForm = ({ showSnackbar }) => {
   const { setPage } = usePageName();
 
   useEffect(() => {
@@ -36,6 +35,7 @@ const UserRawForm = () => {
   const [predictedSand, setPredictedSand] = useState('');
   const [chipType, setChipType] = useState('');
   const [peatType, setPeatType] = useState('');
+  const [batchQuantity, setBatchQuantity] = useState(0);
 
   // Function to clear all input fields
   const clearForm = () => {
@@ -72,7 +72,7 @@ const UserRawForm = () => {
 
   const handlePredictedQuantity = () => {
     axios.post('http://localhost:3001/userawrout/getPredictedQuantity', { type, jobId })
-      .then(res => setPredictedQuantity(res.data.predictedQuantity))
+      .then(res => setPredictedQuantity(parseFloat(res.data.predictedQuantity).toFixed(2)))
       .catch(err => console.error(err));
   };
 
@@ -84,17 +84,22 @@ const UserRawForm = () => {
 
   const handlePredictedWastage = () => {
     axios.post('http://localhost:3001/userawrout/getPredictedWastage', { q: releasedWeight, type })
-      .then(res => setPredictedWastage(res.data.predictedWastage))
+      .then(res => setPredictedWastage(parseFloat(res.data.predictedWastage).toFixed(2)))
       .catch(err => console.error(err));
   };
 
   const handlePredictedSand = () => {
     axios.post('http://localhost:3001/userawrout/getPredictedSand', { q: releasedWeight, type })
-      .then(res => setPredictedSand(res.data.predictedSand))
+      .then(res => setPredictedSand(parseFloat(res.data.predictedSand).toFixed(2)))
       .catch(err => console.error(err));
   };
 
   const handleSubmit = () => {
+    if (releasedWeight > batchQuantity) {
+      showSnackbar('Released quantity must not exceed batch quantity', 'error');
+      return;
+    }
+
     const data = {
       date,
       jobId,
@@ -103,21 +108,25 @@ const UserRawForm = () => {
       batchId
     };
     axios.post('http://localhost:3001/userawrout/submit', data)
-      .then(res => alert(res.data.message))
-      .catch(err => console.error(err));
+      .then(res => showSnackbar(res.data.message, 'success'))
+      .catch(err => {
+        console.error(err);
+        showSnackbar('Submission failed', 'error');
+      });
   };
 
   const isChipType = types.slice(0, 6).includes(type);
   const isPeatType = types.slice(6).includes(type);
 
   return (
-    <Stack spacing={2} sx={{ width: '100%',  height:"30vh"}} >
+    <Stack spacing={2} sx={{ width: '100%', height: "30vh" }} >
       <TextField
         label="Date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
         InputLabelProps={{ shrink: true }}
         type="date"
+        disabled
       />
       <Autocomplete
         options={jobOptions}
@@ -165,15 +174,22 @@ const UserRawForm = () => {
         options={batchOptions}
         getOptionLabel={(option) => `${option.buy_id} - Available: ${option.availablequantity}`}
         renderInput={(params) => <TextField {...params} label="Batch ID" />}
-        onChange={(event, newValue) => setBatchId(newValue ? newValue.buy_id : '')}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            setBatchId(newValue.buy_id);
+            setBatchQuantity(newValue.availablequantity);
+          } else {
+            setBatchId('');
+            setBatchQuantity(0);
+          }
+        }}
       />
-<TextField
-  label="Predicted Quantity"
-  value={typeof predictedQuantity === 'number' ? predictedQuantity.toFixed(2) : predictedQuantity}
-  InputProps={{ readOnly: true }}
-/>
-
-            <Button variant="contained" onClick={handlePredictedQuantity}>Get Predicted Quantity</Button>
+      <TextField
+        label="Predicted Quantity"
+        value={predictedQuantity}
+        InputProps={{ readOnly: true }}
+      />
+      <Button variant="contained" onClick={handlePredictedQuantity}>Get Predicted Quantity</Button>
       <TextField
         type='number'
         label="Released Weight"
@@ -202,7 +218,7 @@ const UserRawForm = () => {
       )}
       <Stack direction="row" spacing={6}>
         <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ width: '45%', '&:hover': { backgroundColor: 'green' } }}>Submit</Button>
-        <Button variant="contained"  color="secondary" onClick={clearForm}  sx={{ width: '45%', '&:hover': { backgroundColor: 'red' } }} >Clear</Button>
+        <Button variant="contained" color="secondary" onClick={clearForm} sx={{ width: '45%', '&:hover': { backgroundColor: 'red' } }} >Clear</Button>
       </Stack>
     </Stack>
   );

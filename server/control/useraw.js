@@ -84,14 +84,22 @@ exports.getPredictedQuantity = (req, res) => {
 
 // Get releasable weight
 exports.getReleasableWeight = (req, res) => {
-    const { batchId } = req.body;
-    connection.query('SELECT releasable_weight FROM summarytable WHERE batch_id = ?', [batchId], (err, results) => {
+    const { buy_id } = req.body;
+    console.log(buy_id);
+    
+    connection.query('SELECT availablequantity FROM summarytable WHERE buy_id = ?', [buy_id], (err, results) => {
         if (err) {
             return res.status(500).json({ error: err });
         }
-        res.json({ releasableWeight: results[0].releasable_weight });
+        
+        if (results.length === 0) {
+            return res.status(404).json({ error: "No data found for the given buy_id" });
+        }
+        
+        res.json({ releasableWeight: results[0].availablequantity });
     });
 };
+
 
 // Calculate predicted wastage
 exports.getPredictedWastage = (req, res) => {

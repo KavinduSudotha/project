@@ -32,9 +32,10 @@ const BuyRawTable = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Buy ID</TableCell>
               <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Date</TableCell>
               <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Type</TableCell>
-              <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Employee ID</TableCell>
+              <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Emp ID</TableCell> {/* New Emp ID column */}
               <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Wastage Chip</TableCell>
               <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Density Peat</TableCell>
               <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}>Sand Peat</TableCell>
@@ -46,9 +47,10 @@ const BuyRawTable = () => {
           <TableBody>
             {buyRawData.map((row, index) => (
               <TableRow key={index}>
+                <TableCell>{row.buyid}</TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell>{row.type}</TableCell>
-                <TableCell>{row.employeeid}</TableCell>
+                <TableCell>{row.employeeid}</TableCell> {/* Display Emp ID */}
                 <TableCell>{row.wastagechip}</TableCell>
                 <TableCell>{row.densitypeat}</TableCell>
                 <TableCell>{row.sandpeat}</TableCell>
