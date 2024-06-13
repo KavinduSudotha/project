@@ -1,364 +1,450 @@
-import * as React from "react";
-import { usePageName } from "../context/PageNameContext";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import LogoutIcon from "@mui/icons-material/Logout";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import HomeIcon from "@mui/icons-material/Home";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
-import AddchartIcon from "@mui/icons-material/Addchart";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import TextSnippetIcon from "@mui/icons-material/TextSnippet";
-import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import {jwtDecode} from "jwt-decode";
-import { FiLogOut, FiSettings, FiUsers } from "react-icons/fi";
-import { useState } from "react";
+i need to validate this form 
+// src/pages/AddJob.js
+import React, { useState } from 'react';
+import { AppBar, Tabs, Tab, TextField, Box, Button,  Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import SwipeableViews from 'react-swipeable-views';
+import { useTheme } from '@mui/material/styles';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { usePageName } from '../context/PageNameContext';
 
-// Importing ProfileDialog component
-import ProfileDialog from './ProfileDialog';
-// Add MailIcon import
-import MailIcon from "@mui/icons-material/Mail";
 
-const drawerWidth = 240;
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  alignItems: "flex-start",
-  paddingTop: theme.spacing(1),
-  paddingBottom: theme.spacing(1),
-  "@media all": {
-    minHeight: 64,
-  },
-}));
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/";
-};
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  })
-);
-
-export default function MiniDrawer({ children }) {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const { pageName } = usePageName();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  let menuItems = [];
-
-  const storedData = localStorage.getItem("token");
-  let UserType = "";
-  let userId = null; // Declare userId variable
-  if (storedData) {
-    const parsedData = JSON.parse(storedData);
-    const decodedToken = jwtDecode(parsedData.token);
-    UserType = decodedToken.role;
-    userId = decodedToken.userid; // Extract userId from the token
-  }
-
-  switch (UserType) {
-    case "Director":
-      menuItems = [
-        { name: "Home", icon: HomeIcon, link: "/director-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/director-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/director-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/director-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/director-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/director-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/director-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/director-dashboard/updatejob" },
-        { name: "Admins", icon: SupervisorAccountIcon, link: "/director-dashboard/admin" },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout },
-      ];
-      break;
-    case "Manager":
-      menuItems = [
-        { name: "Home", icon: HomeIcon, link: "/Manager-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Manager-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Manager-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Manager-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Manager-dashboard/addwastagepage" },
-        { name: "Sell wastage", icon: DeleteSweepIcon, link: "/Manager-dashboard/sellwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Manager-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Manager-dashboard/updatejob" },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout },
-      ];
-      break;
-    case "Supervisor":
-      menuItems = [
-        { name: "Home", icon: HomeIcon, link: "/Supervisor-dashboard" },
-        { name: "Price List", icon: ContentPasteIcon, link: "/Supervisor-dashboard/pricelist" },
-        { name: "Buy RAW", icon: FileDownloadIcon, link: "/Supervisor-dashboard/buyraw" },
-        { name: "Use RAW", icon: FileUploadIcon, link: "/Supervisor-dashboard/rawuse" },
-        { name: "Add wastage", icon: DeleteIcon, link: "/Supervisor-dashboard/addwastagepage" },
-        { name: "Inventory", icon: AddchartIcon, link: "/Supervisor-dashboard/inventory" },
-        { name: "Jobs", icon: WorkHistoryIcon, link: "/Supervisor-dashboard/updatejob" },
-       // continued from previous code snippet...
-
-       { name: "Logout", icon: LogoutIcon, action: handleLogout },
-      ];
-      break;
-    default:
-      menuItems = [
-        { name: "Home", icon: HomeIcon, link: "/" },
-        { name: "Login", icon: AccountCircle, link: "/login" },
-        { name: "Register", icon: AccountCircle, link: "/register" },
-      ];
-  }
-
-  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
-
-  const handleProfileDialogOpen = () => {
-    setProfileDialogOpen(true);
-  };
-
-  const handleProfileDialogClose = () => {
-    setProfileDialogOpen(false);
-  };
-
-  // Define renderMenu and renderMobileMenu functions
-  const renderMenu = (
-    <Menu
-      anchorEl={null}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id="primary-search-account-menu"
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={false}
-      onClose={() => {}} // Replace with proper onClose logic
-    >
-      <MenuItem onClick={handleProfileDialogOpen}>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </Menu>
-  );
-
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={null}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id="primary-search-account-menu-mobile"
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={false}
-      onClose={() => {}} // Replace with proper onClose logic
-    >
-      <MenuItem onClick={handleProfileDialogOpen}>
-        <IconButton size="large" aria-label="account of current user" color="inherit">
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-      <MenuItem onClick={handleLogout}>
-        <IconButton size="large" aria-label="logout" color="inherit">
-          <FiLogOut />
-        </IconButton>
-        <p>Logout</p>
-      </MenuItem>
-    </Menu>
-  );
-  
-  // Return JSX structure
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <StyledToolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ marginRight: "36px", ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {pageName}
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              onClick={handleProfileDialogOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-haspopup="true"
-              onClick={() => {}}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </StyledToolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {menuItems.map((item, index) => (
-            <ListItem button key={index} component="a" href={item.link}>
-              <ListItemIcon>
-                <item.icon />
-              </ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-        {children}
-      </Main>
-      {/* ProfileDialog component */}
-      <ProfileDialog open={profileDialogOpen} handleClose={handleProfileDialogClose}  userId={userId}/>
-      {/* Render menus */}
-      {renderMenu}
-      {renderMobileMenu}
-    </Box>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
   );
-
-  
 }
 
+export default function AddJob() {
+
+  const { setPage } = usePageName();
+
+    useEffect(() => {
+      setPage('Add Job');
+    }, []);
+  
+  const theme = useTheme();
+  const [value, setValue] = useState(0);
+  const [formData, setFormData] = useState({
+    createdDate: new Date().toISOString().split('T')[0],
+    dueDate: '',
+    customerName: '',
+    address: '',
+    note: '',
+    chip_type: '',
+    peat_type: '',
+    height: '',
+    width: '',
+    length: '',
+    ratioChips: '',
+    ratioPeat: '',
+    weight: '',
+    quantity: '',
+    sheet_per_pallet: '',
+    container_size : '',
+    pallets_per_container : '',
+    driverName: '',
+    vehicleType: '',
+    vehicleNumber: '',
+    transportCompany: '',
+  });
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleChangeIndex = (index) => {
+    setValue(index);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleNext = () => {
+    setValue((prevValue) => prevValue + 1);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ...formData,
+      dueDate: '',
+      customerName: '',
+      address: '',
+      note: '',
+      chip_type: '',
+      peat_type: '',
+      height: '',
+      width: '',
+      length: '',
+      ratioChips: '',
+      ratioPeat: '',
+      weight: '',
+      quantity: '',
+      sheet_per_pallet: '',
+      container_size : '',
+      pallets_per_container : '', 
+      driverName: '',
+      vehicleType: '',
+      vehicleNumber: '',
+      transportCompany: '',
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/jobrout/addjob', {
+        ...formData,
+        employeeId: '0000',
+        status:'unstarted'// hardcoded employee ID
+      });
+      console.log('Response:', response.data);
+      handleClear(); // Clear form data after submission
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+     
+      <AppBar position="static" color="default">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Basic Job Details" />
+          <Tab label="Sheet Details" />
+          <Tab label="Transport Details" />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabPanel value={value} index={0} dir={theme.direction}>
+          <TextField
+            name="createdDate"
+            label="Created Date"
+            type="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+            value={formData.createdDate}
+            disabled
+          />
+          <TextField
+            name="dueDate"
+            label="Due Date"
+            type="date"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
+            value={formData.dueDate}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="customerName"
+            label="Customer Name"
+            fullWidth
+            margin="normal"
+            value={formData.customerName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="address"
+            label="Destination Address"
+            fullWidth
+            margin="normal"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="note"
+            label="Special Note"
+            fullWidth
+            margin="normal"
+            multiline
+            rows={4}
+            value={formData.note}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+        <TabPanel value={value} index={1} dir={theme.direction}>
+            <div>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="chip-type-label">Chip Type</InputLabel>
+                <Select
+                  labelId="chip-type-label"
+                  id="chip-type"
+                  name="chip_type"
+                  value={formData.chip_type}
+                  onChange={handleInputChange}
+                  label="Chip Type"
+                >
+                  <MenuItem value="chips_11mm_unwashed">chips_11mm_unwashed</MenuItem>
+                  <MenuItem value="chips_11mm_washed">chips_11mm_washed</MenuItem>
+                  <MenuItem value="chips_9mm_unwashed">chips_9mm_unwashed</MenuItem>
+                  <MenuItem value="chips_9mm_washed">chips_9mm_washed</MenuItem>
+                  <MenuItem value="chips_7mm_unwashed">chips_7mm_unwashed</MenuItem>
+                  <MenuItem value="chips_7mm_washed">chips_7mm_washed</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="peat-type-label">Peat Type</InputLabel>
+                <Select
+                  labelId="peat-type-label"
+                  id="peat-type"
+                  name="peat_type"
+                  value={formData.peat_type}
+                  onChange={handleInputChange}
+                  label="Peat Type"
+                >
+                  <MenuItem value="cocopeat_hi_ec">cocopeat_hi_ec</MenuItem>
+                  <MenuItem value="cocopeat_low_ec">cocopeat_low_ec</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          <TextField
+            name="height"
+            label="Sheet Height"
+            fullWidth
+            margin="normal"
+            value={formData.height}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="width"
+            label="Sheet Width"
+            fullWidth
+            margin="normal"
+            value={formData.width}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="length"
+            label="Sheet Length"
+            fullWidth
+            margin="normal"
+            value={formData.length}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="ratioChips"
+            label="Sheet Ratio (Chips)"
+            fullWidth
+            margin="normal"
+            value={formData.ratioChips}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="ratioPeat"
+            label="Sheet Ratio (Peat)"
+            fullWidth
+            margin="normal"
+            value={formData.ratioPeat}
+            onChange={handleInputChange}
+          />
+           <TextField
+            name="weight"
+            label="weight of sheet"
+            fullWidth
+            margin="normal"
+            value={formData.weight}
+            onChange={handleInputChange}
+          />
+        
+           <TextField
+            name="quantity"
+            label="Quantity"
+            fullWidth
+            margin="normal"
+            value={formData.quantity}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+        <TabPanel value={value} index={2} dir={theme.direction}>
+        <FormControl fullWidth margin="normal">
+                <InputLabel id="peat-type-label">Container Size</InputLabel>
+                <Select
+                  labelId="container_size"
+                  id="container_size"
+                  name="container_size"
+                  value={formData.container_size}
+                  onChange={handleInputChange}
+                  label="container_size"
+                >
+                  <MenuItem value="20FT Flat Rack with sides">20FT Flat Rack with sides</MenuItem>
+                  <MenuItem value="20FT Flat Rack without sides">20FT Flat Rack without sides</MenuItem>
+                  <MenuItem value="40FT Flat Rack with Sides">40FT Flat Rack with Sides</MenuItem>
+                  <MenuItem value="40FT Flat Rack without sides">40FT Flat Rack without sides</MenuItem>
+                </Select>
+              </FormControl>
+          
+        
+          <TextField
+            name="sheet_per_pallet"
+            label="Sheet Per Pallet"
+            fullWidth
+            margin="normal"
+            value={formData.sheet_per_pallet}
+            onChange={handleInputChange}
+          />
+           <TextField
+            name="pallets_per_container"
+            label="Pallets_Per_Container"
+            fullWidth
+            margin="normal"
+            value={formData.pallets_per_container}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="transportCompany"
+            label="Transport Company"
+            fullWidth
+            margin="normal"
+            value={formData.transportCompany}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="driverName"
+            label="Driver Name"
+            fullWidth
+            margin="normal"
+            value={formData.driverName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            name="vehicleNumber"
+            label="Vehicle Number"
+            fullWidth
+            margin="normal"
+            value={formData.vehicleNumber}
+            onChange={handleInputChange}
+          />
+          
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleClear}>
+              Clear
+            </Button>
+          </div>
+        </TabPanel>
+      </SwipeableViews>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+fore that set caracter limit and data type  use this table structer
+|Column|Type|Null|Default
+|------
+|//**job_id**//|int(8)|No|
+|created_date|date|Yes|NULL
+|due_date|date|Yes|NULL
+|customer_name|varchar(30)|Yes|NULL
+|address|varchar(40)|Yes|NULL
+|employee_id|varchar(8)|No|
+|chip_type|varchar(20)|No|
+|peat_type|varchar(20)|No|
+|height|int(6)|No|
+|width|int(6)|No|
+|length|int(6)|No|
+|ratio_chips|int(4)|No|
+|ratio_peat|int(4)|No|
+|weight|int(11)|No|
+|quantity|int(10)|No|
+|sheet_per_pallet|int(8)|No|
+|container_size|varchar(20)|No|
+|pallets_per_container|int(8)|No|
+|driver_name|varchar(40)|Yes|NULL
+|vehicle_number|int(8)|Yes|NULL
+|transport_company|varchar(40)|Yes|NULL
+|production_logistics_manager_id|varchar(8)|Yes|NULL
+|note|text|Yes|NULL
+|status|varchar(10)|No|
+== Dumping data for table job
+canot be null user must fill
+if  it not fill it should show error message
+and dont allow to go  next tab,lock next tabs
+
+this are other validations
+customer name- only string
+due date -canot be null user must fill this
+
+chip type -canot be null user must fill this user must select 
+peast typ-canot be null user must fill this user must select 
+sheet height -canot be null user must fill this  (only number)
+sheet weight -canot be null user must fill this (only number)
+sheet length -canot be null user must fill this(only number)
+sheet width -canot be null user must fill this(only number)
+sheet ratio chips -canot be null user must fill this(only number)
+sheet ratio peat -canot be null user must fill this(only number)
+sheet weight -canot be null user must fill this(only number)
+sheet quantity -canot be null user must fill this(only number)
+container_size -canot be null user must fill this
+sheet per pallet -canot be null user must fill this(only number)
+pallets per container -(only number)
+driver name -only string
+
+add sweet alert for success message
+
+fror 
+sheet.height
+sheet.width
+sheet.length
+add cm end of the feild
+weight add g end of the feild

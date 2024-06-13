@@ -167,11 +167,12 @@ const UserRawForm = () => {
         renderInput={(params) => <TextField {...params} label="Batch ID" />}
         onChange={(event, newValue) => setBatchId(newValue ? newValue.buy_id : '')}
       />
-      <TextField
-        label="Predicted Quantity"
-        value={predictedQuantity}
-        InputProps={{ readOnly: true }}
-      />
+<TextField
+  label="Predicted Quantity"
+  value={typeof predictedQuantity === 'number' ? predictedQuantity.toFixed(2) : predictedQuantity}
+  InputProps={{ readOnly: true }}
+/>
+
             <Button variant="contained" onClick={handlePredictedQuantity}>Get Predicted Quantity</Button>
       <TextField
         type='number'
