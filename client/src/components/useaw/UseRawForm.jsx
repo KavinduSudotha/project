@@ -105,7 +105,7 @@ const UserRawForm = ({ showSnackbar }) => {
       showSnackbar('Released quantity must not exceed batch quantity', 'error');
       return;
     }
-
+  
     const data = {
       date,
       jobId,
@@ -113,15 +113,19 @@ const UserRawForm = ({ showSnackbar }) => {
       releasedWeight,
       batchId,
       Userid
-
     };
+  
     axios.post('http://localhost:3001/userawrout/submit', data)
-      .then(res => showSnackbar(res.data.message, 'success'))
+      .then(res => {
+        showSnackbar(res.data.message, 'success');
+        clearForm(); // Clear the form on successful submission
+      })
       .catch(err => {
         console.error(err);
         showSnackbar('Submission failed', 'error');
       });
   };
+  
 
   const isChipType = types.slice(0, 6).includes(type);
   const isPeatType = types.slice(6).includes(type);

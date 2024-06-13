@@ -10,11 +10,11 @@ import {jwtDecode} from 'jwt-decode';
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
 const wastageTypes = [
-  'wastage_price_cocopeat_fiber',
-  'wastage_price_cocopeat_fine_dust',
-  'wastage_price_10c_sieved',
-  'wastage_price_10c_not_sieved',
-  'wastage_price_10c_upper_part',
+  'wastage_cocopeat_fiber',
+  'wastage_cocopeat_fine_dust',
+  'wastage_10c_sieved',
+  'wastage_10c_not_sieved',
+  'wastage_10c_upper_part',
 ];
 
 const SellWastageForm = ({ onSellWastage, fetchWastageData }) => {

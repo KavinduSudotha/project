@@ -26,11 +26,17 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
+// Helper function to format date
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 function createData(job_id, created_date, due_date, customer_name, address, chip_type, peat_type, status, note, sheetDetails, transportDetails) {
   return {
     job_id,
-    created_date,
-    due_date,
+    created_date: formatDate(created_date), // Format created_date here
+    due_date: formatDate(due_date), // Format due_date here
     customer_name,
     address,
     chip_type,
@@ -115,8 +121,9 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell>{row.job_id}</TableCell>
-        <TableCell>{row.created_date}</TableCell>
-        <TableCell>{row.due_date}</TableCell>
+        <TableCell>{formatDate(row.created_date)}</TableCell>
+<TableCell>{formatDate(row.due_date)}</TableCell>
+
         <TableCell>{row.customer_name}</TableCell>
         <TableCell>{row.address}</TableCell>
         <TableCell>{row.chip_type}</TableCell>

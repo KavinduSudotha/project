@@ -82,11 +82,11 @@ const Inventory = () => {
     ]);
 
     const wastageData = prepareChartData([
-        'wastage_price_cocopeat_fiber', 
-        'wastage_price_cocopeat_fine_dust',  
-        'wastage_price_10c_sieved', 
-        'wastage_price_10c_not_sieved', 
-        'wastage_price_10c_upper_part', 
+        'wastage_cocopeat_fiber', 
+        'wastage_cocopeat_fine_dust',  
+        'wastage_10c_sieved', 
+        'wastage_10c_not_sieved', 
+        'wastage_10c_upper_part', 
     ]);
 
     const allData = prepareChartData([
@@ -98,11 +98,11 @@ const Inventory = () => {
         'chips_7mm_washed',
         'cocopeat_hi_ec',
         'cocopeat_low_ec',
-        'wastage_price_cocopeat_fiber', 
-        'wastage_price_cocopeat_fine_dust',  
-        'wastage_price_10c_sieved', 
-        'wastage_price_10c_not_sieved', 
-        'wastage_price_10c_upper_part', 
+        'wastage_cocopeat_fiber', 
+        'wastage_cocopeat_fine_dust',  
+        'wastage_10c_sieved', 
+        'wastage_10c_not_sieved', 
+        'wastage_10c_upper_part', 
     ]);
 
     if (loading) {
@@ -219,7 +219,8 @@ const Inventory = () => {
                                         <TableCell>{item.type.replace(/_/g, ' ')}</TableCell>
                                         <TableCell>{item.total_weight}</TableCell>
                                     </TableRow>
-                                ))}
+                
+                ))}
                                 <TableRow>
                                     <TableCell><strong>Total Weight Raw</strong></TableCell>
                                     <TableCell><strong>{totalWeightRaw}</strong></TableCell>

@@ -75,7 +75,8 @@ const AddWastageTable = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row.waste_id}>
-                    <TableCell>{row.date}</TableCell>
+                   <TableCell>{row.date.split('T')[0]}</TableCell>
+
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
                     <TableCell>{row.emp_id}</TableCell>

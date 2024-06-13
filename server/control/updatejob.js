@@ -2,13 +2,17 @@ const connection = require('../config/DBconnect');
 
 // Function to get all jobs
 const getJobs = (req, res) => {
-  connection.query('SELECT * FROM job', (error, results) => {
-    if (error) {
-      return res.status(500).json({ error: error.message });
+  connection.query(
+    'SELECT *, DATE(created_date) AS created_date, DATE(due_date) AS due_date FROM job ORDER BY ABS(DATEDIFF(DATE(due_date), CURDATE())) ASC',
+    (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      res.json(results);
     }
-    res.json(results);
-  });
+  );
 };
+
 
 // Function to update job status
 const updateJobStatus = (req, res) => {

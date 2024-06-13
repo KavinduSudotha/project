@@ -2,7 +2,7 @@ const connection = require('../config/DBconnect');
 const cron = require('node-cron');
 
 const getInventorySummary = (req, res) => {
-    const capacity = 10000;
+    const capacity = 500000;
     const rawQuery = 'SELECT type, SUM(availablequantity) as total_weight FROM summarytable GROUP BY type';
     const wastageQuery = 'SELECT type, SUM(available_quantity) as total_weight FROM summarytablewastage GROUP BY type';
 
@@ -46,7 +46,7 @@ const getInventorySummary = (req, res) => {
 
 // Function to insert inventory data into the database
 const insertInventoryData = () => {
-    const capacity = 10000;
+    const capacity = 500000;
     const rawQuery = 'SELECT type, SUM(availablequantity) as total_weight FROM summarytable GROUP BY type';
     const wastageQuery = 'SELECT type, SUM(available_quantity) as total_weight FROM summarytablewastage GROUP BY type';
 
@@ -86,9 +86,9 @@ const insertInventoryData = () => {
                 total_weight_chips_9mm_unwashed, total_weight_chips_9mm_washed, 
                 total_weight_chips_7mm_unwashed, total_weight_chips_7mm_washed, 
                 total_weight_cocopeat_hi_ec, total_weight_cocopeat_low_ec, 
-                wastage_price_cocopeat_fiber, wastage_price_cocopeat_fine_dust, 
-                wastage_price_10c_sieved, wastage_price_10c_not_sieved, 
-                wastage_price_10c_upper_part, total_weight_raw, 
+                wastage_cocopeat_fiber, wastage_cocopeat_fine_dust, 
+                wastage_10c_sieved, wastage_10c_not_sieved, 
+                wastage_10c_upper_part, total_weight_raw, 
                 total_weight_wastage, total_weight, free_space) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
@@ -102,11 +102,11 @@ const insertInventoryData = () => {
                 summary.find(item => item.type === 'chips_7mm_washed')?.total_weight || 0,
                 summary.find(item => item.type === 'cocopeat_hi_ec')?.total_weight || 0,
                 summary.find(item => item.type === 'cocopeat_low_ec')?.total_weight || 0,
-                wastageSummary.find(item => item.type === 'wastage_price_cocopeat_fiber')?.total_weight || 0,
-                wastageSummary.find(item => item.type === 'wastage_price_cocopeat_fine_dust')?.total_weight || 0,
-                wastageSummary.find(item => item.type === 'wastage_price_10c_sieved')?.total_weight || 0,
-                wastageSummary.find(item => item.type === 'wastage_price_10c_not_sieved')?.total_weight || 0,
-                wastageSummary.find(item => item.type === 'wastage_price_10c_upper_part')?.total_weight || 0,
+                wastageSummary.find(item => item.type === 'wastage_cocopeat_fiber')?.total_weight || 0,
+                wastageSummary.find(item => item.type === 'wastage_cocopeat_fine_dust')?.total_weight || 0,
+                wastageSummary.find(item => item.type === 'wastage_10c_sieved')?.total_weight || 0,
+                wastageSummary.find(item => item.type === 'wastage_10c_not_sieved')?.total_weight || 0,
+                wastageSummary.find(item => item.type === 'wastage_10c_upper_part')?.total_weight || 0,
                 totalWeightRaw,
                 totalWeightWastage,
                 totalWeight,
@@ -126,7 +126,7 @@ const insertInventoryData = () => {
 
 
 // // Schedule the task to run every 5 seconds
-//cron.schedule('*/5 * * * * *', insertInventoryData);
+// cron.schedule('*/5 * * * * *', insertInventoryData);
 
 
 // Schedule the task to run every 8 hours
