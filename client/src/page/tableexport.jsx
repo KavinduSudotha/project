@@ -25,8 +25,7 @@ const ReportHome = () => {
 
     const tables = [
         'addwastage', 'buyraw', 'inventory', 'job', 'notes', 'sellwastage',
-        'summarytable', 'summarytablewastage', 'test', 'user', 'use_raw',
-        'wastage', 'weeklypricelist'
+        'summarytable', 'summarytablewastage', 'user', 'use_raw', 'weeklypricelist'
     ];
 
     const fetchData = async () => {

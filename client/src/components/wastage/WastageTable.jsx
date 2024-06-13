@@ -12,12 +12,13 @@ import { TableVirtuoso } from 'react-virtuoso';
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
 const columns = [
-  { width: 10, label: 'Sell ID', dataKey: 'sell_id' },
-  { width: 60, label: 'Type', dataKey: 'type' },
-  { width: 20, label: 'Quantity', dataKey: 'quantity', numeric: true },
-  { width: 50, label: 'Price', dataKey: 'price', numeric: true },
-  { width: 120, label: 'Date', dataKey: 'date' },
-  { width: 30, label: 'Waste ID', dataKey: 'waste_id', numeric: true },
+  { width: 80, label: 'Sell ID', dataKey: 'sell_id' },
+  { width: 150, label: 'Type', dataKey: 'type' },
+  { width: 100, label: 'Quantity', dataKey: 'quantity', numeric: true },
+  { width: 100, label: 'Price', dataKey: 'price', numeric: true },
+  { width: 150, label: 'Date', dataKey: 'date' },
+  { width: 100, label: 'Waste ID', dataKey: 'waste_id', numeric: true },
+  { width: 120, label: 'Employee ID', dataKey: 'emp_id', numeric: true },
 ];
 
 const VirtuosoTableComponents = {
@@ -32,16 +33,22 @@ const VirtuosoTableComponents = {
   TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
 };
 
+
 function fixedHeaderContent() {
+
+
+  
+
   return (
     <TableRow>
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
           variant="head"
-          align={column.numeric || false ? 'right' : 'left'}
+          align={column.numeric ? 'right' : 'left'}
           style={{ width: column.width }}
-          sx={{ backgroundColor: 'background.paper' }}
+          sx={{ backgroundColor: '#ADD8E6' }}
+
         >
           {column.label}
         </TableCell>
@@ -56,13 +63,19 @@ function rowContent(_index, row) {
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
+          align={column.numeric ? 'right' : 'left'}
+          style={{ width: column.width }}
         >
-          {row[column.dataKey]}
+          {column.dataKey === 'date' ? formatDate(row[column.dataKey]) : row[column.dataKey]}
         </TableCell>
       ))}
     </React.Fragment>
   );
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(); // Adjust format as needed
 }
 
 export default function SellWastageTable() {
@@ -82,7 +95,7 @@ export default function SellWastageTable() {
   };
 
   return (
-    <Paper style={{ height:"87.9vh", width: "120vh"  }}>
+    <Paper style={{ height: "87.9vh", width: "120vh" }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

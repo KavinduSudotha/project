@@ -7,12 +7,19 @@ const RawTable = () => {
 
   useEffect(() => {
     axios.get('http://localhost:3001/userawrout/getAllRecords')
-      .then(res => setData(res.data))
+      .then(res => {
+        // Format the date to show only the date part
+        const formattedData = res.data.map(row => ({
+          ...row,
+          date: row.date.split('T')[0]
+        }));
+        setData(formattedData);
+      })
       .catch(err => console.error(err));
   }, []);
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight:"87.5vh", overflow: 'auto', }}>
+    <TableContainer component={Paper} sx={{ maxHeight: "87.5vh", overflow: 'auto' }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
@@ -22,7 +29,7 @@ const RawTable = () => {
             <TableCell sx={{ backgroundColor: 'lightblue' }}>Released Weight</TableCell>
             <TableCell sx={{ backgroundColor: 'lightblue' }}>Job ID</TableCell>
             <TableCell sx={{ backgroundColor: 'lightblue' }}>Batch ID</TableCell>
-            <TableCell sx={{ backgroundColor: 'lightblue' }}>Summary ID</TableCell>
+           
             <TableCell sx={{ backgroundColor: 'lightblue' }}>Employee ID</TableCell>
           </TableRow>
         </TableHead>
@@ -35,7 +42,7 @@ const RawTable = () => {
               <TableCell>{row.released_weight}</TableCell>
               <TableCell>{row.job_id}</TableCell>
               <TableCell>{row.batch_id}</TableCell>
-              <TableCell>{row.summery_id}</TableCell>
+              
               <TableCell>{row.employee_id}</TableCell>
             </TableRow>
           ))}

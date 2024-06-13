@@ -3,16 +3,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Box } from '@mui/material';
+import {jwtDecode} from 'jwt-decode';
 
 const AddNoteForm = () => {
   const [note, setNote] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10)); // Current date
   const [time, setTime] = useState(new Date().toLocaleTimeString()); // Current time
+  const storedData = localStorage.getItem('token');
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3001/admin/addnote', { note });
+      await axios.post('http://localhost:3001/admin/addnote', { note, date, time, Userid});
       alert('Note added successfully');
       setNote('');
       setDate(new Date().toISOString().slice(0, 10)); // Reset date

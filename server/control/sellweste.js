@@ -2,7 +2,7 @@
 const db = require('../config/DBconnect');
 
 const sellWastage = (req, res) => {
-  const { date, type, quantity, sellPrice, wasteId } = req.body;
+  const { date, type, quantity, sellPrice, wasteId,Userid } = req.body;
 
   const suggestPriceQuery = `
     SELECT ${type} AS price
@@ -21,11 +21,11 @@ const sellWastage = (req, res) => {
     const suggestPrice = result[0].price * quantity;
 
     const insertSellWastageQuery = `
-      INSERT INTO sellwastage (date, type, quantity, price, waste_id)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO sellwastage (date, type, quantity, price, waste_id, emp_id)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    db.query(insertSellWastageQuery, [date, type, quantity, sellPrice, wasteId], (err, result) => {
+    db.query(insertSellWastageQuery, [date, type, quantity, sellPrice, wasteId, Userid], (err, result) => {
       if (err) {
         console.error('Error adding wastage sell:', err);
         res.status(500).send('Error adding wastage sell');

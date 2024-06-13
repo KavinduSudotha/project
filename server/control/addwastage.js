@@ -1,10 +1,10 @@
 const db = require('../config/DBconnect');
 
 const addwastage = (req, res) => {
-  const { date, type, quantity } = req.body;
-  const insertWastageQuery = 'INSERT INTO addwastage (date, type, quantity) VALUES (?, ?, ?)';
+  const { date, type, quantity,Userid } = req.body;
+  const insertWastageQuery = 'INSERT INTO addwastage (date, type, quantity, emp_id) VALUES (?, ?, ?, ?)';
 
-  db.query(insertWastageQuery, [date, type, quantity], (err, result) => {
+  db.query(insertWastageQuery, [date, type, quantity, Userid], (err, result) => {
     if (err) {
       console.error('Error adding wastage:', err);
       res.status(500).send('Error adding wastage');

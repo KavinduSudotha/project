@@ -129,7 +129,7 @@ exports.getPredictedSand = (req, res) => {
 
 // Submit form data
 exports.submit = (req, res) => {
-  const { date, jobId, type, releasedWeight, batchId } = req.body;
+  const { date, jobId, type, releasedWeight, batchId,Userid } = req.body;
 
   // Start a transaction
   connection.beginTransaction((err) => {
@@ -139,8 +139,8 @@ exports.submit = (req, res) => {
 
       // Insert into use_raw table
       connection.query(
-          'INSERT INTO use_raw (date, job_id, type, released_weight, batch_id) VALUES (?, ?, ?, ?, ?)',
-          [date, jobId, type, releasedWeight, batchId],
+          'INSERT INTO use_raw (date, job_id, type, released_weight, batch_id, employee_id) VALUES (?, ?, ?, ?, ?, ?)',
+          [date, jobId, type, releasedWeight, batchId,Userid],
           (err, results) => {
               if (err) {
                   return connection.rollback(() => {

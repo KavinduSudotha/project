@@ -1,9 +1,11 @@
+// SellWastageForm.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Autocomplete, Box ,Paper} from '@mui/material';
+import { TextField, Button, Autocomplete, Box, Paper } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { usePageName } from '../../context/PageNameContext';
+import {jwtDecode} from 'jwt-decode';
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
@@ -15,14 +17,17 @@ const wastageTypes = [
   'wastage_price_10c_upper_part',
 ];
 
-const SellWastageForm = ({ onSellWastage }) => {
-
+const SellWastageForm = ({ onSellWastage, fetchWastageData }) => {
   const { setPage } = usePageName();
 
   useEffect(() => {
     setPage('To Sell Wastage');
   }, []);
 
+  const storedData = localStorage.getItem('token');
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
 
   const currentDate = new Date();
   const [date, setDate] = useState(currentDate);
@@ -63,9 +68,12 @@ const SellWastageForm = ({ onSellWastage }) => {
         quantity,
         sellPrice,
         wasteId: batch.wastage_id,
+        Userid,
       });
       console.log('Wastage sold successfully');
-      onSellWastage(response.data);  // Notify parent component
+      if (typeof onSellWastage === 'function') {
+        onSellWastage(response.data); // Notify parent component
+      }
       clearForm();
     } catch (error) {
       console.error('Error selling wastage:', error);
@@ -82,68 +90,68 @@ const SellWastageForm = ({ onSellWastage }) => {
   };
 
   return (
-    <Box component={Paper} padding={2} marginTop={"10vh"} className=' flex flex-col gap-5'>
+    <Box component={Paper} padding={2} marginTop={'10vh'} className='flex flex-col gap-5'>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
-          label="Date"
+          label='Date'
           value={date}
           onChange={(newValue) => setDate(newValue)}
           renderInput={(params) => <TextField {...params} fullWidth disabled />}
         />
       </LocalizationProvider>
       <Autocomplete
-        className="mt-4"
+        className='mt-4'
         fullWidth
         options={wastageTypes}
         value={type}
         onChange={(event, newValue) => setType(newValue)}
-        renderInput={(params) => <TextField {...params} label="Type" />}
+        renderInput={(params) => <TextField {...params} label='Type' />}
       />
       <Autocomplete
-        className="mt-4"
+        className='mt-4'
         fullWidth
         options={batchOptions}
         value={batch}
         onChange={(event, newValue) => setBatch(newValue)}
         getOptionLabel={(option) => `ID: ${option.wastage_id}, Quantity: ${option.available_quantity}`}
-        renderInput={(params) => <TextField {...params} label="Batch" />}
+        renderInput={(params) => <TextField {...params} label='Batch' />}
       />
       <TextField
-        className="mt-4"
-        label="Quantity"
-        type="number"
+        className='mt-4'
+        label='Quantity'
+        type='number'
         value={quantity}
         onChange={(e) => setQuantity(parseInt(e.target.value) || '')}
         fullWidth
       />
       <Button
-        className="mt-4"
-        variant="contained"
-        color="primary"
+        className='mt-4'
+        variant='contained'
+        color='primary'
         onClick={handleCalculateSuggestPrice}
         fullWidth
       >
         Calculate Suggest Price
       </Button>
       <TextField
-        className="mt-4"
-        label="Suggest Price"
+        className='mt-4'
+        label='Suggest Price'
         value={suggestPrice}
         InputProps={{ readOnly: true }}
         fullWidth
       />
       <TextField
-        className="mt-4"
-        label="Sell Price"
-        type="number"
+        className='mt-4'
+        label='Sell Price'
+        type='number'
         value={sellPrice}
         onChange={(e) => setSellPrice(parseFloat(e.target.value) || '')}
         fullWidth
       />
       <Button
-        className="mt-4"
-        variant="contained"
-        color="primary"
+        className='mt-4'
+        variant='contained'
+        color='primary'
         onClick={handleSellWastage}
         fullWidth
       >

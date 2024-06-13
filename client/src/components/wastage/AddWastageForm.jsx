@@ -2,24 +2,30 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Autocomplete, Box } from '@mui/material';
 import { usePageName } from '../../context/PageNameContext';
+import {jwtDecode} from 'jwt-decode';
 
 const BackendBaseUrl = 'http://localhost:3001/wastage';
 
 const wastageTypes = [
-  'wastage_price_cocopeat_fiber',
-  'wastage_price_cocopeat_fine_dust',
-  'wastage_price_10c_sieved',
-  'wastage_price_10c_not_sieved',
-  'wastage_price_10c_upper_part',
+  'wastage_cocopeat_fiber',
+  'wastage_cocopeat_fine_dust',
+  'wastage_10c_sieved',
+  'wastage_10c_not_sieved',
+  'wastage_10c_upper_part',
 ];
 
-const AddWastageForm = () => {
+const AddWastageForm = ({ showSnackbar }) => {
+  const { setPage } = usePageName();
 
-    const { setPage } = usePageName();
-  
-    useEffect(() => {
-      setPage('To Add Wastage');
-    }, []);
+  useEffect(() => {
+    setPage('To Add Wastage');
+  }, []);
+
+
+  const storedData = localStorage.getItem("token");
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
 
   const [date, setDate] = useState('');
   const [type, setType] = useState('');
@@ -36,11 +42,13 @@ const AddWastageForm = () => {
         date,
         type,
         quantity,
+        Userid,
       });
-      console.log('Wastage added successfully');
+      showSnackbar('Wastage added successfully', 'success');
       clearForm();
     } catch (error) {
       console.error('Error adding wastage:', error);
+      showSnackbar('Error adding wastage', 'error');
     }
   };
 
@@ -52,13 +60,7 @@ const AddWastageForm = () => {
   };
 
   return (
-    <Box
-  className="max-w-md mx-auto my-6 p-8 bg-white rounded"
-  style={{
-    marginTop: "20vh",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)" // Add shadow here
-  }}
->
+    <Box className="max-w-md mx-auto my-6 p-8 bg-white rounded" style={{ marginTop: '20vh', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)' }}>
       <TextField
         label="Date"
         value={date}

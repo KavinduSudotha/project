@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { usePageName } from '../../context/PageNameContext';
+import {jwtDecode} from 'jwt-decode';
 
 const types = [
   'chips_11mm_unwashed', 'chips_11mm_washed', 'chips_9mm_unwashed',
@@ -20,6 +21,11 @@ const UserRawForm = ({ showSnackbar }) => {
   useEffect(() => {
     setPage('To Use Raw Material');
   }, []);
+  const storedData = localStorage.getItem('token');
+  const parsedData = JSON.parse(storedData);
+  const decodedToken = jwtDecode(parsedData.token);
+  const Userid = decodedToken.userid;
+
 
   const [useId, setUseId] = useState(0);
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -105,7 +111,9 @@ const UserRawForm = ({ showSnackbar }) => {
       jobId,
       type,
       releasedWeight,
-      batchId
+      batchId,
+      Userid
+
     };
     axios.post('http://localhost:3001/userawrout/submit', data)
       .then(res => showSnackbar(res.data.message, 'success'))

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -7,16 +7,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
-import { useEffect } from 'react';
 import { usePageName } from '../../context/PageNameContext';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import CalculateIcon from '@mui/icons-material/Calculate';
-
-
 
 const BackendBaseUrl = 'http://localhost:3001/buyraw'; // Update this with your actual backend base URL
 
-const RawBuyForm = () => {
+const RawBuyForm = ({ showSnackbar }) => {
   const { setPage } = usePageName();
 
   useEffect(() => {
@@ -28,7 +25,6 @@ const RawBuyForm = () => {
   const decodedToken = jwtDecode(parsedData.token);
   const Userid = decodedToken.userid;
 
-  // Remaining code of RawBuyForm component as you provided...
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
   const [date, setDate] = useState(currentDate);
   const [rawType, setRawType] = useState('');
@@ -39,7 +35,6 @@ const RawBuyForm = () => {
   const [suggestPrice, setSuggestPrice] = useState('');
   const [buyPrice, setBuyPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-
 
   const isCalculateButtonEnabled = () => {
     if (rawType === 'Coco Chips') {
@@ -52,7 +47,6 @@ const RawBuyForm = () => {
 
   const handleCalculate = async () => {
     try {
-      // Call backend API to calculate suggest price
       const response = await axios.post(`${BackendBaseUrl}/pricecal`, {
         rawType,
         type,
@@ -63,12 +57,12 @@ const RawBuyForm = () => {
       setSuggestPrice(response.data.suggestPrice);
     } catch (error) {
       console.error('Error calculating suggest price:', error);
+      showSnackbar('Error calculating suggest price', 'error');
     }
   };
 
   const handleBuy = async () => {
     try {
-      // Call backend API to save data
       await axios.post(`${BackendBaseUrl}/buyrecord`, {
         Userid,
         date,
@@ -81,11 +75,11 @@ const RawBuyForm = () => {
         buyPrice,
         quantity,
       });
-      console.log('Data Saved Successfully');
-      // Clear form fields after successful save
+      showSnackbar('Data Saved Successfully', 'success');
       clearForm();
     } catch (error) {
       console.error('Error saving data:', error);
+      showSnackbar('Error saving data', 'error');
     }
   };
 
@@ -172,13 +166,13 @@ const RawBuyForm = () => {
         </>
       )}
       <Button
-      startIcon={<CalculateIcon />}
+        startIcon={<CalculateIcon />}
         variant="contained"
         color="primary"
         onClick={handleCalculate}
         disabled={!isCalculateButtonEnabled()}
         fullWidth
-        sx={{  '&:hover': { backgroundColor: 'darkblue' } }}
+        sx={{ '&:hover': { backgroundColor: 'darkblue' } }}
       >
         Calculate
       </Button>
@@ -212,27 +206,25 @@ const RawBuyForm = () => {
         fullWidth
         margin="normal"
       />
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={handleBuy} 
-                    sx={{ width: '45%', '&:hover': { backgroundColor: 'green' } }}
-                >
-                    Buy
-                </Button>
-                <Box sx={{ width: '10%' }} />
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
-                    onClick={clearForm} 
-                    sx={{ width: '45%', '&:hover': { backgroundColor: 'red' } }}
-                >
-                    Clear
-                </Button>
-                </Box>
-
-
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBuy}
+          sx={{ width: '45%', '&:hover': { backgroundColor: 'green' } }}
+        >
+          Buy
+        </Button>
+        <Box sx={{ width: '10%' }} />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={clearForm}
+          sx={{ width: '45%', '&:hover': { backgroundColor: 'red' } }}
+        >
+          Clear
+        </Button>
+      </Box>
     </Box>
   );
 };

@@ -4,8 +4,10 @@ const db = require('../config/DBconnect');
 
 // Function to add a note
 const addNote = async (req, res) => {
-  const { note } = req.body;
-  const employee_id = 111; // Hardcoded for now, will be replaced with token logic
+
+  const { note,Userid } = req.body;
+  const employee_id = Userid;
+  const  notes=note;// Hardcoded for now, will be replaced with token logic
 
   // Get current date and time
   const currentDate = new Date().toISOString().slice(0, 10);
@@ -13,7 +15,7 @@ const addNote = async (req, res) => {
 
   // SQL query to insert a new note
   const sql = 'INSERT INTO notes (Date, Time, note, employee_id) VALUES (?, ?, ?, ?)';
-  const values = [currentDate, currentTime, note, employee_id];
+  const values = [currentDate, currentTime, notes, employee_id];
 
   try {
     // Execute the query
@@ -54,7 +56,7 @@ const deleteNote = (req, res) => {
 
 
 const getnote = (req, res) => {
-  const sql = 'SELECT * FROM notes';
+  const sql = 'SELECT * FROM notes ORDER BY date DESC';
   db.query(sql, (err, results) => {
     if (err) {
       return res.status(500).send(err);
@@ -62,5 +64,6 @@ const getnote = (req, res) => {
     res.json(results);
   });
 };
+
 
 module.exports = { addNote, updateNote, deleteNote,getnote };

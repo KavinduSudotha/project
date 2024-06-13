@@ -15,7 +15,7 @@ import Inventory from './page/inventory';
 import Inventoryrecord from './page/InventoryTable';
 import AddWastageForm from './page/AddWastage';
 import SellWastageForm from './page/SellWastage';
-import Reports from './page/ReportsHome';
+import Reports from './page/tableexport';
 import Addpricelist from './page/AddPriceList';
 import Viewpricelist from './page/viewpricelist';
 import AdminPage from './page/adminpage';

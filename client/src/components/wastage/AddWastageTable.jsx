@@ -16,6 +16,7 @@ const headCells = [
   { id: 'date', label: 'Date' },
   { id: 'type', label: 'Type' },
   { id: 'quantity', label: 'Quantity' },
+  { id: 'emp_id', label: 'Employee ID' },
 ];
 
 const EnhancedTableHead = () => {
@@ -23,7 +24,12 @@ const EnhancedTableHead = () => {
     <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
-          <TableCell sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }} key={headCell.id}>{headCell.label}</TableCell>
+          <TableCell
+            sx={{ position: 'sticky', top: 0, background: 'lightblue', zIndex: 1 }}
+            key={headCell.id}
+          >
+            {headCell.label}
+          </TableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -42,7 +48,8 @@ const AddWastageTable = () => {
   const fetchWastageData = async () => {
     try {
       const response = await axios.get(`${BackendBaseUrl}/getwastage`);
-      setWastageData(response.data);
+      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setWastageData(sortedData);
     } catch (error) {
       console.error('Error fetching wastage data:', error);
     }
@@ -58,8 +65,8 @@ const AddWastageTable = () => {
   };
 
   return (
-    <Box >
-      <Paper >
+    <Box>
+      <Paper>
         <TableContainer sx={{ height: '82.5vh' }}> {/* Set table height to 80vh */}
           <Table aria-labelledby="tableTitle" size="medium">
             <EnhancedTableHead />
@@ -71,6 +78,7 @@ const AddWastageTable = () => {
                     <TableCell>{row.date}</TableCell>
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
+                    <TableCell>{row.emp_id}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

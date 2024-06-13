@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, TablePagination, IconButton, Tooltip, Button, TextField, Modal } from '@mui/material';
-import { Delete as DeleteIcon, FilterList as FilterListIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, IconButton, Modal, Button, TextField } from '@mui/material';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 
 const EnhancedTable = () => {
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [order, setOrder] = useState('desc');
+  const [orderBy, setOrderBy] = useState('date');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(6); // Update default rows per page to 15
+  const [rowsPerPage, setRowsPerPage] = useState(6); // Default rows per page
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState({});
@@ -23,40 +23,6 @@ const EnhancedTable = () => {
       });
   }, []);
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.note_id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -65,8 +31,6 @@ const EnhancedTable = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const handleDelete = (id) => {
     axios.delete(`http://localhost:3001/admin/deletenotes/${id}`)
@@ -113,14 +77,7 @@ const EnhancedTable = () => {
           <Table aria-labelledby="tableTitle" size="medium">
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={selected.length > 0 && selected.length < rows.length}
-                    checked={rows.length > 0 && selected.length === rows.length}
-                    onChange={handleSelectAllClick}
-                  />
-                </TableCell>
+                <TableCell>Note ID</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Time</TableCell>
                 <TableCell>Note</TableCell>
@@ -130,20 +87,14 @@ const EnhancedTable = () => {
             </TableHead>
             <TableBody>
               {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                const isItemSelected = isSelected(row.note_id);
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.note_id)}
                     role="checkbox"
-                    aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.note_id}
-                    selected={isItemSelected}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox checked={isItemSelected} />
-                    </TableCell>
+                    <TableCell>{row.note_id}</TableCell>
                     <TableCell>{row.date}</TableCell>
                     <TableCell>{row.time}</TableCell>
                     <TableCell>{row.note}</TableCell>
@@ -165,7 +116,7 @@ const EnhancedTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows          .length}
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -219,6 +170,3 @@ const EnhancedTable = () => {
 };
 
 export default EnhancedTable;
-
-
-
