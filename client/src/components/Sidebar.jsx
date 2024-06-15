@@ -49,13 +49,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   },
 }));
 
-const handleLogout = () => {
-  // Clear the local storage
-  localStorage.removeItem("token");
 
-  // Redirect to the login page or any other page
-  window.location.href = "/";
-};
 
 // Mixin for opened drawer
 const openedMixin = (theme) => ({
@@ -179,6 +173,21 @@ const handleProfileMenuOpen = (event) => {
     UserType = decodedToken.role;
     userId = decodedToken.userid; // Extract userId from the token
   }
+
+  const handleLogout = () => {
+
+
+    console.log("Logging out...");
+  
+    // Clear the local storage
+    localStorage.removeItem("token");
+    console.log("Token removed from localStorage");
+  
+    // Redirect to the login page or any other page
+    window.location.href = "/";
+    console.log("Redirecting to /");
+  };
+  
   switch (UserType) {
     case "Director":
       menuItems = [
@@ -223,7 +232,7 @@ const handleProfileMenuOpen = (event) => {
           icon: SupervisorAccountIcon,
           link: "/director-dashboard/admin",
         },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon, action: handleLogout },  // Added logout item
       ];
       break;
     case "Manager":
@@ -264,7 +273,7 @@ const handleProfileMenuOpen = (event) => {
           icon: WorkHistoryIcon,
           link: "/Manager-dashboard/updatejob",
         },
-        { name: "Logout", icon: LogoutIcon, action: handleLogout }, // Added logout item
+        { name: "Logout", icon: LogoutIcon,  action: handleLogout }, // Added logout item
       ];
       break;
     case "Supervisor":
@@ -449,21 +458,13 @@ const handleProfileMenuOpen = (event) => {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-             
-            </IconButton>
+            
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
+              
             </IconButton>
             <IconButton
               size="large"
@@ -500,7 +501,13 @@ const handleProfileMenuOpen = (event) => {
         <Divider />
         <List>
           {menuItems.map((item, index) => (
-            <ListItem button key={index} component="a" href={item.link}>
+            <ListItem 
+              button 
+              key={index} 
+              component="a" 
+              href={item.link || "#"} 
+              onClick={item.action ? item.action : null}
+            >
               <ListItemIcon>
                 <item.icon />
               </ListItemIcon>
@@ -513,9 +520,9 @@ const handleProfileMenuOpen = (event) => {
         
        
       </Main>
-      {/* ProfileDialog component */}
+      
       <ProfileDialog open={profileDialogOpen} handleClose={handleProfileDialogClose}  userId={userId}/>
-      {/* Render menus */}
+    
       {renderMenu}
       {renderMobileMenu}
     </Box>

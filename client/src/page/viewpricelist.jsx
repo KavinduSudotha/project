@@ -137,11 +137,11 @@ const ViewPriceList = () => {
                           </TableHead>
                           <TableBody>
                             {[
-                              { label: 'Cocopeat Fiber', value: priceList["wastage_price_cocopeat_fiber"] },
-                              { label: 'Cocopeat Fine Dust', value: priceList["wastage_price_cocopeat_fine_dust"] },
-                              { label: '10C Sieved', value: priceList["wastage_price_10c_sieved"] },
-                              { label: '10C not Sieved', value: priceList["wastage_price_10c_not_sieved"] },
-                              { label: '10C upper part', value: priceList["wastage_price_10c_upper_part"] },
+                              { label: 'Cocopeat Fiber', value: priceList["wastage_cocopeat_fiber"] },
+                              { label: 'Cocopeat Fine Dust', value: priceList["wastage_cocopeat_fine_dust"] },
+                              { label: '10C Sieved', value: priceList["wastage_10c_sieved"] },
+                              { label: '10C not Sieved', value: priceList["wastage_10c_not_sieved"] },
+                              { label: '10C upper part', value: priceList["wastage_10c_upper_part"] },
                             ].map((item, index) => (
                               <TableRow key={index}>
                                 <TableCell>{item.label}</TableCell>

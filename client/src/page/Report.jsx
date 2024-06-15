@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Container, TextField, MenuItem, Button, Typography } from '@mui/material';
+import { Container, TextField, MenuItem, Button, Typography, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const reportTypes = [
   { value: 'dailyWastage', label: 'Daily Wastage Report' },
@@ -18,8 +19,16 @@ const Report = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleGenerateReport = async () => {
+    if (!reportType || !startDate || !endDate) {
+      setError('All fields are required.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.post('http://localhost:3001/admin/generate-report', {
         reportType,
@@ -28,8 +37,10 @@ const Report = () => {
       });
       setReportData(response.data);
     } catch (error) {
+      setError('Error generating report. Please try again.');
       console.error('Error generating report:', error);
     }
+    setLoading(false);
   };
 
   return (
@@ -41,6 +52,7 @@ const Report = () => {
         value={reportType}
         onChange={(e) => setReportType(e.target.value)}
         className="w-full mb-4"
+        required
       >
         {reportTypes.map((option) => (
           <MenuItem key={option.value} value={option.value}>
@@ -55,6 +67,7 @@ const Report = () => {
         onChange={(e) => setStartDate(e.target.value)}
         className="w-full mb-4"
         InputLabelProps={{ shrink: true }}
+        required
       />
       <TextField
         label="End Date"
@@ -63,15 +76,49 @@ const Report = () => {
         onChange={(e) => setEndDate(e.target.value)}
         className="w-full mb-4"
         InputLabelProps={{ shrink: true }}
+        required
       />
-      <Button variant="contained" color="primary" onClick={handleGenerateReport}>
-        Generate Report
+      <Button variant="contained" color="primary" onClick={handleGenerateReport} disabled={loading}>
+        {loading ? <CircularProgress size={24} /> : 'Generate Report'}
       </Button>
+      {error && (
+        <Alert severity="error" className="mt-4">
+          {error}
+        </Alert>
+      )}
       {reportData && (
-        <div className="mt-4">
-          <Typography variant="h6">Report Data:</Typography>
-          <pre>{JSON.stringify(reportData, null, 2)}</pre>
-        </div>
+        <TableContainer component={Paper} className="mt-4">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Employee ID</TableCell>
+                <TableCell>Wastage Chip</TableCell>
+                <TableCell>Density Peat</TableCell>
+                <TableCell>Sand Peat</TableCell>
+                <TableCell>Suggested Price</TableCell>
+                <TableCell>Buy Price</TableCell>
+                <TableCell>Quantity</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {reportData.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{dayjs(row.date).format('YYYY-MM-DD')}</TableCell>
+                  <TableCell>{row.type}</TableCell>
+                  <TableCell>{row.employeeid}</TableCell>
+                  <TableCell>{row.wastagechip}</TableCell>
+                  <TableCell>{row.densitypeat}</TableCell>
+                  <TableCell>{row.sandpeat}</TableCell>
+                  <TableCell>{row.suggestprice}</TableCell>
+                  <TableCell>{row.buyprice}</TableCell>
+                  <TableCell>{row.quantity}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Container>
   );
